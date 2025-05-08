@@ -24,13 +24,13 @@ function Dashboard() {
     <div>
       <EmployeeNavbar />
       <div className="p-6">
-        <h1 className="text-4xl font-bold mb-6 text-center text-indigo-600">Bienvenue sur votre Espace</h1>
+        <h1 className="text-4xl font-bold mb-6 text-center text-indigo-400">Bienvenue sur votre Espace</h1>
         <p className="text-lg text-center text-gray-700">Voici votre tableau de bord employé avec des informations clés.</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
           {/* Total des demandes */}
           <div className="flex items-center p-6 bg-white rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
-            <div className="text-center flex items-center justify-center bg-blue-600 text-white p-4 rounded-full">
+            <div className="text-center flex items-center justify-center bg-blue-400 text-white p-4 rounded-full">
               <Clipboard size={24} />
             </div>
             <div className="ml-4">
@@ -41,7 +41,7 @@ function Dashboard() {
 
           {/* Demandes en attente */}
           <div className="flex items-center p-6 bg-white rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
-            <div className="text-center flex items-center justify-center bg-yellow-600 text-white p-4 rounded-full">
+            <div className="text-center flex items-center justify-center bg-yellow-400 text-white p-4 rounded-full">
               <Clock size={24} />
             </div>
             <div className="ml-4">
@@ -52,7 +52,7 @@ function Dashboard() {
 
           {/* Demandes validées */}
           <div className="flex items-center p-6 bg-white rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
-            <div className="text-center flex items-center justify-center bg-green-600 text-white p-4 rounded-full">
+            <div className="text-center flex items-center justify-center bg-green-400 text-white p-4 rounded-full">
               <CheckCircle size={24} />
             </div>
             <div className="ml-4">
@@ -63,7 +63,7 @@ function Dashboard() {
 
           {/* Demandes refusées */}
           <div className="flex items-center p-6 bg-white rounded-xl shadow-lg hover:shadow-2xl transition duration-300">
-            <div className="text-center flex items-center justify-center bg-red-600 text-white p-4 rounded-full">
+            <div className="text-center flex items-center justify-center bg-red-400 text-white p-4 rounded-full">
               <XCircle size={24} />
             </div>
             <div className="ml-4">
@@ -79,7 +79,7 @@ function Dashboard() {
         <div className="mt-8 text-center">
         <Link
           to="/historique-demandes"
-          className="text-white bg-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-700 transition duration-300"
+          className="text-white px-4 py-2 rounded-lg hover:bg-indigo-300 bg-blue-400  transition duration-300"
         >
           Voir l'Historique des Demandes
         </Link>

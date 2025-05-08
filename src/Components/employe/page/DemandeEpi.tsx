@@ -62,7 +62,7 @@ function DemandeEPI() {
     demandes.push(nouvelleDemande);
     localStorage.setItem("demandes", JSON.stringify(demandes));
 
-    navigate("/historique-demande");
+    navigate("/historique-demandes");
   };
 
   const episDisponibles = form.poste ? EPI_PAR_POSTE[form.poste] || [] : [];
@@ -71,7 +71,7 @@ function DemandeEPI() {
     <div>
       <EmployeeNavbar />
       <div className="p-6 max-w-3xl mx-auto bg-white shadow-2xl rounded-2xl space-y-6 mt-6">
-        <div className="flex items-center gap-3 text-blue-700">
+        <div className="flex items-center gap-3 text-blue-400">
           <Sparkles size={28} />
           <h2 className="text-2xl font-bold">Faire une demande d’EPI</h2>
         </div>
@@ -84,7 +84,7 @@ function DemandeEPI() {
             value={form.departement}
             onChange={handleChange}
             required
-            className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-300 outline-none"
           />
 
           <select
@@ -92,7 +92,7 @@ function DemandeEPI() {
             value={form.poste}
             onChange={handleChange}
             required
-            className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-300"
           >
             <option value="">-- Sélectionner un poste --</option>
             {Object.keys(EPI_PAR_POSTE).map((poste) => (
@@ -108,7 +108,7 @@ function DemandeEPI() {
                 <label
                   key={epi.name}
                   className={`cursor-pointer border rounded-lg p-3 flex flex-col items-center gap-2 transition-all ${
-                    form.type === epi.name ? "bg-blue-100 border-blue-600" : "hover:bg-gray-50"
+                    form.type === epi.name ? "bg-blue-100 border-blue-400" : "hover:bg-gray-50"
                   }`}
                 >
                   <input
@@ -121,7 +121,7 @@ function DemandeEPI() {
                   />
                   <img src={epi.image} alt={epi.name} className="w-12 h-12 object-contain" />
                   <span className="font-medium">{epi.name}</span>
-                  {form.type === epi.name && <CheckCircle className="text-blue-600" size={20} />}
+                  {form.type === epi.name && <CheckCircle className="text-blue-400" size={20} />}
                 </label>
               ))}
             </div>
@@ -133,7 +133,7 @@ function DemandeEPI() {
             min={1}
             value={form.quantite}
             onChange={handleChange}
-            className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-300"
             required
           />
 
@@ -142,12 +142,12 @@ function DemandeEPI() {
             value={form.note}
             onChange={handleChange}
             placeholder="Remarques (facultatif)"
-            className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-300"
           />
 
           <button
             type="submit"
-            className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-3 px-6 rounded-lg hover:scale-105 transition-transform"
+            className="bg-gradient-to-r from-blue-400 to-blue-300 text-white py-3 px-6 rounded-lg hover:scale-105 transition-transform"
           >
             Envoyer la demande
           </button>

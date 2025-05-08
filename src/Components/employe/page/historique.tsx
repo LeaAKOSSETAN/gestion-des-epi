@@ -31,7 +31,7 @@ function Historique() {
       <EmployeeNavbar />
 
       <div className="p-6 max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold text-blue-800 mb-6">🧾 Historique des EPI reçus</h2>
+        <h2 className="text-3xl font-bold text-blue-400 mb-6">Historique des EPI reçus</h2>
 
         {epiRecus.length === 0 ? (
           <div className="text-center text-gray-500 italic">Aucun EPI reçu pour le moment.</div>

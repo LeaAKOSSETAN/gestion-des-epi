@@ -53,7 +53,7 @@ function ListeDispo() {
     <div>
       <EmployeeNavbar />
       <div className="p-6 max-w-5xl mx-auto">
-        <h2 className="text-3xl font-extrabold mb-6 text-blue-600">📦 Liste des EPI disponibles</h2>
+        <h2 className="text-3xl font-extrabold mb-6 text-blue-400"> Liste des EPI disponibles</h2>
 
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <select
@@ -62,7 +62,7 @@ function ListeDispo() {
               setDepartement(e.target.value);
               setPoste(""); // Reset poste
             }}
-            className="border-2 border-gray-300 p-3 rounded-lg w-full md:w-1/2 transition-all hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border-2 border-gray-300 p-3 rounded-lg w-full md:w-1/2 transition-all hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">-- Filtrer par département --</option>
             {Array.from(new Set(stock.map((e) => e.departement))).map((d) => (
@@ -75,7 +75,7 @@ function ListeDispo() {
           <select
             value={poste}
             onChange={(e) => setPoste(e.target.value)}
-            className="border-2 border-gray-300 p-3 rounded-lg w-full md:w-1/2 transition-all hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border-2 border-gray-300 p-3 rounded-lg w-full md:w-1/2 transition-all hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={!departement}
           >
             <option value="">-- Filtrer par poste --</option>
@@ -105,7 +105,7 @@ function ListeDispo() {
                 <p className="text-sm text-gray-500">
                   Renouvellement : <em>{item.renouvellement}</em>
                 </p>
-                <p className="text-sm text-blue-500 mt-2">
+                <p className="text-sm text-blue-400 mt-2">
                   Département : <span className="font-medium">{item.departement}</span>
                 </p>
               </div>

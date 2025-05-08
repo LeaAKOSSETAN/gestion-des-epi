@@ -6,7 +6,7 @@ import Historique from '../Components/employe/page/historique'
 import ListeDispo from '../Components/employe/page/listedispo'
 import HistoriqueDemandes from '../Components/employe/page/historiqueDemande'
 
-export default function EmployeeRoutes() {
+ function EmployeeRoutes() {
   return (
     <Routes>
       <Route path="/dashboard" element={<Dashboard />} />
@@ -19,3 +19,4 @@ export default function EmployeeRoutes() {
     </Routes>
   )
 }
+export default EmployeeRoutes;

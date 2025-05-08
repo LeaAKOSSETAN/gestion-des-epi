@@ -87,8 +87,8 @@ function HistoriqueDemandes() {
       <EmployeeNavbar />
 
       <div className="p-6 max-w-5xl mx-auto">
-        <h2 className="text-4xl font-extrabold mb-6 text-center text-indigo-700">
-          📋 Historique des Demandes
+        <h2 className="text-4xl font-extrabold mb-6 text-center text-indigo-400">
+           Historique des Demandes
         </h2>
 
         <div className="mb-6 flex justify-end">
@@ -111,9 +111,9 @@ function HistoriqueDemandes() {
             {demandesFiltrees.map((demande) => (
               <div
                 key={demande.id}
-                className="relative border-l-4 border-indigo-500 pl-6 py-4 bg-white rounded-xl shadow-md hover:shadow-xl transition duration-300"
+                className="relative border-l-4 border-indigo-300 pl-6 py-4 bg-white rounded-xl shadow-md hover:shadow-xl transition duration-300"
               >
-                <div className="absolute left-[-10px] top-5 w-5 h-5 rounded-full bg-indigo-500"></div>
+                <div className="absolute left-[-10px] top-5 w-5 h-5 rounded-full bg-indigo-300"></div>
 
                 {demandeEnCours === demande.id ? (
                   <div className="space-y-3">
@@ -125,7 +125,7 @@ function HistoriqueDemandes() {
             value={formModif.departement}
             onChange={handleChange}
             required
-            className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-300 outline-none"
           />
 
        <select
@@ -133,7 +133,7 @@ function HistoriqueDemandes() {
             value={formModif.poste}
             onChange={handleChange}
             required
-            className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-300"
           >
             <option value="">-- Sélectionner un poste --</option>
             {Object.keys(EPI_PAR_POSTE).map((poste) => (
@@ -189,21 +189,21 @@ function HistoriqueDemandes() {
                 ) : (
                   <div className="flex flex-col gap-2">
                     
-                    <p><strong>📦 departement :</strong> {demande.departement}</p>
-                    <p><strong>📦 Poste :</strong> {demande.poste}</p>
-                    <p><strong>📦 Type :</strong> {demande.type}</p>
-                    <p><strong>🔢 Quantité :</strong> {demande.quantite}</p>
-                    <p><strong>📝 Note :</strong> {demande.note || "Aucune"}</p>
-                    <p><strong>📅 Date :</strong> {demande.date}</p>
+                    <p><strong> departement :</strong> {demande.departement}</p>
+                    <p><strong> Poste :</strong> {demande.poste}</p>
+                    <p><strong> Type :</strong> {demande.type}</p>
+                    <p><strong>Quantité :</strong> {demande.quantite}</p>
+                    <p><strong> Note :</strong> {demande.note || "Aucune"}</p>
+                    <p><strong> Date :</strong> {demande.date}</p>
                     <p>
-                      <strong>✅ Statut :</strong>{" "}
+                      <strong> Statut :</strong>{" "}
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-white text-sm ${
                           demande.statut === "Validée"
-                            ? "bg-green-500"
+                            ? "bg-green-300"
                             : demande.statut === "Refusée"
-                            ? "bg-red-500"
-                            : "bg-yellow-500 animate-pulse"
+                            ? "bg-red-300"
+                            : "bg-yellow-300 animate-pulse"
                         }`}
                       >
                         {demande.statut}
@@ -214,13 +214,13 @@ function HistoriqueDemandes() {
                       <div className="flex gap-3 mt-3 justify-end">
                         <button
                           onClick={() => lancerModification(demande)}
-                          className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg transition"
+                          className="flex items-center gap-1 bg-blue-400 hover:bg-blue-400 text-white px-3 py-1.5 rounded-lg transition"
                         >
                           <Edit size={18} /> Modifier
                         </button>
                         <button
                           onClick={() => supprimerDemande(demande.id)}
-                          className="flex items-center gap-1 bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition"
+                          className="flex items-center gap-1 bg-red-400 hover:bg-red-400 text-white px-3 py-1.5 rounded-lg transition"
                         >
                           <Trash2 size={18} /> Supprimer
                         </button>
