@@ -1,5 +1,6 @@
 // Exemple de page historique des demandes
 import React from 'react';
+import GestionnaireLayout from './GestionnaireLayout';
 
 const RequestHistory = () => {
   const demandes = [
@@ -9,29 +10,31 @@ const RequestHistory = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <h1 className="text-3xl font-bold text-gray-800 mb-8">Historique des Demandes</h1>
-      <table className="min-w-full bg-white rounded-lg shadow">
-        <thead>
-          <tr>
-            <th className="p-4 text-left">EPI</th>
-            <th className="p-4 text-left">Quantité demandée</th>
-            <th className="p-4 text-left">Date</th>
-            <th className="p-4 text-left">Statut</th>
-          </tr>
-        </thead>
-        <tbody>
-          {demandes.map((demande) => (
-            <tr key={demande.id}>
-              <td className="p-4">{demande.epi}</td>
-              <td className="p-4">{demande.quantite}</td>
-              <td className="p-4">{demande.date}</td>
-              <td className="p-4">{demande.statut}</td>
+    <GestionnaireLayout>
+      <div className="min-h-screen bg-gray-50 p-6">
+        <h1 className="text-3xl font-bold text-gray-800 mb-8">Historique des Demandes</h1>
+        <table className="min-w-full bg-white rounded-lg shadow">
+          <thead>
+            <tr>
+              <th className="p-4 text-left">EPI</th>
+              <th className="p-4 text-left">Quantité demandée</th>
+              <th className="p-4 text-left">Date</th>
+              <th className="p-4 text-left">Statut</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {demandes.map((demande) => (
+              <tr key={demande.id}>
+                <td className="p-4">{demande.epi}</td>
+                <td className="p-4">{demande.quantite}</td>
+                <td className="p-4">{demande.date}</td>
+                <td className="p-4">{demande.statut}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </GestionnaireLayout>
   );
 };
 

@@ -10,21 +10,24 @@ import LivraisonSave from './Components/gestionnaire/LivraisonSave';
 import Historique from './Components/gestionnaire/Historique';
 import ComptesGestion from './Components/admin/AdminDashbord';
 import AjouterUsers from './Components/admin/AjouterUsers';
-import ListeUsers from './Components/admin/ListeUsers';
+import GestionnaireDashbord from './Components/gestionnaire/GestionnaireDashbord';
+import ListeComptes from './Components/admin/ListeComptes';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<EpiDashboard />} />
-        <Route path="/stock" element={<Reapprovisionnement />} />
-        <Route path="/provision" element={<LivraisonSave />} />
-        <Route path="/historique" element={<Historique />}/>
-        <Route path="/ajouter" element={<AjouterEPI />} />
-        <Route path="/modifier/:id" element={<ModifierEPI />} />
+        <Route path="/gestionnaire" element={<GestionnaireDashbord />} />
+        <Route path="/gestionnaire/stock" element={<EpiDashboard />} />
+        <Route path="/gestionnaire/ajouter" element={<AjouterEPI />} />
+        <Route path="/gestionnaire/modifier/:id" element={<ModifierEPI />} />
+        <Route path="/gestionnaire/reapprovisionnement" element={<Reapprovisionnement />} />
+        <Route path="/gestionnaire/livraison" element={<LivraisonSave />} />
+        <Route path="/gestionnaire/historique" element={<Historique />}/>
+
         <Route path="/admin" element={<ComptesGestion />}/>
         <Route path="/admin/ajouter-utilisateur" element={<AjouterUsers />} />
-        <Route path="/admin/users" element={<ListeUsers />} />
+        <Route path="/admin/utilisateurs" element={<ListeComptes />} />
       </Routes>
     </Router>
     // <div className="App">

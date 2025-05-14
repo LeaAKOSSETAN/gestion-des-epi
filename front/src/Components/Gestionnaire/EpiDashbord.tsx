@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { ShieldCheck, PlusCircle, HardHat, Truck } from "lucide-react";
+import GestionnaireLayout from "./GestionnaireLayout";
 
 type StatCardProps = {
   icon: React.ReactNode;
@@ -35,91 +36,95 @@ export default function EpiDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 px-6 py-8">
-      {/* Header */}
-      <header className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Gestion des EPI</h1>
-        <Link
-          to="/ajouter"
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow-md transition-all"
-        >
-          <PlusCircle className="w-5 h-5" />
-          Ajouter un EPI
-        </Link>
-      </header>
+    <GestionnaireLayout>
+      <div className="min-h-screen bg-gray-50 px-6 py-8">
 
-      {/* Statistiques */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <StatCard
-          icon={<ShieldCheck className="w-6 h-6 text-white" />}
-          title="EPI disponibles"
-          value="235"
-          color="bg-green-500"
-        />
-        <StatCard
-          icon={<HardHat className="w-6 h-6 text-white" />}
-          title="EPI attribués"
-          value="132"
-          color="bg-yellow-500"
-        />
-        <StatCard
-          icon={<Truck className="w-6 h-6 text-white" />}
-          title="En attente de livraison"
-          value="21"
-          color="bg-red-500"
-        />
-      </div>
+        {/* Header */}
+        <header className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">Gestion des EPI</h1>
+          <Link
+            to="/gestionnaire/ajouter"
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl shadow-md transition-all"
+          >
+            <PlusCircle className="w-5 h-5" />
+            Ajouter un EPI
+          </Link>
+        </header>
 
-      {/* Barre de recherche */}
-      <div className="mb-6">
-        <input
-          type="text"
-          placeholder="Rechercher un EPI..."
-          className="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
+        {/* Statistiques */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          <StatCard
+            icon={<ShieldCheck className="w-6 h-6 text-white" />}
+            title="EPI disponibles"
+            value="235"
+            color="bg-green-500"
+          />
+          <StatCard
+            icon={<HardHat className="w-6 h-6 text-white" />}
+            title="EPI attribués"
+            value="132"
+            color="bg-yellow-500"
+          />
+          <StatCard
+            icon={<Truck className="w-6 h-6 text-white" />}
+            title="En attente de livraison"
+            value="21"
+            color="bg-red-500"
+          />
+        </div>
 
-      {/* Tableau des EPI */}
-      <div className="bg-white shadow-md rounded-xl p-6 overflow-auto">
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">Stock actuel</h2>
-        <table className="min-w-full table-auto text-sm">
-          <thead>
-            <tr className="bg-gray-100 text-left text-gray-600">
-              <th className="p-3">Nom</th>
-              <th className="p-3">Quantité</th>
-              <th className="p-3">Type</th>
-              <th className="p-3">Dernière mise à jour</th>
-              <th className="p-3 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredEpis.length > 0 ? (
-              filteredEpis.map((epi) => (
-                <tr key={epi.id} className="hover:bg-gray-50 border-b">
-                  <td className="p-3">{epi.nom}</td>
-                  <td className="p-3">{epi.quantite}</td>
-                  <td className="p-3">{epi.type}</td>
-                  <td className="p-3">{epi.maj}</td>
-                  <td className="p-3 text-right space-x-2">
-                    <Link to={`/modifier/${epi.id}`} className="text-blue-600 hover:underline text-sm">
-                      Modifier
-                    </Link>
-                    <button className="text-red-600 hover:underline text-sm">Supprimer</button>
+        {/* Barre de recherche */}
+        <div className="mb-6">
+          <input
+            type="text"
+            placeholder="Rechercher un EPI..."
+            className="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+
+        {/* Tableau des EPI */}
+        <div className="bg-white shadow-md rounded-xl p-6 overflow-auto">
+          <h2 className="text-xl font-semibold text-gray-700 mb-4">Stock actuel</h2>
+          <table className="min-w-full table-auto text-sm">
+            <thead>
+              <tr className="bg-gray-100 text-left text-gray-600">
+                <th className="p-3">Nom</th>
+                <th className="p-3">Quantité</th>
+                <th className="p-3">Type</th>
+                <th className="p-3">Dernière mise à jour</th>
+                <th className="p-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredEpis.length > 0 ? (
+                filteredEpis.map((epi) => (
+                  <tr key={epi.id} className="hover:bg-gray-50 border-b">
+                    <td className="p-3">{epi.nom}</td>
+                    <td className="p-3">{epi.quantite}</td>
+                    <td className="p-3">{epi.type}</td>
+                    <td className="p-3">{epi.maj}</td>
+                    <td className="p-3 text-right space-x-2">
+                      <Link to={`/gestionnaire/modifier/${epi.id}`} className="text-blue-600 hover:underline text-sm">
+                        Modifier
+                      </Link>
+                      <button className="text-red-600 hover:underline text-sm">Supprimer</button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
+                    Aucun EPI trouvé.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
-                  Aucun EPI trouvé.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </GestionnaireLayout>
+
   );
 }
