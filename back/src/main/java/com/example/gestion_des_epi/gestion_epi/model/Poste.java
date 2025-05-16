@@ -44,6 +44,4 @@ public class Poste {
     public void setDepartement_id(Departement departement_id) {
         this.departement_id = departement_id;
     }
-
-
 }

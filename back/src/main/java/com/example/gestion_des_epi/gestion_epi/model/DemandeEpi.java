@@ -7,7 +7,9 @@ import com.example.gestion_des_epi.gestion_epi.enume.StatutLivraison;
 
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name= "demandeEpis")
 public class DemandeEpi {
@@ -21,14 +23,22 @@ public class DemandeEpi {
     private StatutLivraison statut_livraison;
     
     @ManyToOne
-    @JoinColumn(name = "utilisateur_id", nullable = false)
+    @JoinColumn(name = "utilisateur_id")
     private Utilisateur utilisateur;
     
     @ManyToOne
     @JoinColumn(name = "epi_id", nullable = false)
     private Epi epi;
 
-    public DemandeEpi() {
+   /* public Utilisateur getUtilisateur() {
+        return utilisateur;
+    }
+
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
+    }
+
+   public DemandeEpi() {
     }
 
     
@@ -39,7 +49,7 @@ public class DemandeEpi {
         this.date_demande = date_demande;
         this.quantite = quantite;
         Statut_validition = statut_validition;
-        this.statut_livraison = statut_livraison;
+        this.Statut_validition = statut_livraison;
         this.utilisateur = utilisateur;
         this.epi = epi;
     }
@@ -129,6 +139,6 @@ public class DemandeEpi {
     }
 
     
-
+*/
 
 }
