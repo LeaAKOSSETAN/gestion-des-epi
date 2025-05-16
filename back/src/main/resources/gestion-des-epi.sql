@@ -21,48 +21,48 @@ CREATE TABLE utilisateurs (
     mot_de_passe VARCHAR(255) NOT NULL,
     typeCompte ENUM('ADMIN', 'CHEF_DEPT', 'GESTIONNAIRE', 'EMPLOYE') NOT NULL,
     statut BOOLEAN DEFAULT TRUE,
-    postes_id integer DEFAULT NULL,
-    FOREIGN KEY (postes_id) REFERENCES postes(id) ON DELETE SET NULL,
+    poste_id integer DEFAULT NULL,
+    FOREIGN KEY (poste_id) REFERENCES postes(id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE epis (
     id integer AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
-    quantite_en_stock IintegerNT DEFAULT 0,
+    quantite_en_stock Integer DEFAULT 0,
     seuil_alerte integer DEFAULT 5,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE postesEpis (
+CREATE TABLE posteEpis (
     id integer AUTO_INCREMENT PRIMARY KEY,
-    postes_id integer,
-    epis_id integer,
+    poste_id integer,
+    epi_id integer,
     quantite integer DEFAULT 0,
-    FOREIGN KEY (postes_id) REFERENCES postes(id) ON DELETE SET NULL,
-    FOREIGN KEY (epis_id) REFERENCES epis(id) ON DELETE SET NULL,
+    FOREIGN KEY (poste_id) REFERENCES postes(id) ON DELETE SET NULL,
+    FOREIGN KEY (epi_id) REFERENCES epis(id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE demandesEpis (
+CREATE TABLE demandeEpis (
     id integer AUTO_INCREMENT PRIMARY KEY,
-    utilisateurs_id integer NOT NULL,
-    date_demande DATE NOT NULL,
+    utilisateur_id integer NOT NULL,
     epi_id integer NOT NULL,
+    date_demande DATE NOT NULL,
     quantite integer NOT NULL
     statut_validation ENUM('EN_ATTENTE', 'VALIDEE', 'REFUSEE') DEFAULT 'EN_ATTENTE',
     statut_livraison ENUM('NON_LIVREE', 'LIVREE') DEFAULT 'NON_LIVREE',
-    FOREIGN KEY (utilisateurs_id) REFERENCES utilisateurs(id) ON DELETE CASCADE,
+    FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id) ON DELETE CASCADE,
     FOREIGN KEY (epi_id) REFERENCES epis(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE livraisons (
     id integer AUTO_INCREMENT PRIMARY KEY,
-    demandeesEpis_id integer NOT NULL,
+    demandeEpi_id integer NOT NULL,
     date_livraison DATE NOT NULL,
     livreur VARCHAR(100) NOT NULL,
-    FOREIGN KEY (demande_id) REFERENCES demandes(id) ON DELETE CASCADE,
+    FOREIGN KEY (demandeEpi_id) REFERENCES demandes(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
