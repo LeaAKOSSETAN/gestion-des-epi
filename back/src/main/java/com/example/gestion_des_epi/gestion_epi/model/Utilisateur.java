@@ -7,10 +7,14 @@ import jakarta.persistence.*;
 @Entity
 @Table(name= "utilisateurs")
 public class Utilisateur {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String nom;
     private String email;
     private String mot_de_passe;
+    @Enumerated(EnumType.STRING)
     private TypeCompte typeCompte;
     private Boolean statut;
 
@@ -20,8 +24,7 @@ public class Utilisateur {
     public Utilisateur() {
     }
 
-    public Utilisateur(int id, String nom, String email, String mot_de_passe, TypeCompte typeCompte, Boolean statut,
-            Poste postes_id) {
+    public Utilisateur(int id, String nom, String email, String mot_de_passe, TypeCompte typeCompte, Boolean statut, Poste postes_id) {
         this.id = id;
         this.nom = nom;
         this.email = email;
@@ -86,5 +89,4 @@ public class Utilisateur {
     public void setPostes_id(Poste postes_id) {
         this.postes_id = postes_id;
     }
-    
 }
