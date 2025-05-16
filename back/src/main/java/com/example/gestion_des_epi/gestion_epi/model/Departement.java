@@ -48,9 +48,4 @@ public class Departement {
         this.nom = nom;
     }
 
-    
-    
-
-    
-
 }

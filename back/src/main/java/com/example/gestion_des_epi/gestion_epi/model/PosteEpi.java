@@ -1,33 +1,28 @@
 package com.example.gestion_des_epi.gestion_epi.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
-import static jakarta.persistence.CascadeType.MERGE;
-import static jakarta.persistence.CascadeType.PERSIST;
-
 @Entity
-@Table(name = "POSTES_EPI")
+@Table(name = "posteEpis")
+@Data
 public class PosteEpi {
 
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int quantite;
 
-    @ManyToOne(cascade = {PERSIST,MERGE})
-    @JoinColumn(name = "POSTE_ID", referencedColumnName = "id",
-    foreignKey = @ForeignKey(name = "fk_poste"),
-    nullable = true)
+    @ManyToOne
+    @JoinColumn(name = "epi_id", nullable = false)
+    private Epi epi;
+    @ManyToOne
+    @JoinColumn(name = "poste_id", nullable = false)
     private Poste poste;
 
-    @ManyToOne(cascade = {PERSIST,MERGE})
-    @JoinColumn(name = "EPI_ID" ,referencedColumnName = "id",
-    foreignKey = @ForeignKey(name = "fk_epi"),
-    nullable = true)
-    private Epi epi;
+
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -37,7 +32,7 @@ public class PosteEpi {
         this.createdAt = LocalDateTime.now();
     }
 
-    public PosteEpi() {
+   /* public PosteEpi() {
     }
 
     public PosteEpi(int id, int quantite, Poste poste, Epi epi, LocalDateTime createdAt) {
@@ -86,5 +81,5 @@ public class PosteEpi {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
+    }*/
 }
