@@ -53,12 +53,4 @@ public class Epi {
     public void setSeuil_alerte(int seuil_alerte) {
         this.seuil_alerte = seuil_alerte;
     }
-
-    
-    
-    
 }
-//  id integer AUTO_INCREMENT PRIMARY KEY,
-//     nom VARCHAR(100) NOT NULL,
-//     quantite_en_stock INT DEFAULT 0,
-//     seuil_alerte IN

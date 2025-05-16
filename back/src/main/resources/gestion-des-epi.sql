@@ -34,7 +34,7 @@ CREATE TABLE epis (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE postes_epis (
+CREATE TABLE postesEpis (
     id integer AUTO_INCREMENT PRIMARY KEY,
     postes_id integer,
     epis_id integer,
@@ -44,7 +44,7 @@ CREATE TABLE postes_epis (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE demandes_epi (
+CREATE TABLE demandesEpis (
     id integer AUTO_INCREMENT PRIMARY KEY,
     utilisateurs_id integer NOT NULL,
     date_demande DATE NOT NULL,
@@ -59,10 +59,9 @@ CREATE TABLE demandes_epi (
 
 CREATE TABLE livraisons (
     id integer AUTO_INCREMENT PRIMARY KEY,
-    demande_id integer NOT NULL,
+    demandeesEpis_id integer NOT NULL,
     date_livraison DATE NOT NULL,
     livreur VARCHAR(100) NOT NULL,
-    remarque TEXT,
     FOREIGN KEY (demande_id) REFERENCES demandes(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

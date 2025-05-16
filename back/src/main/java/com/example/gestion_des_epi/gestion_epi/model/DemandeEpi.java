@@ -3,11 +3,13 @@ package com.example.gestion_des_epi.gestion_epi.model;
 import java.util.Date;
 
 import com.example.gestion_des_epi.gestion_epi.enume.StatutValidition;
+import com.example.gestion_des_epi.gestion_epi.enume.StatutLivraison;
+
 
 import jakarta.persistence.*;
 
 @Entity
-@Table(name= "SENTIMENT")
+@Table(name= "demandes_epis")
 public class DemandeEpi {
 
     @Id
@@ -68,19 +70,5 @@ public class DemandeEpi {
 
     public void setStatut_livraison(StatutLivraison statut_livraison) {
         this.statut_livraison = statut_livraison;
-    }
-
-    
-
-
-    
-    
-
+    }  
 }
-// id integer AUTO_INCREMENT PRIMARY KEY,
-//     utilisateurs_id integer NOT NULL,
-//     date_demande DATE NOT NULL,
-//     epi_id integer NOT NULL,
-//     quantite integer NOT NULL
-//     statut_validation ENUM('EN_ATTENTE', 'VALIDEE', 'REFUSEE') DEFAULT 'EN_ATTENTE',
-//     statut_livraison
