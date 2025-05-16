@@ -18,9 +18,10 @@ public class DemandeEpi {
     private Date date_demande;
     private int quantite;
     private StatutValidition Statut_validition;
+    private StatutLivraison statut_livraison;
     
     @ManyToOne
-    @JoinColumn(name = "utilisateur_id", nullable = false)private StatutLivraison statut_livraison;
+    @JoinColumn(name = "utilisateur_id", nullable = false)
     private Utilisateur utilisateur;
     
     @ManyToOne
