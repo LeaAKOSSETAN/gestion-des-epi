@@ -16,7 +16,7 @@ public class Utilisateur {
     private String mot_de_passe;
     @Enumerated(EnumType.STRING)
     private TypeCompte typeCompte;
-    private Boolean actif = false;
+    private Boolean statut = false;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Poste postes_id;

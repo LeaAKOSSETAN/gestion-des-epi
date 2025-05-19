@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React from 'react';
 // import logo from './logo.svg';
 import './App.css';
@@ -13,7 +12,6 @@ import ComptesGestion from './Components/admin/AdminDashbord';
 import AjouterUsers from './Components/admin/AjouterUsers';
 import GestionnaireDashbord from './Components/gestionnaire/GestionnaireDashbord';
 import ListeComptes from './Components/admin/ListeComptes';
-=======
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import DqhseValidationDemandes from './Components/DQHSE/validation-demandes'
@@ -26,13 +24,11 @@ import DemandeEPI from './Components/employe/DemandeEpi'
 import Historique from './Components/employe/historique'
 import ListeDispo from './Components/employe/listedispo'
 import HistoriqueDemandes from './Components/employe/historiqueDemande'
->>>>>>> 1b861b75adced81c14d5eac3454c0cd2ce80d2cf
 
 function App() {
   return (
     <Router>
       <Routes>
-<<<<<<< HEAD
         <Route path="/gestionnaire" element={<GestionnaireDashbord />} />
         <Route path="/gestionnaire/stock" element={<EpiDashboard />} />
         <Route path="/gestionnaire/ajouter" element={<AjouterEPI />} />
@@ -50,7 +46,6 @@ function App() {
     //   <StockPage/>
     // </div>
   );
-=======
         {/* Routes pour les employés */}
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
@@ -72,7 +67,6 @@ function App() {
       </Routes>
     </Router>
   )
->>>>>>> 1b861b75adced81c14d5eac3454c0cd2ce80d2cf
 }
 
 export default App

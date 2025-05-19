@@ -20,7 +20,7 @@ CREATE TABLE utilisateurs (
     email VARCHAR(100) UNIQUE NOT NULL,
     mot_de_passe VARCHAR(255) NOT NULL,
     typeCompte ENUM('ADMIN', 'CHEF_DEPT', 'GESTIONNAIRE', 'EMPLOYE') NOT NULL,
-    actif BOOLEAN DEFAULT TRUE,
+    statut BOOLEAN DEFAULT TRUE,
     poste_id integer DEFAULT NULL,
     FOREIGN KEY (poste_id) REFERENCES postes(id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

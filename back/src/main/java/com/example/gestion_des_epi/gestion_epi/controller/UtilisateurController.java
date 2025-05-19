@@ -2,13 +2,17 @@ package com.example.gestion_des_epi.gestion_epi.controller;
 
 import com.example.gestion_des_epi.gestion_epi.dto.UtilisateurDto;
 import com.example.gestion_des_epi.gestion_epi.model.Utilisateur;
-import com.example.gestion_des_epi.gestion_epi.services.UtilisateurService;
+import com.example.gestion_des_epi.gestion_epi.service.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "/user")
 public class UtilisateurController {
@@ -19,8 +23,9 @@ public class UtilisateurController {
 //    @PreAuthorize("hasRole('ADMIN')")
 
     @PostMapping(path = "inscription")
-    public void inscription(){
+    public void inscription(@RequestBody UtilisateurDto utilisateurDto){
         log.info("Inscription");
+        this.utilisateurService.inscription(utilisateurDto);
     }
 
     @PostMapping("/creer")

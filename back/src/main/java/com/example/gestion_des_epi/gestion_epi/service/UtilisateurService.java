@@ -1,4 +1,4 @@
-package com.example.gestion_des_epi.gestion_epi.services;
+package com.example.gestion_des_epi.gestion_epi.service;
 
 import com.example.gestion_des_epi.gestion_epi.dto.UtilisateurDto;
 import com.example.gestion_des_epi.gestion_epi.enume.TypeCompte;
@@ -7,6 +7,7 @@ import com.example.gestion_des_epi.gestion_epi.model.Utilisateur;
 import com.example.gestion_des_epi.gestion_epi.repository.PosteRepository;
 import com.example.gestion_des_epi.gestion_epi.repository.UtilisateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,8 +19,17 @@ public class UtilisateurService {
     private UtilisateurRepository utilisateurRepository;
     @Autowired
     private PosteRepository posteRepository;
+    private BCryptPasswordEncoder passwordEncoder;
 
+    public void inscription(UtilisateurDto utilisateurDto){
 
+        Utilisateur utilisateur = new Utilisateur();
+        String mdpCrypte = passwordEncoder.encode(utilisateurDto.getMotDePasse());
+        utilisateur.setMot_de_passe(mdpCrypte);
+        utilisateur.setEmail(utilisateurDto.getEmail());
+
+        utilisateurRepository.save(utilisateur);
+    }
 
     public Utilisateur creerUtilisateur(UtilisateurDto dto) {
         Utilisateur user = new Utilisateur();
