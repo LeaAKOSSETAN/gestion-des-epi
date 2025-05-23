@@ -2,47 +2,45 @@ package com.example.gestion_des_epi.gestion_epi.controller;
 
 import com.example.gestion_des_epi.gestion_epi.dto.UtilisateurDto;
 import com.example.gestion_des_epi.gestion_epi.model.Utilisateur;
+import com.example.gestion_des_epi.gestion_epi.service.PosteEpiService;
 import com.example.gestion_des_epi.gestion_epi.service.UtilisateurService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@Slf4j
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @RestController
-@RequestMapping(path = "/user")
+@RequestMapping(path = "/user", produces = APPLICATION_JSON_VALUE)
 public class UtilisateurController {
 
-@Autowired
-    private UtilisateurService utilisateurService;
-//
-//    @PreAuthorize("hasRole('ADMIN')")
+    private final PosteEpiService posteEpiService;
+    private final UtilisateurService utilisateurService;
 
-    @PostMapping(path = "inscription")
-    public void inscription(@RequestBody UtilisateurDto utilisateurDto){
-        log.info("Inscription");
-        this.utilisateurService.inscription(utilisateurDto);
+    public UtilisateurController(PosteEpiService posteEpiService, UtilisateurService utilisateurService) {
+        this.posteEpiService = posteEpiService;
+        this.utilisateurService = utilisateurService;
     }
 
-    @PostMapping("/creer")
-    public ResponseEntity<?> creerUtilisateur(@RequestBody UtilisateurDto dto) {
-        Utilisateur u = utilisateurService.creerUtilisateur(dto);
-        return ResponseEntity.ok("Utilisateur " + u.getNom() + " créé !");
+    @PostMapping(path = "/creer")
+    @ResponseStatus(HttpStatus.CREATED)
+    public String addUtilisateur(@RequestBody UtilisateurDto utilisateurDto) {
+        return utilisateurService.addUtilisateur(utilisateurDto);
     }
 
-    @PutMapping("/changer-statut/{id}")
-    public ResponseEntity<?> changerStatut(@PathVariable Long id) {
-        utilisateurService.activerDesactiver(id);
-        return ResponseEntity.ok("Statut modifié !");
-    }
-    @GetMapping("/liste")
-    public ResponseEntity<List<Utilisateur>> listerUtilisateurs(
-            @RequestParam(required = false) String typeCompte) {
-        return ResponseEntity.ok(utilisateurService.listerUtilisateurs(typeCompte));
+    @GetMapping
+    public List<Utilisateur> ListeUser() {
+        return utilisateurService.ListeUser();
     }
 
+    @PutMapping(path = "{id}")
+    public String updateUtilisateur(@PathVariable int id, @RequestBody UtilisateurDto utilisateurDto) {
+        return utilisateurService.updateUtilisateur(id, utilisateurDto);
+    }
+
+    @DeleteMapping(path = "{id}")
+    public String deleteUtilisateur(@PathVariable int id) {
+        return utilisateurService.deleteUtilisateur(id);
+    }
 }
