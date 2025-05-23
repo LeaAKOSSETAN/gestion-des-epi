@@ -19,14 +19,19 @@ public class UtilisateurService {
     private UtilisateurRepository utilisateurRepository;
     @Autowired
     private PosteRepository posteRepository;
-    private BCryptPasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;                
 
-    public void inscription(UtilisateurDto utilisateurDto){
+    public void inscription(UtilisateurDto utilisateurDto){ 
 
-        Utilisateur utilisateur = new Utilisateur();
+        Utilisateur utilisateur = new Utilisateur(); 
         String mdpCrypte = passwordEncoder.encode(utilisateurDto.getMotDePasse());
         utilisateur.setMot_de_passe(mdpCrypte);
-        utilisateur.setEmail(utilisateurDto.getEmail());
+
+        if (!utilisateurDto.getEmail().contains("@")){
+            throw new RuntimeException("Mail invalide") ;
+        }else{
+            utilisateur.setEmail(utilisateurDto.getEmail());
+        }
 
         utilisateurRepository.save(utilisateur);
     }
