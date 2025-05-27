@@ -11,7 +11,8 @@ CREATE TABLE postes (
     id integer AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL UNIQUE,
     departement_id INT DEFAULT NULL,
-    FOREIGN KEY (departement_id) REFERENCES departements(id) ON DELETE SET NULL,    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    FOREIGN KEY (departement_id) REFERENCES departements(id) ON DELETE SET NULL,    
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE utilisateurs (
@@ -22,6 +23,8 @@ CREATE TABLE utilisateurs (
     typeCompte ENUM('ADMIN', 'CHEF_DEPT', 'GESTIONNAIRE', 'EMPLOYE') NOT NULL,
     statut BOOLEAN DEFAULT TRUE,
     poste_id integer DEFAULT NULL,
+    date_creation DATE NOT NULL,
+    dernier_login DATE NOT NULL,
     FOREIGN KEY (poste_id) REFERENCES postes(id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -29,8 +32,21 @@ CREATE TABLE utilisateurs (
 CREATE TABLE epis (
     id integer AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
-    quantite_en_stock Integer DEFAULT 0,
+    quantite_en_stock Integer DEFAULT 0,CHECK (quantite_en_stock >= 0)
     seuil_alerte integer DEFAULT 5,
+    date_peremption DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE mouvementStock (
+    id integer AUTO_INCREMENT PRIMARY KEY,
+    epi_id integer,
+    quantite Integer DEFAULT 0 CHECK (quantite >= 0),
+    typeMouvement ENUM('ENTREE', 'SORTIE') NOT NULL,
+    date DATE NOT NULL,
+    demandeEpi_id integer NOT NULL,
+    FOREIGN KEY (epi_id) REFERENCES epis(id) ON DELETE SET NULL,
+    FOREIGN KEY (demandeEpi_id) REFERENCES demandeEpis(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -38,7 +54,7 @@ CREATE TABLE posteEpis (
     id integer AUTO_INCREMENT PRIMARY KEY,
     poste_id integer,
     epi_id integer,
-    quantite integer DEFAULT 0,
+    quantite integer DEFAULT 0 CHECK (quantite >= 0),
     FOREIGN KEY (poste_id) REFERENCES postes(id) ON DELETE SET NULL,
     FOREIGN KEY (epi_id) REFERENCES epis(id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -49,7 +65,7 @@ CREATE TABLE demandeEpis (
     utilisateur_id integer NOT NULL,
     epi_id integer NOT NULL,
     date_demande DATE NOT NULL,
-    quantite integer NOT NULL
+    quantite integer DEFAULT 0 CHECK (quantite >= 0),
     statut_validation ENUM('EN_ATTENTE', 'VALIDEE', 'REFUSEE') DEFAULT 'EN_ATTENTE',
     statut_livraison ENUM('NON_LIVREE', 'LIVREE') DEFAULT 'NON_LIVREE',
     FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id) ON DELETE CASCADE,
@@ -62,7 +78,7 @@ CREATE TABLE livraisons (
     demandeEpi_id integer NOT NULL,
     date_livraison DATE NOT NULL,
     livreur VARCHAR(100) NOT NULL,
-    FOREIGN KEY (demandeEpi_id) REFERENCES demandes(id) ON DELETE CASCADE,
+    FOREIGN KEY (demandeEpi_id) REFERENCES demandeEpis(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
