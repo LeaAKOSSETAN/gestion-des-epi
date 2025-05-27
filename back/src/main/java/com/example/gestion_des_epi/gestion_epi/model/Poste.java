@@ -10,7 +10,7 @@ public class Poste {
     private int id;
     private String nom;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Departement departement_id;
+    private Departement departement;
     
     public Poste() {
     }
@@ -18,7 +18,7 @@ public class Poste {
     public Poste(int id, String nom, Departement departement_id) {
         this.id = id;
         this.nom = nom;
-        this.departement_id = departement_id;
+        this.departement = departement_id;
     }
 
     public int getId() {
@@ -38,10 +38,10 @@ public class Poste {
     }
 
     public Departement getDepartement_id() {
-        return departement_id;
+        return departement;
     }
 
     public void setDepartement_id(Departement departement_id) {
-        this.departement_id = departement_id;
+        this.departement = departement_id;
     }
 }
