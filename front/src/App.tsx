@@ -2,17 +2,9 @@ import React from 'react';
 // import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AjouterEPI from "./Components/gestionnaire/AjouterEPI";
-import ModifierEPI from "./Components/gestionnaire/ModifierEPI";
-import EpiDashboard from './Components/gestionnaire/EpiDashbord';
-import Reapprovisionnement from './Components/gestionnaire/Reapprovisionnement';
-import LivraisonSave from './Components/gestionnaire/LivraisonSave';
-import Historique from './Components/gestionnaire/Historique';
 import ComptesGestion from './Components/admin/AdminDashbord';
 import AjouterUsers from './Components/admin/AjouterUsers';
-import GestionnaireDashbord from './Components/gestionnaire/GestionnaireDashbord';
 import ListeComptes from './Components/admin/ListeComptes';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 import DqhseValidationDemandes from './Components/DQHSE/validation-demandes'
 import DqhseHistoriqueTransactions from './Components/DQHSE/historique-transactions'
@@ -24,28 +16,30 @@ import DemandeEPI from './Components/employe/DemandeEpi'
 import Historique from './Components/employe/historique'
 import ListeDispo from './Components/employe/listedispo'
 import HistoriqueDemandes from './Components/employe/historiqueDemande'
+import GestionnaireDashboard from './Components/Gestionnaire/GestionnaireDashbord';
+import EpiDashboard from './Components/Gestionnaire/EpiDashbord';
+import AjouterEPI from './Components/Gestionnaire/AjouterEPI';
+import ModifierEPI from './Components/Gestionnaire/ModifierEPI';
+import LivraisonSave from './Components/Gestionnaire/LivraisonSave';
+import RestockRequest from './Components/Gestionnaire/Reapprovisionnement';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/gestionnaire" element={<GestionnaireDashbord />} />
+        <Route path="/gestionnaire" element={<GestionnaireDashboard />} />
         <Route path="/gestionnaire/stock" element={<EpiDashboard />} />
-        <Route path="/gestionnaire/ajouter" element={<AjouterEPI />} />
-        <Route path="/gestionnaire/modifier/:id" element={<ModifierEPI />} />
-        <Route path="/gestionnaire/reapprovisionnement" element={<Reapprovisionnement />} />
+        <Route path="/gestionnaire/ajouter" element={<AjouterEPI/>} />
+        <Route path="/gestionnaire/modifier/:id" element={<ModifierEPI/>} />
+        <Route path="/gestionnaire/reapprovisionnement" element={<RestockRequest/>} />
         <Route path="/gestionnaire/livraison" element={<LivraisonSave />} />
         <Route path="/gestionnaire/historique" element={<Historique />}/>
 
         <Route path="/admin" element={<ComptesGestion />}/>
         <Route path="/admin/ajouter-utilisateur" element={<AjouterUsers />} />
         <Route path="/admin/utilisateurs" element={<ListeComptes />} />
-      </Routes>
-    </Router>
-    // <div className="App">
-    //   <StockPage/>
-    // </div>
-  );
+
+        
         {/* Routes pour les employés */}
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
@@ -63,10 +57,14 @@ function App() {
       <Route path="/DQHSE/Transactions-plateforme" element={<DqhseHistoriqueTransactions />} />
       <Route path="/DQHSE/Historique" element={<DqhseDemandesEnAttente />} />
       {/* <Route path="/historique-demandes" element={<HistoriqueDemandes/>} />  */}
-
       </Routes>
     </Router>
-  )
+    // <div className="App">
+    //   <StockPage/>
+    // </div>
+  );
+   
+
 }
 
 export default App
