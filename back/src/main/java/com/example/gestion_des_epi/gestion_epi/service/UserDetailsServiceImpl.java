@@ -15,12 +15,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Utilisateur utilisateur = utilisateurRepository.findByEmail(email)
+    public UserDetails loadUserByUsername(String nom) throws UsernameNotFoundException {
+        Utilisateur utilisateur = utilisateurRepository.findByNom(nom)
                 .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
 
         return User.builder()
-                .username(utilisateur.getEmail())
+                .username(utilisateur.getNom())
                 .password(utilisateur.getMot_de_passe()) // ne pas re-crypter !
                 .authorities(utilisateur.getTypeCompte().name())
                 .build();

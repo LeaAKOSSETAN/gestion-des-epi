@@ -88,21 +88,19 @@ public class UtilisateurService {
         Utilisateur user = utilisateurRepository.findById(id).orElse(null);
         if (user == null) return "Utilisateur non trouvé.";
 
-        String encodedPassword = bCryptPasswordEncoder.encode(dto.getMotDePasse());
-
         Poste poste = posteRepository.findById(dto.getPoste()).orElse(null);
         if (poste == null) return "Poste non trouvé.";
 
-        user.setNom(dto.getNom());
+        user.setNom(dto.getNom()); // facultatif si tu veux permettre de modifier le nom
         user.setEmail(dto.getEmail());
         user.setStatut(dto.isStatus());
         user.setTypeCompte(TypeCompte.valueOf(dto.getTypeCompte()));
-        user.setMot_de_passe(encodedPassword);  // mot de passe en clair
         user.setPostes_id(poste);
 
         utilisateurRepository.save(user);
         return "Utilisateur modifié.";
     }
+
 
     public String deleteUtilisateur(int id) {
         utilisateurRepository.deleteById(id);

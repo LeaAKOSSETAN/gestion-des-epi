@@ -9,7 +9,7 @@ public class UtilisateurDto {
 //  @Email(message = "Invalid email format")
 //    @NotBlank(message = "Email cannot be blank")
     private String email;
-    private String motDePasse;
+//    private String motDePasse;
     private String typeCompte;
     private Long poste;
     private boolean status;

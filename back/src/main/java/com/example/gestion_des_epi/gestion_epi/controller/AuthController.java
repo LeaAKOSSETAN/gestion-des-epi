@@ -41,12 +41,12 @@ public class AuthController {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
+                            request.getNom(),
                             request.getMotDePasse() // mot de passe en clair ici
                     )
             );
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+            UserDetails userDetails = userDetailsService.loadUserByUsername(request.getNom());
             String token = jwtService.generateToken(userDetails);
             return ResponseEntity.ok(new AuthResponse(token));
 

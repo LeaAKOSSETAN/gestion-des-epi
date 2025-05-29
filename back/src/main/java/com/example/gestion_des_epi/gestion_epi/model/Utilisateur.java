@@ -26,12 +26,16 @@ public class Utilisateur  implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+    @Column(unique = true)
+
     private String nom;
     private String email;
     private String mot_de_passe;
     @Enumerated(EnumType.STRING)
     private TypeCompte typeCompte;
     private Boolean statut = false;
+//    @Column(unique = true)
+//    private String username;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Poste postes_id;
