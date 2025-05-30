@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class UtilisateurDto {
-    private String nom;
+   private String nom;
 //
 //  @Email(message = "Invalid email format")
 //    @NotBlank(message = "Email cannot be blank")

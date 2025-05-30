@@ -2,6 +2,8 @@ package com.example.gestion_des_epi.gestion_epi.controller;
 
 import com.example.gestion_des_epi.gestion_epi.dto.AuthRequest;
 import com.example.gestion_des_epi.gestion_epi.dto.AuthResponse;
+import com.example.gestion_des_epi.gestion_epi.model.Utilisateur;
+import com.example.gestion_des_epi.gestion_epi.repository.UtilisateurRepository;
 import com.example.gestion_des_epi.gestion_epi.securite.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,18 +14,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3001")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final UtilisateurRepository utilisateurRepository;
+
 
     /*@PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
@@ -41,14 +43,20 @@ public class AuthController {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            request.getNom(),
+                            request.getUsername(),
                             request.getMotDePasse() // mot de passe en clair ici
                     )
             );
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(request.getNom());
+            Utilisateur utilisateur = utilisateurRepository.findByUsername(request.getUsername())
+                    .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé"));
+
+            UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
             String token = jwtService.generateToken(userDetails);
-            return ResponseEntity.ok(new AuthResponse(token));
+
+            ResponseEntity<AuthResponse> ok = ResponseEntity.ok(new AuthResponse(token, utilisateur.getTypeCompte().name()));
+            return ok ;
+
 
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(401).body("Mot de passe ou email incorrect !");

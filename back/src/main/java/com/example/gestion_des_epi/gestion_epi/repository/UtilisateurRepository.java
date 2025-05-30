@@ -17,7 +17,8 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Intege
     @Query(value = "SELECT * FROM utilisateur u WHERE u.id =:id", nativeQuery = true)
     Utilisateur findUtilisateurById(@Param("id") Integer id);
 
-    Optional<Utilisateur> findByNom(String nom);  // <-- ajoutée
+    Optional<Utilisateur> findByNom(String nom);
+    Optional<Utilisateur>findByUsername(String username);// <-- ajoutée
 
     Optional<Utilisateur> findByEmail(String email);
 }

@@ -29,6 +29,7 @@ public class Utilisateur  implements UserDetails {
     @Column(unique = true)
 
     private String nom;
+    private String username;
     private String email;
     private String mot_de_passe;
     @Enumerated(EnumType.STRING)
@@ -53,7 +54,7 @@ public class Utilisateur  implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.email;
+        return this.username;
     }
 
     @Override

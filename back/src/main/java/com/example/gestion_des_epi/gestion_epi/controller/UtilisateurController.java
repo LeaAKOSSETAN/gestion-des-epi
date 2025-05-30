@@ -9,13 +9,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import java.util.logging.Logger;
+
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 @RestController
+@CrossOrigin(origins = "http://localhost:3001")
+
 @RequestMapping(path = "/user", produces = APPLICATION_JSON_VALUE)
 public class UtilisateurController  {
 
@@ -33,6 +36,7 @@ public class UtilisateurController  {
         log.info("inscription");
 
     }
+    @PreAuthorize("hasRole('ADMIN')") // Protection spécifique
     @PostMapping(path = "/creer")
     @ResponseStatus(HttpStatus.CREATED)
     public String addUtilisateur(@RequestBody UtilisateurDto utilisateurDto) {

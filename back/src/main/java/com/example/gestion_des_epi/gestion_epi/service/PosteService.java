@@ -5,6 +5,8 @@ import com.example.gestion_des_epi.gestion_epi.model.Departement;
 import com.example.gestion_des_epi.gestion_epi.model.Poste;
 import com.example.gestion_des_epi.gestion_epi.repository.DepartementRepository;
 import com.example.gestion_des_epi.gestion_epi.repository.PosteRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,42 +14,61 @@ import java.util.List;
 @Service
 public class PosteService {
 
-    private  DepartementRepository departementRepository;
-    private PosteRepository posteRepository;
+    private final DepartementRepository departementRepository;
+    private final PosteRepository posteRepository;
+    private static final Logger log = (Logger) LoggerFactory.getLogger(UtilisateurService.class);
+
+
     public PosteService(DepartementRepository departementRepository, PosteRepository posteRepository) {
         this.departementRepository = departementRepository;
         this.posteRepository = posteRepository;
-
     }
 
-    public void creer(PosteDto posteDto) {
-        Departement departement= departementRepository.findById(posteDto.getDepartement()).orElse(null);
+    public String creer(PosteDto posteDto) {
+        log.info("Tentative création poste: {}", posteDto.getNom());
+        Departement departement = departementRepository.findById(posteDto.getDepartement())
+                .orElseThrow(() -> {
+                    log.error("Département introuvable ID: {}", posteDto.getDepartement());
+                    return new RuntimeException("Département non trouvé");
+                });
 
-        Poste poste=new Poste();
+        Poste poste = new Poste();
         poste.setNom(posteDto.getNom());
         poste.setDepartement_id(departement);
-        posteRepository.save(poste);
+
+        Poste saved = posteRepository.save(poste);
+        log.info("Poste créé avec ID: {}", saved.getId());
+
+        return "Poste créé avec succès (ID: " + saved.getId() + ")";
     }
 
-    public List<Poste> Liste() {
-        return posteRepository.findAll();
-
+    public List<Poste> liste() {
+        List<Poste> postes = posteRepository.findAll();
+        log.info("Nombre de postes trouvés: {}", postes.size());
+        return postes;
     }
 
-    public String Modifier(int id, PosteDto postedto) {
-        Departement departement = departementRepository.findById(postedto.getDepartement()).orElse(null);
-        Poste poste = posteRepository.findById((long) id).orElse(null);
 
-        if (poste == null) return "Utilisateur introuvable";
 
-        poste.setNom(postedto.getNom());
+    public String modifier(Long id, PosteDto posteDto) {
+        Departement departement = departementRepository.findById(posteDto.getDepartement()).orElse(null);
+        if (departement == null) return "Département non trouvé";
+
+        Poste poste = posteRepository.findById(id).orElse(null);
+        if (poste == null) return "Poste introuvable";
+
+        poste.setNom(posteDto.getNom());
         poste.setDepartement_id(departement);
+
         posteRepository.save(poste);
-        return "poste  a ete bien modifier";
+        return "Poste modifié avec succès";
     }
 
-    public String Delete(int id) {
-        this.posteRepository.deleteById((long) id);
-        return "departement supprimé";
+    public String delete(int id) {
+        if (!posteRepository.existsById((long) id)) {
+            return "Poste introuvable";
+        }
+        posteRepository.deleteById((long) id);
+        return "Poste supprimé avec succès";
     }
 }

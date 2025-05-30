@@ -26,15 +26,15 @@ public class PosteController {
     }
     @GetMapping
     public List<Poste> Liste() {
-        return this.posteService.Liste();
+        return this.posteService.liste();
     }
     @PutMapping(path = "{id}")
     public String update(@PathVariable int id, @RequestBody PosteDto postedto) {
-        return this.posteService.Modifier(id,postedto);
+        return this.posteService.modifier((long) id,postedto);
 
     }
     @DeleteMapping(path = "{id}")
     public String delete(@PathVariable int id) {
-        return this.posteService.Delete(id);
+        return this.posteService.delete(id);
     }
 }
