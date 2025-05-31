@@ -1,24 +1,17 @@
 package com.example.gestion_des_epi.gestion_epi.dto;
 
-import com.example.gestion_des_epi.gestion_epi.enume.StatutLivraison;
-import com.example.gestion_des_epi.gestion_epi.enume.StatutValidition;
-import com.example.gestion_des_epi.gestion_epi.model.Utilisateur;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Data;
+//import jakarta.validation.constraints.*;
+//import javax.validation.constraints.NotNull;
+public record DemandeEpiDto(
+//        @NotNull(message = "L'ID EPI est obligatoire")
+//        @Positive(message = "L'ID EPI doit être positif")
+        Integer epiId,
 
-import java.util.Date;
-@Data
-public class DemandeEpiDto {
+//        @NotNull(message = "La quantité est obligatoire")
+//        @Min(value = 1, message = "La quantité minimale est 1")
+        Integer quantite,
 
-    private Date date_demande;
-    private int quantite;
-    private String Statut_validition;
-    private String statut_livraison;
-//    private int utilisateur;
-    private int epi;
-
-
-}
+//        @NotBlank(message = "La justification est obligatoire")
+//        @Size(max = 500, message = "La justification ne doit pas dépasser 500 caractères")
+        String justification
+) {}

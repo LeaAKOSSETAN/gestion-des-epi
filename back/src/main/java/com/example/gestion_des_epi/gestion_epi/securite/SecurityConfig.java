@@ -18,6 +18,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+import static org.springframework.http.HttpMethod.*;
+
 //@Component
 @Configuration
 @EnableWebSecurity
@@ -32,11 +34,26 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login").permitAll()
+                        // Permettre l'accès public
+                        .requestMatchers(
+                                "/auth/login",
+                                "/departement/**",
+                                "/poste/**",
+                                "/epi/**"
+                        ).permitAll()
+
+                        // Autoriser la création de demandes sans authentification
+                        .requestMatchers(POST, "/demandes").permitAll()
+
+                        // Autoriser la consultation sans authentification
+                        .requestMatchers(GET, "/demandes/utilisateur/**").permitAll()
+                        .requestMatchers(GET, "/demandes/{id}").permitAll()
+
+                        // Restrictions par rôle
+                        .requestMatchers(PUT, "/demandes/**/validation").hasAuthority("ROLE_DQHSE")
+                        .requestMatchers(PUT, "/demandes/**/livraison").hasAuthority("ROLE_GESTIONNAIRE")
+                        .requestMatchers(GET, "/demandes/a-valider").hasAuthority("ROLE_DQHSE")
                         .requestMatchers("/user/**").hasAuthority("ROLE_ADMIN")
-//                                .requestMatchers("/user/**").permitAll()
-                        .requestMatchers("/departement/**").permitAll() // Ajout
-                        .requestMatchers("/poste/**").permitAll() // Ajout
 
                         .anyRequest().authenticated()
                 )
