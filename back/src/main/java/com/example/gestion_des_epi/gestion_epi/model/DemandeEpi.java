@@ -28,6 +28,8 @@ public class DemandeEpi {
 
     @Column(nullable = false)
     private Integer quantite;
+    private boolean livree = false; // Nouveau champ pour suivre l'état
+
 
     @Column(name = "justification", length = 500)
     private String justification;
