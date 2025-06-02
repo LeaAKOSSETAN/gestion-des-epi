@@ -32,4 +32,6 @@ public interface DemandeEpiRepository extends JpaRepository<DemandeEpi, Long> {
 
     List<DemandeEpi> findByStatutValidation(StatutValidition statut);
     List<DemandeEpi> findByDemandeur(Utilisateur demandeur);
+
+    List<DemandeEpi> findAllByDemandeur(Utilisateur utilisateur);
 }

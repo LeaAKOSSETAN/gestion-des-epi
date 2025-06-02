@@ -2,15 +2,19 @@ package com.example.gestion_des_epi.gestion_epi.service;
 
 import com.example.gestion_des_epi.gestion_epi.dto.DemandeEpiDto;
 import com.example.gestion_des_epi.gestion_epi.dto.ValidationDto;
-import com.example.gestion_des_epi.gestion_epi.enume.StatutLivraison;
 import com.example.gestion_des_epi.gestion_epi.enume.StatutValidition;
-import com.example.gestion_des_epi.gestion_epi.model.*;
-import com.example.gestion_des_epi.gestion_epi.repository.*;
+import com.example.gestion_des_epi.gestion_epi.enume.TypeCompte;
+import com.example.gestion_des_epi.gestion_epi.model.DemandeEpi;
+import com.example.gestion_des_epi.gestion_epi.model.Epi;
+import com.example.gestion_des_epi.gestion_epi.model.Utilisateur;
+import com.example.gestion_des_epi.gestion_epi.repository.DemandeEpiRepository;
+import com.example.gestion_des_epi.gestion_epi.repository.EpiRepository;
+import com.example.gestion_des_epi.gestion_epi.repository.UtilisateurRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,100 +22,121 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class DemandeEpiService {
+    private static final Logger logger = LoggerFactory.getLogger(DemandeEpiService.class);
 
     private final DemandeEpiRepository demandeEpiRepository;
     private final EpiRepository epiRepository;
     private final UtilisateurRepository utilisateurRepository;
 
     @Transactional
-    public DemandeEpi createDemande(DemandeEpiDto demandeEpiDto, String username) {
-        Utilisateur demandeur = utilisateurRepository.findByEmail(username)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.UNAUTHORIZED,
-                        "Utilisateur non connecté"
-                ));
+    public DemandeEpi creerDemande(DemandeEpiDto dto, String emailDemandeur) {
+        logger.info("Création demande par: {}", emailDemandeur);
 
-        Epi epi = epiRepository.findById(demandeEpiDto.epiId().longValue())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "EPI non trouvé avec l'ID: " + demandeEpiDto.epiId()
-                ));
+        Utilisateur demandeur = utilisateurRepository.findByUsername(emailDemandeur)
+                .orElseThrow(() -> {
+                    logger.error("Utilisateur non trouvé: {}", emailDemandeur);
+                    return new RuntimeException("Utilisateur non trouvé");
+                });
+
+        Epi epi = epiRepository.findById(Long.valueOf(dto.epiId()))
+                .orElseThrow(() -> {
+                    logger.error("EPI non trouvé ID: {}", dto.epiId());
+                    return new RuntimeException("EPI non trouvé");
+                });
 
         DemandeEpi demande = new DemandeEpi();
         demande.setDateDemande(LocalDateTime.now());
-        demande.setQuantite(demandeEpiDto.quantite());
-        demande.setJustification(demandeEpiDto.justification());
+        demande.setQuantite(dto.quantite());
+        demande.setJustification(dto.justification());
         demande.setStatutValidation(StatutValidition.EN_ATTENTE);
         demande.setEpi(epi);
         demande.setDemandeur(demandeur);
 
-        return demandeEpiRepository.save(demande);
+        DemandeEpi savedDemande = demandeEpiRepository.save(demande);
+        logger.info("Demande créée ID: {}", savedDemande.getId());
+        return savedDemande;
+    }
+
+    public List<DemandeEpi> getDemandesByUtilisateurConnecte(String email) {
+        logger.info("Récupération des demandes pour: {}", email);
+
+        Utilisateur utilisateur = utilisateurRepository.findByUsername(email)
+               .orElseThrow(() -> {
+                    logger.error("Utilisateur non trouvé: {}", email);
+                    return new RuntimeException("Utilisateur non trouvé");
+                });
+
+        List<DemandeEpi> demandes = demandeEpiRepository.findByDemandeur(utilisateur);
+        logger.info("{} demandes trouvées pour {}", demandes.size(), email);
+        return demandes;
+    }
+
+    public List<DemandeEpi> getDemandesEnAttentePourValidation() {
+        logger.info("Récupération des demandes en attente de validation");
+        List<DemandeEpi> demandes = demandeEpiRepository.findByStatutValidation(StatutValidition.EN_ATTENTE);
+        logger.info("{} demandes en attente trouvées", demandes.size());
+        return demandes;
     }
 
     @Transactional
-    public DemandeEpi traiterDemande(Integer demandeId, ValidationDto validationDto) {
-        DemandeEpi demande = demandeEpiRepository.findById(Long.valueOf(demandeId))
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Demande non trouvée avec l'ID: " + demandeId));
+    public DemandeEpi traiterDemande(Long demandeId, ValidationDto dto, String emailValidateur) {
+        logger.info("Traitement demande ID: {} par: {}", demandeId, emailValidateur);
 
-        Utilisateur validateur = utilisateurRepository.findById(validationDto.getValidateurId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.BAD_REQUEST,
-                        "Validateur non trouvé avec l'ID: " + validationDto.getValidateurId()));
+        DemandeEpi demande = demandeEpiRepository.findById(demandeId)
+                .orElseThrow(() -> {
+                    logger.error("Demande non trouvée ID: {}", demandeId);
+                    return new RuntimeException("Demande non trouvée");
+                });
 
-        if (validationDto.getEstValide()) {
-            demande.setStatutValidation(StatutValidition.VALIDEE);
+        Utilisateur validateur = utilisateurRepository.findByUsername(emailValidateur)
+                .orElseThrow(() -> {
+                    logger.error("Validateur non trouvé: {}", emailValidateur);
+                    return new RuntimeException("Validateur non trouvé");
+                });
+
+        // Vérification critique du rôle DQHSE
+        if (validateur.getTypeCompte() != TypeCompte.DQHSE && validateur.getTypeCompte() != TypeCompte.ADMIN ) {
+            logger.error("Accès refusé: {} n'est pas DQHSE", emailValidateur);
+            throw new SecurityException("Accès refusé: rôle DQHSE requis");
+        }
+
+        if (dto.getEstValide()) {
+            demande.valider(validateur, dto.getCommentaire());
+            logger.info("Demande ID: {} validée", demandeId);
         } else {
-            demande.setStatutValidation(StatutValidition.REFUSEE);
+            demande.rejeter(validateur, dto.getCommentaire());
+            logger.info("Demande ID: {} rejetée", demandeId);
         }
-
-        demande.setValidateur(validateur);
-        demande.setCommentaireValidation(validationDto.getCommentaire());
-        demande.setDateValidation(LocalDateTime.now());
 
         return demandeEpiRepository.save(demande);
     }
 
     @Transactional
-    public DemandeEpi marquerCommeLivree(Integer demandeId) {
-        DemandeEpi demande = demandeEpiRepository.findById(Long.valueOf(demandeId))
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Demande non trouvée avec l'ID: " + demandeId));
+    public DemandeEpi modifierDemande(Long demandeId, DemandeEpiDto dto, String emailUtilisateur) {
+        logger.info("Modification demande ID: {} par: {}", demandeId, emailUtilisateur);
 
-        if (demande.getStatutValidation() != StatutValidition.VALIDEE) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Seules les demandes validées peuvent être livrées");
+        DemandeEpi demande = demandeEpiRepository.findById(demandeId)
+                .orElseThrow(() -> {
+                    logger.error("Demande non trouvée ID: {}", demandeId);
+                    return new RuntimeException("Demande non trouvée");
+                });
+
+        Utilisateur utilisateur = utilisateurRepository.findByUsername(emailUtilisateur)
+                .orElseThrow(() -> {
+                    logger.error("Utilisateur non trouvé: {}", emailUtilisateur);
+                    return new RuntimeException("Utilisateur non trouvé");
+                });
+
+        // Vérification que l'utilisateur est bien le demandeur
+        if (!demande.getDemandeur().getEmail().equals(utilisateur.getEmail())) {
+            logger.error("Tentative modification non autorisée par: {}", emailUtilisateur);
+            throw new SecurityException("Vous ne pouvez modifier que vos propres demandes");
         }
 
-        demande.setStatutLivraison(StatutLivraison.LIVREE);
-        demande.setDateLivraison(LocalDateTime.now());
+        demande.setQuantite(dto.quantite());
+        demande.setJustification(dto.justification());
 
+        logger.info("Demande ID: {} modifiée", demandeId);
         return demandeEpiRepository.save(demande);
-    }
-
-    public List<DemandeEpi> getDemandesByUtilisateur(String username) {
-        Utilisateur utilisateur = utilisateurRepository.findByEmail(username)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Utilisateur non trouvé avec l'email: " + username
-                ));
-
-        // CORRECTION : Utilisation de findByDemandeur
-        return demandeEpiRepository.findByDemandeur(utilisateur);
-    }
-
-    public List<DemandeEpi> getDemandesEnAttente() {
-        // CORRECTION : Suppression de la double parenthèse
-        return demandeEpiRepository.findByStatutValidation(StatutValidition.EN_ATTENTE);
-    }
-
-    public DemandeEpi getDemandeById(Integer id) {
-        return demandeEpiRepository.findById(Long.valueOf(id))
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Demande non trouvée avec l'ID: " + id));
     }
 }

@@ -4,59 +4,62 @@ import com.example.gestion_des_epi.gestion_epi.dto.DemandeEpiDto;
 import com.example.gestion_des_epi.gestion_epi.dto.ValidationDto;
 import com.example.gestion_des_epi.gestion_epi.model.DemandeEpi;
 import com.example.gestion_des_epi.gestion_epi.service.DemandeEpiService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
+@RequestMapping("/demandes")
 @RequiredArgsConstructor
-@RequestMapping(path = "/demandes", produces = APPLICATION_JSON_VALUE)
 public class DemandeEpiController {
-
     private final DemandeEpiService demandeEpiService;
-
+@PreAuthorize("hasAnyRole(\"ROLE_ADMIN\", \"ROLE_DQHSE\", \"ROLE_GESTIONNAIRE\", \"ROLE_EMPLOYE\")")
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('UTILISATEUR')")
-    public DemandeEpi createDemande(@RequestBody DemandeEpiDto demandeEpiDto,
-                                    Authentication authentication) {
-        // Récupérer l'email de l'utilisateur connecté
-        String username = authentication.getName();
-        return demandeEpiService.createDemande(demandeEpiDto, username);
+    public ResponseEntity<DemandeEpi> creerDemande(
+            @RequestBody DemandeEpiDto dto,
+            Authentication authentication) {
+        String emailDemandeur = authentication.getName();
+        return ResponseEntity.ok(demandeEpiService.creerDemande(dto, emailDemandeur));
     }
-    @PreAuthorize("hasRole('DQHSE')")
-    @PutMapping("/{id}/validation")
-    public DemandeEpi validerDemande(
+
+    @PostMapping("/{id}/validation")
+    @PreAuthorize("hasAnyRole(\"ROLE_ADMIN\", \"ROLE_DQHSE\")")
+    public ResponseEntity<DemandeEpi> validerDemande(
             @PathVariable Integer id,
-            @RequestBody ValidationDto validationDto) {
-        return demandeEpiService.traiterDemande(id, validationDto);
+            @RequestBody ValidationDto dto,
+            Authentication authentication) {
+        String emailValidateur = authentication.getName();
+        return ResponseEntity.ok(demandeEpiService.traiterDemande(Long.valueOf(id), dto, emailValidateur));
+    }
+    @PreAuthorize("hasAnyRole(\"ROLE_ADMIN\", \"ROLE_DQHSE\", \"ROLE_GESTIONNAIRE\", \"ROLE_EMPLOYE\")")
+    @GetMapping("/mes-demandes")
+    public ResponseEntity<List<DemandeEpi>> getMesDemandes(Authentication authentication) {
+        String email = authentication.getName();
+        return ResponseEntity.ok(demandeEpiService.getDemandesByUtilisateurConnecte(email));
     }
 
-    @PreAuthorize("hasRole('GESTIONNAIRE')")
-    @PutMapping("/{id}/livraison")
-    public DemandeEpi enregistrerLivraison(@PathVariable Integer id) {
-        return demandeEpiService.marquerCommeLivree(id);
-    }
-
-    @GetMapping("/utilisateur/{userId}")
-    public List<DemandeEpi> getDemandesParUtilisateur(@PathVariable Integer userId) {
-        return demandeEpiService.getDemandesByUtilisateur(String.valueOf(userId));
-    }
-
-    @PreAuthorize("hasRole('DQHSE')")
     @GetMapping("/a-valider")
-    public List<DemandeEpi> getDemandesEnAttente() {
-        return demandeEpiService.getDemandesEnAttente();
+    @PreAuthorize("hasRole('ROLE_DQHSE')")
+    public ResponseEntity<List<DemandeEpi>> getDemandesAValider() {
+        return ResponseEntity.ok(demandeEpiService.getDemandesEnAttentePourValidation());
     }
-
-    @GetMapping("/{id}")
-    public DemandeEpi getDemandeDetails(@PathVariable Integer id) {
-        return demandeEpiService.getDemandeById(id);
+    @PutMapping("/{id}")
+    public ResponseEntity<DemandeEpi> modifierDemande(
+            @PathVariable Integer id,
+            @RequestBody @Valid DemandeEpiDto dto,
+            Authentication authentication) {
+        String email = authentication.getName();
+        return ResponseEntity.ok(demandeEpiService.modifierDemande(Long.valueOf(id), dto, email));
     }
 }

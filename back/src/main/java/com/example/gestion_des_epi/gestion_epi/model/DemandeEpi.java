@@ -2,6 +2,7 @@ package com.example.gestion_des_epi.gestion_epi.model;
 
 import com.example.gestion_des_epi.gestion_epi.enume.StatutLivraison;
 import com.example.gestion_des_epi.gestion_epi.enume.StatutValidition;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,6 +41,8 @@ public class DemandeEpi {
     private StatutLivraison statutLivraison;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
     @JoinColumn(name = "utilisateur_id", nullable = false, updatable = false)
     private Utilisateur demandeur;
 
@@ -47,7 +50,7 @@ public class DemandeEpi {
     @JoinColumn(name = "epi_id", nullable = false, updatable = false)
     private Epi epi;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "validateur_id")
     private Utilisateur validateur;
 
@@ -78,7 +81,9 @@ public class DemandeEpi {
 
     // Méthode utilitaire pour la livraison
     public void marquerCommeLivree() {
-        this.statutLivraison = StatutLivraison.LIVREE;
-        this.dateLivraison = LocalDateTime.now();
+
+    }
+
+    public void modifierDemande(Integer quantite, String justification) {
     }
 }

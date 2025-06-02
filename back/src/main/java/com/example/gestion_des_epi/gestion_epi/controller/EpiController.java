@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "EPI")
+@RequestMapping(path = "/epi")
 public class EpiController {
 
     private final EpiService epiService;

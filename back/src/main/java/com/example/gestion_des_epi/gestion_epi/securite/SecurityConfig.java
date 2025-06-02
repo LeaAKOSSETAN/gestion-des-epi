@@ -20,7 +20,6 @@ import java.util.List;
 
 import static org.springframework.http.HttpMethod.*;
 
-//@Component
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -33,8 +32,11 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+
+                // 🔽 Ajout de la configuration CORS ici
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
                 .authorizeHttpRequests(auth -> auth
-                        // Permettre l'accès public
                         .requestMatchers(
                                 "/auth/login",
                                 "/departement/**",
@@ -42,18 +44,12 @@ public class SecurityConfig {
                                 "/epi/**"
                         ).permitAll()
 
-                        // Autoriser la création de demandes sans authentification
-                        .requestMatchers(POST, "/demandes").permitAll()
-
-                        // Autoriser la consultation sans authentification
-                        .requestMatchers(GET, "/demandes/utilisateur/**").permitAll()
-                        .requestMatchers(GET, "/demandes/{id}").permitAll()
-
-                        // Restrictions par rôle
-                        .requestMatchers(PUT, "/demandes/**/validation").hasAuthority("ROLE_DQHSE")
-                        .requestMatchers(PUT, "/demandes/**/livraison").hasAuthority("ROLE_GESTIONNAIRE")
-                        .requestMatchers(GET, "/demandes/a-valider").hasAuthority("ROLE_DQHSE")
                         .requestMatchers("/user/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/demandes").hasAnyAuthority("ROLE_ADMIN", "ROLE_DQHSE", "ROLE_GESTIONNAIRE", "ROLE_EMPLOYE")
+                        .requestMatchers("/demandes/a-valider").hasAnyAuthority("ROLE_DQHSE","ROLE_ADMIN")
+                        .requestMatchers("/demandes/{id}/validation").hasAnyAuthority("ROLE_DQHSE","ROLE_ADMIN")
+                        .requestMatchers("/demandes/mes-demandes").hasAnyAuthority("ROLE_ADMIN", "ROLE_DQHSE", "ROLE_GESTIONNAIRE", "ROLE_EMPLOYE")
+                        .requestMatchers("/demandes/{id}").hasAnyAuthority("ROLE_ADMIN", "ROLE_DQHSE", "ROLE_GESTIONNAIRE", "ROLE_EMPLOYE")
 
                         .anyRequest().authenticated()
                 )
@@ -78,19 +74,31 @@ public class SecurityConfig {
         builder.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
         return builder.build();
     }
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3001")); // origine frontend autorisée
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    // 🔽 Bean pour configurer les politiques CORS
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        // 🔽 Autorise les appels depuis le frontend sur ce port
+        configuration.setAllowedOrigins(List.of("http://localhost:3001"));
+
+        // 🔽 Autorise les méthodes courantes
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        // 🔽 Autorise tous les headers (comme Authorization)
+        configuration.setAllowedHeaders(List.of("*"));
+
+        // 🔽 Autorise l'envoi des cookies
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }

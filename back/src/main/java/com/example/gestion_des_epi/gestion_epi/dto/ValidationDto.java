@@ -1,7 +1,7 @@
 package com.example.gestion_des_epi.gestion_epi.dto;
+import jakarta.validation.constraints.NotNull;
 
 import lombok.Data;
-import org.antlr.v4.runtime.misc.NotNull;
 @Data
 public class ValidationDto {
 
@@ -11,7 +11,7 @@ public class ValidationDto {
 //    @Size(max = 500)
     private String commentaire;
 
-    @NotNull
+//    @NotNull
 //    @Positive
-    private Integer validateurId;
+//    private Integer validateurId;
 }
