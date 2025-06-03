@@ -16,5 +16,5 @@ public class Livraison {
     private Date date_livraison;
     private String livreur;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private DemandeEpi demandeEpi_id;
+    private DemandeEpi demandeEpi;
 }

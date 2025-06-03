@@ -15,20 +15,20 @@ public class Utilisateur {
     private Boolean statut;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private Poste postes_id;
+    private Poste postes;
 
     public Utilisateur() {
     }
 
     public Utilisateur(int id, String nom, String email, String mot_de_passe, TypeCompte typeCompte, Boolean statut,
-            Poste postes_id) {
+            Poste postes) {
         this.id = id;
         this.nom = nom;
         this.email = email;
         this.mot_de_passe = mot_de_passe;
         this.typeCompte = typeCompte;
         this.statut = statut;
-        this.postes_id = postes_id;
+        this.postes = postes;
     }
 
     public int getId() {
@@ -80,11 +80,11 @@ public class Utilisateur {
     }
 
     public Poste getPostes_id() {
-        return postes_id;
+        return postes;
     }
 
-    public void setPostes_id(Poste postes_id) {
-        this.postes_id = postes_id;
+    public void setPostes_id(Poste postes) {
+        this.postes = postes;
     }
     
 }
