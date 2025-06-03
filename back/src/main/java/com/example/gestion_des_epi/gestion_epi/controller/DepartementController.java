@@ -3,6 +3,8 @@ package com.example.gestion_des_epi.gestion_epi.controller;
 import com.example.gestion_des_epi.gestion_epi.dto.DepartementDto;
 import com.example.gestion_des_epi.gestion_epi.model.Departement;
 import com.example.gestion_des_epi.gestion_epi.service.DepartementService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,10 +21,27 @@ public class DepartementController {
     }
 
     @PostMapping
-    public  String CreerDepartement(@RequestBody DepartementDto departement) {
-        this.departementService.creer(departement);
-        return "departement creer";
+    public ResponseEntity<String> creerDepartement(@RequestBody DepartementDto departementDto) {
+        String resultat = departementService.creer(departementDto);
+
+        // Vérifie bien le contenu de la chaîne retournée
+        if (resultat.contains("existe déjà")) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(resultat); // 409
+        }
+
+        return ResponseEntity.ok(resultat); // 200
     }
+
+    @GetMapping("/{code}")
+    public ResponseEntity<?> rechercherDepartementParCode(@PathVariable String code) {
+        try {
+            DepartementDto dto = departementService.rechercherParCode(code);
+            return ResponseEntity.ok(dto); // 200 avec JSON
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // 404
+        }
+    }
+
 
     @GetMapping
     public List<Departement> ListerDepartement() {

@@ -42,6 +42,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return buildSpringSecurityUser(utilisateur);
     }
 
+
     private void validateUserAccount(Utilisateur utilisateur, String username) {
         if (!utilisateur.getStatut()) {
             log.warn("Tentative de connexion pour un compte désactivé: {}", username);

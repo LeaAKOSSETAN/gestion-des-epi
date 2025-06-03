@@ -29,6 +29,7 @@ public class Utilisateur  implements UserDetails {
     @Column(unique = true)
 
     private String nom;
+    @Column(unique = true)
     private String username;
     private String email;
     private String mot_de_passe;

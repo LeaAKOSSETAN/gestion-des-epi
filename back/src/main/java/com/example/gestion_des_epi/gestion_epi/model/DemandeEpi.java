@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -84,6 +85,12 @@ public class DemandeEpi {
     // Méthode utilitaire pour la livraison
     public void marquerCommeLivree() {
 
+    }
+    @OneToMany(mappedBy = "demande", cascade = CascadeType.ALL)
+    private List<DemandeLigne> lignes;
+    // Méthode pour vérifier si la demande est complètement livrée
+    public boolean isCompleteLivree() {
+        return lignes.stream().allMatch(DemandeLigne::isLivree);
     }
 
     public void modifierDemande(Integer quantite, String justification) {
