@@ -16,7 +16,12 @@ public class DepartementService {
         this.departementRepository = departementRepository;
     }
 
-
+    public void creer(DepartementDto departementDto) {
+        Departement departement = new Departement();
+        departement.setNom(departementDto.getNom());
+        departement.setCodeDep(departementDto.getCode());
+        departementRepository.save(departement);
+    }
 
     public List<Departement> Liste() {
         return departementRepository.findAll();
