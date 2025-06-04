@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="b0ccc92b-7c3d-4128-9ce9-35278523077b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/src/Components/DQHSE/Navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/DQHSE/Navbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/DQHSE/dasboard-dqhse.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/DQHSE/dasboard-dqhse.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/chef-departement/EmployeeList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/chef-departement/EmployeeList.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/chef-departement/Navbarchef.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/chef-departement/Navbarchef.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/chef-departement/pages/ChefDashboard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/chef-departement/pages/ChefDashboard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/employe/navbar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/employe/navbar.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Components/login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/login.tsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="2x5HLvHahaXUgFc9xR67BAjTkjF" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "Besilia",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b0ccc92b-7c3d-4128-9ce9-35278523077b" name="Changes" comment="" />
+      <created>1747220962249</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1747220962249</updated>
+      <workItem from="1747220966230" duration="51000" />
+    </task>
+    <servers />
+  </component>
+</project>

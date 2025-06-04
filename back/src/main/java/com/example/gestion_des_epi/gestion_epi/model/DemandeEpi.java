@@ -1,133 +1,91 @@
 package com.example.gestion_des_epi.gestion_epi.model;
 
-import java.util.Date;
-
-import com.example.gestion_des_epi.gestion_epi.enume.StatutValidition;
 import com.example.gestion_des_epi.gestion_epi.enume.StatutLivraison;
-
-
+import com.example.gestion_des_epi.gestion_epi.enume.StatutValidition;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name= "demandeEpis")
+@Table(name = "demande_epi")
 public class DemandeEpi {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private Date date_demande;
-    private int quantite;
-    private StatutValidition Statut_validition;
-    
-    @ManyToOne
-    @JoinColumn(name = "utilisateur_id", nullable = false)private StatutLivraison statut_livraison;
-    private Utilisateur utilisateur;
-    
-    @ManyToOne
-    @JoinColumn(name = "epi_id", nullable = false)
+    private Integer id;
+
+    @Column(name = "date_demande", nullable = false, updatable = false)
+    private LocalDateTime dateDemande = LocalDateTime.now();
+
+    @Column(nullable = false)
+    private Integer quantite;
+    private boolean livree = false; // Nouveau champ pour suivre l'état
+
+
+    @Column(name = "justification", length = 500)
+    private String justification;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "statut_validation", nullable = false)
+    private StatutValidition statutValidation = StatutValidition.EN_ATTENTE;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "statut_livraison")
+    private StatutLivraison statutLivraison;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
+    @JoinColumn(name = "utilisateur_id", nullable = false, updatable = false)
+    private Utilisateur demandeur;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "epi_id", nullable = false, updatable = false)
     private Epi epi;
 
-    public DemandeEpi() {
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "validateur_id")
+    private Utilisateur validateur;
+
+    @Column(name = "date_validation")
+    private LocalDateTime dateValidation;
+
+    @Column(name = "commentaire_validation", length = 1000)
+    private String commentaireValidation;
+
+    @Column(name = "date_livraison")
+    private LocalDateTime dateLivraison;
+
+    // Méthode utilitaire pour la validation
+    public void valider(Utilisateur validateur, String commentaire) {
+        this.statutValidation =StatutValidition.VALIDEE;
+        this.validateur = validateur;
+        this.commentaireValidation = commentaire;
+        this.dateValidation = LocalDateTime.now();
     }
 
-    
-
-    public DemandeEpi(int id, Date date_demande, int quantite, StatutValidition statut_validition,
-            StatutLivraison statut_livraison, Utilisateur utilisateur, Epi epi) {
-        this.id = id;
-        this.date_demande = date_demande;
-        this.quantite = quantite;
-        Statut_validition = statut_validition;
-        this.statut_livraison = statut_livraison;
-        this.utilisateur = utilisateur;
-        this.epi = epi;
+    // Méthode utilitaire pour le rejet
+    public void rejeter(Utilisateur validateur, String motif) {
+        this.statutValidation = StatutValidition.REFUSEE;
+        this.validateur = validateur;
+        this.commentaireValidation = motif;
+        this.dateValidation = LocalDateTime.now();
     }
 
+    // Méthode utilitaire pour la livraison
+    public void marquerCommeLivree() {
 
-
-    public int getId() {
-        return id;
     }
 
-
-
-    public void setId(int id) {
-        this.id = id;
+    public void modifierDemande(Integer quantite, String justification) {
     }
-
-
-
-    public Date getDate_demande() {
-        return date_demande;
-    }
-
-
-
-    public void setDate_demande(Date date_demande) {
-        this.date_demande = date_demande;
-    }
-
-
-
-    public int getQuantite() {
-        return quantite;
-    }
-
-
-
-    public void setQuantite(int quantite) {
-        this.quantite = quantite;
-    }
-
-
-
-    public StatutValidition getStatut_validition() {
-        return Statut_validition;
-    }
-
-
-
-    public void setStatut_validition(StatutValidition statut_validition) {
-        Statut_validition = statut_validition;
-    }
-
-
-
-    public StatutLivraison getStatut_livraison() {
-        return statut_livraison;
-    }
-
-
-
-    public void setStatut_livraison(StatutLivraison statut_livraison) {
-        this.statut_livraison = statut_livraison;
-    }
-
-
-
-    public Utilisateur getUtilisateur_id() {
-        return utilisateur;
-    }
-
-
-
-    public void setUtilisateur_id(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
-    }
-
-
-
-    public Epi getEpi_id() {
-        return epi;
-    }
-
-
-
-    public void setEpi_id(Epi epi) {
-        this.epi = epi;
-    }
-
-    
-
-
 }

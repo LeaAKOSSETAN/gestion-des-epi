@@ -1,9 +1,11 @@
 package com.example.gestion_des_epi.gestion_epi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name= "epis")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Epi {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

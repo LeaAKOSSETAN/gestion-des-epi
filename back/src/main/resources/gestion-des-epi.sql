@@ -2,7 +2,7 @@ CREATE DATABASE gestion_des_epi;
 
 CREATE TABLE departements (
     id integer AUTO_INCREMENT PRIMARY KEY,
-    code VARCHAR(10) NOT NULL,
+    codeDep VARCHAR(10) NOT NULL,
     nom VARCHAR(100) NOT NULL UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -71,6 +71,22 @@ CREATE TABLE demandeEpis (
     FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id) ON DELETE CASCADE,
     FOREIGN KEY (epi_id) REFERENCES epis(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE demande_epi (
+                             id SERIAL PRIMARY KEY,
+                             date_demande TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                             quantite INTEGER NOT NULL CHECK (quantite > 0),
+                             statut_validation VARCHAR(20) NOT NULL,
+                             statut_livraison VARCHAR(20),
+                             utilisateur_id INTEGER NOT NULL REFERENCES utilisateur(id),
+                             epi_id INTEGER NOT NULL REFERENCES epi(id),
+                             validateur_id INTEGER REFERENCES utilisateur(id),
+                             date_validation TIMESTAMP,
+                             commentaire_validation VARCHAR(500),
+                             CONSTRAINT fk_validateur CHECK (
+                                 (statut_validation = 'EN_ATTENTE' AND validateur_id IS NULL) OR
+                                 (statut_validation IN ('VALIDEE', 'REJETEE') AND validateur_id IS NOT NULL)
+                                 )
 );
 
 CREATE TABLE livraisons (

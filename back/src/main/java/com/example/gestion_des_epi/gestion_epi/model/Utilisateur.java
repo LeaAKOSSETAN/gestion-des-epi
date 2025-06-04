@@ -3,88 +3,81 @@ package com.example.gestion_des_epi.gestion_epi.model;
 import com.example.gestion_des_epi.gestion_epi.enume.TypeCompte;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name= "utilisateurs")
-public class Utilisateur {
+public class Utilisateur  implements UserDetails {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+    @Column(unique = true)
+
     private String nom;
+    private String username;
     private String email;
     private String mot_de_passe;
+    @Enumerated(EnumType.STRING)
     private TypeCompte typeCompte;
-    private Boolean statut;
+    private Boolean statut = false;
+//    @Column(unique = true)
+//    private String username;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Poste postes;
 
-    public Utilisateur() {
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"+this.typeCompte)) ;
     }
 
-    public Utilisateur(int id, String nom, String email, String mot_de_passe, TypeCompte typeCompte, Boolean statut,
-            Poste postes) {
-        this.id = id;
-        this.nom = nom;
-        this.email = email;
-        this.mot_de_passe = mot_de_passe;
-        this.typeCompte = typeCompte;
-        this.statut = statut;
-        this.postes = postes;
+    @Override
+    public String getPassword() {
+        return this.mot_de_passe;
     }
 
-    public int getId() {
-        return id;
+    @Override
+    public String getUsername() {
+        return this.username;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    @Override
+    public boolean isAccountNonExpired() {
+       // return UserDetails.super.isAccountNonExpired();
+        return this.statut;
     }
 
-    public String getNom() {
-        return nom;
+    @Override
+    public boolean isAccountNonLocked() {
+       // return UserDetails.super.isAccountNonLocked();
+        return this.statut;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    @Override
+    public boolean isCredentialsNonExpired() {
+       // return UserDetails.super.isCredentialsNonExpired();
+        return this.statut;
     }
 
-    public String getEmail() {
-        return email;
+    @Override
+    public boolean isEnabled() {
+//        return UserDetails.super.isEnabled();
+        return this.statut;
     }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getMot_de_passe() {
-        return mot_de_passe;
-    }
-
-    public void setMot_de_passe(String mot_de_passe) {
-        this.mot_de_passe = mot_de_passe;
-    }
-
-    public TypeCompte getTypeCompte() {
-        return typeCompte;
-    }
-
-    public void setTypeCompte(TypeCompte typeCompte) {
-        this.typeCompte = typeCompte;
-    }
-
-    public Boolean getStatut() {
-        return statut;
-    }
-
-    public void setStatut(Boolean statut) {
-        this.statut = statut;
-    }
-
-    public Poste getPostes_id() {
-        return postes;
-    }
-
-    public void setPostes_id(Poste postes) {
-        this.postes = postes;
-    }
-    
 }
