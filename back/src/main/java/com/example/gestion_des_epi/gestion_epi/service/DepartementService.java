@@ -16,17 +16,7 @@ public class DepartementService {
         this.departementRepository = departementRepository;
     }
 
-    public void creer(DepartementDto departementDto) {
-        Departement departementDansBDD= departementRepository.findByCode(departementDto.getCode());
-        if (departementDansBDD == null) {
-            Departement departement1 = new Departement();
-            departement1.setNom(departementDto.getNom());
-            departement1.setCodeDep(departementDto.getCode());
-            departementRepository.save(departement1);
-        }else{
-            return "Departement deja existe";
-        }
-    }
+
 
     public List<Departement> Liste() {
         return departementRepository.findAll();
