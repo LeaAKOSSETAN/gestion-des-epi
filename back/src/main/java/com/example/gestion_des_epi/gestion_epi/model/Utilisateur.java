@@ -81,4 +81,7 @@ public class Utilisateur  implements UserDetails {
 //        return UserDetails.super.isEnabled();
         return this.statut;
     }
+
+    @OneToMany(mappedBy = "demandeur")
+    private List <DemandeEpi> demandesEPI;
 }

@@ -30,4 +30,8 @@ public class EpiController {
     public String updateEpi(@PathVariable("id") int id, @RequestBody EpiDto epi) {
         return this.epiService.Modifier(id,epi);
     }
+    @DeleteMapping(path="{id}")
+    public String deleteEpi(@PathVariable("id") int id) {
+        return this.epiService.delete(id);
+    }
 }

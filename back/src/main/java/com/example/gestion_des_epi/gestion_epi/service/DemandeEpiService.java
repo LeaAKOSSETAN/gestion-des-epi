@@ -1,142 +1,141 @@
 package com.example.gestion_des_epi.gestion_epi.service;
 
-import com.example.gestion_des_epi.gestion_epi.dto.DemandeEpiDto;
-import com.example.gestion_des_epi.gestion_epi.dto.ValidationDto;
-import com.example.gestion_des_epi.gestion_epi.enume.StatutValidition;
-import com.example.gestion_des_epi.gestion_epi.enume.TypeCompte;
-import com.example.gestion_des_epi.gestion_epi.model.DemandeEpi;
-import com.example.gestion_des_epi.gestion_epi.model.Epi;
-import com.example.gestion_des_epi.gestion_epi.model.Utilisateur;
-import com.example.gestion_des_epi.gestion_epi.repository.DemandeEpiRepository;
-import com.example.gestion_des_epi.gestion_epi.repository.EpiRepository;
-import com.example.gestion_des_epi.gestion_epi.repository.UtilisateurRepository;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Service;
 
+import com.example.gestion_des_epi.gestion_epi.model.DemandeEpi;
+import com.example.gestion_des_epi.gestion_epi.repository.DemandeEpiRepository;
+
+import jakarta.transaction.Transactional;
+
+import com.example.gestion_des_epi.gestion_epi.dto.DemandeEpiDto;
+import com.example.gestion_des_epi.gestion_epi.model.*;
+import com.example.gestion_des_epi.gestion_epi.repository.*;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DemandeEpiService {
-    private static final Logger logger = LoggerFactory.getLogger(DemandeEpiService.class);
 
     private final DemandeEpiRepository demandeEpiRepository;
-    private final EpiRepository epiRepository;
     private final UtilisateurRepository utilisateurRepository;
+    private final EpiRepository epiRepository;
+    private final BesoinRepository besoinRepository;
 
     @Transactional
-    public DemandeEpi creerDemande(DemandeEpiDto dto, String emailDemandeur) {
-        logger.info("Création demande par: {}", emailDemandeur);
+    public DemandeEpi createDemande(DemandeEpiDto demandeEpiDto, String username) {
+        log.info("Début de la création d'une demande EPI pour l'utilisateur: {}", username);
 
-        Utilisateur demandeur = utilisateurRepository.findByUsername(emailDemandeur)
+        // 1. Validation des données d'entrée
+        if (demandeEpiDto == null) {
+            log.error("L'objet demandeEpiDto est null");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Les données de la demande sont requises");
+        }
+
+        if (demandeEpiDto.getBesoins() == null || demandeEpiDto.getBesoins().isEmpty()) {
+            log.error("Aucun besoin fourni dans la demande");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Au moins un besoin EPI est requis");
+        }
+
+        // 2. Récupération de l'utilisateur
+        Utilisateur demandeur = utilisateurRepository.findByUsername(username)
                 .orElseThrow(() -> {
-                    logger.error("Utilisateur non trouvé: {}", emailDemandeur);
-                    return new RuntimeException("Utilisateur non trouvé");
+                    log.error("Utilisateur non trouvé avec le username: {}", username);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé");
                 });
+        log.debug("Utilisateur trouvé - ID: {}, Nom: {}", demandeur.getId(), demandeur.getNom());
 
-        Epi epi = epiRepository.findById(Long.valueOf(dto.epiId()))
-                .orElseThrow(() -> {
-                    logger.error("EPI non trouvé ID: {}", dto.epiId());
-                    return new RuntimeException("EPI non trouvé");
-                });
-
+        // 3. Création de la demande EPI
         DemandeEpi demande = new DemandeEpi();
         demande.setDateDemande(LocalDateTime.now());
-        demande.setQuantite(dto.quantite());
-        demande.setJustification(dto.justification());
-        demande.setStatutValidation(StatutValidition.EN_ATTENTE);
-        demande.setEpi(epi);
+        demande.setStatut("EN_ATTENTE");
         demande.setDemandeur(demandeur);
 
+        // Génération de la référence
+        demande.onCreate();
+        log.debug("Demande EPI créée - Référence: {}", demande.getReference());
+
+        // 4. Sauvegarde initiale de la demande
         DemandeEpi savedDemande = demandeEpiRepository.save(demande);
-        logger.info("Demande créée ID: {}", savedDemande.getId());
-        return savedDemande;
+        log.info("Demande EPI enregistrée avec succès - ID: {}", savedDemande.getId());
+
+        // 5. Traitement des besoins
+        List<Besoin> besoinsCrees = new ArrayList<>();
+        demandeEpiDto.getBesoins().forEach(besoinDto -> {
+            try {
+                log.debug("Traitement du besoin pour l'EPI: {}", besoinDto.getEpiNom());
+
+                // Validation de la quantité
+                if (besoinDto.getQuantite() <= 0) {
+                    log.error("Quantité invalide pour l'EPI {}: {}", besoinDto.getEpiNom(), besoinDto.getQuantite());
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "La quantité doit être positive pour l'EPI: " + besoinDto.getEpiNom());
+                }
+
+                // Recherche de l'EPI
+                Epi epi = epiRepository.findByNom(besoinDto.getEpiNom())
+                        .orElseThrow(() -> {
+                            log.error("EPI non trouvé: {}", besoinDto.getEpiNom());
+                            return new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                    "EPI non trouvé: " + besoinDto.getEpiNom());
+                        });
+
+                // Création du besoin
+                Besoin besoin = new Besoin();
+                besoin.setQuantite(besoinDto.getQuantite());
+                besoin.setEpi(epi);
+                besoin.setDemandeEPI(savedDemande);
+
+                // Sauvegarde du besoin
+                Besoin besoinEnregistre = besoinRepository.save(besoin);
+                besoinsCrees.add(besoinEnregistre);
+
+                // Ajout à la demande (relation bidirectionnelle)
+                savedDemande.getBesoins().add(besoinEnregistre);
+
+                log.debug("Besoin créé avec succès - ID: {}, EPI: {}, Quantité: {}",
+                        besoinEnregistre.getId(), besoinDto.getEpiNom(), besoinDto.getQuantite());
+            } catch (Exception e) {
+                log.error("Erreur lors de la création du besoin pour l'EPI {}: {}",
+                        besoinDto.getEpiNom(), e.getMessage());
+                throw e;
+            }
+        });
+
+        // 6. Mise à jour finale de la demande avec les besoins
+        DemandeEpi demandeFinale = demandeEpiRepository.save(savedDemande);
+        log.info("Demande EPI finalisée avec {} besoins - ID: {}", besoinsCrees.size(), demandeFinale.getId());
+
+        return demandeFinale;
     }
 
-    public List<DemandeEpi> getDemandesByUtilisateurConnecte(String email) {
-        logger.info("Récupération des demandes pour: {}", email);
+    public DemandeEpi findById(Long id) {
+        log.debug("Recherche de la demande EPI par ID: {}", id);
 
-        Utilisateur utilisateur = utilisateurRepository.findByUsername(email)
-               .orElseThrow(() -> {
-                    logger.error("Utilisateur non trouvé: {}", email);
-                    return new RuntimeException("Utilisateur non trouvé");
-                });
-
-        List<DemandeEpi> demandes = demandeEpiRepository.findByDemandeur(utilisateur);
-        logger.info("{} demandes trouvées pour {}", demandes.size(), email);
-        return demandes;
-    }
-
-    public List<DemandeEpi> getDemandesEnAttentePourValidation() {
-        logger.info("Récupération des demandes en attente de validation");
-        List<DemandeEpi> demandes = demandeEpiRepository.findByStatutValidation(StatutValidition.EN_ATTENTE);
-        logger.info("{} demandes en attente trouvées", demandes.size());
-        return demandes;
-    }
-
-    @Transactional
-    public DemandeEpi traiterDemande(Long demandeId, ValidationDto dto, String emailValidateur) {
-        logger.info("Traitement demande ID: {} par: {}", demandeId, emailValidateur);
-
-        DemandeEpi demande = demandeEpiRepository.findById(demandeId)
+        return demandeEpiRepository.findById(id)
+                .map(demande -> {
+                    // Force le chargement des besoins si nécessaire
+                    if (demande.getBesoins() == null) {
+                        log.warn("Aucun besoin trouvé pour la demande ID: {}", id);
+                        demande.setBesoins(new ArrayList<>());
+                    } else {
+                        log.debug("{} besoins trouvés pour la demande ID: {}", demande.getBesoins().size(), id);
+                    }
+                    return demande;
+                })
                 .orElseThrow(() -> {
-                    logger.error("Demande non trouvée ID: {}", demandeId);
-                    return new RuntimeException("Demande non trouvée");
+                    log.error("Demande EPI non trouvée avec l'ID: {}", id);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Demande non trouvée avec ID: " + id);
                 });
-
-        Utilisateur validateur = utilisateurRepository.findByUsername(emailValidateur)
-                .orElseThrow(() -> {
-                    logger.error("Validateur non trouvé: {}", emailValidateur);
-                    return new RuntimeException("Validateur non trouvé");
-                });
-
-        // Vérification critique du rôle DQHSE
-        if (validateur.getTypeCompte() != TypeCompte.DQHSE && validateur.getTypeCompte() != TypeCompte.ADMIN ) {
-            logger.error("Accès refusé: {} n'est pas DQHSE", emailValidateur);
-            throw new SecurityException("Accès refusé: rôle DQHSE requis");
-        }
-
-        if (dto.getEstValide()) {
-            demande.valider(validateur, dto.getCommentaire());
-            logger.info("Demande ID: {} validée", demandeId);
-        } else {
-            demande.rejeter(validateur, dto.getCommentaire());
-            logger.info("Demande ID: {} rejetée", demandeId);
-        }
-
-        return demandeEpiRepository.save(demande);
-    }
-
-    @Transactional
-    public DemandeEpi modifierDemande(Long demandeId, DemandeEpiDto dto, String emailUtilisateur) {
-        logger.info("Modification demande ID: {} par: {}", demandeId, emailUtilisateur);
-
-        DemandeEpi demande = demandeEpiRepository.findById(demandeId)
-                .orElseThrow(() -> {
-                    logger.error("Demande non trouvée ID: {}", demandeId);
-                    return new RuntimeException("Demande non trouvée");
-                });
-
-        Utilisateur utilisateur = utilisateurRepository.findByUsername(emailUtilisateur)
-                .orElseThrow(() -> {
-                    logger.error("Utilisateur non trouvé: {}", emailUtilisateur);
-                    return new RuntimeException("Utilisateur non trouvé");
-                });
-
-        // Vérification que l'utilisateur est bien le demandeur
-        if (!demande.getDemandeur().getEmail().equals(utilisateur.getEmail())) {
-            logger.error("Tentative modification non autorisée par: {}", emailUtilisateur);
-            throw new SecurityException("Vous ne pouvez modifier que vos propres demandes");
-        }
-
-        demande.setQuantite(dto.quantite());
-        demande.setJustification(dto.justification());
-
-        logger.info("Demande ID: {} modifiée", demandeId);
-        return demandeEpiRepository.save(demande);
     }
 }

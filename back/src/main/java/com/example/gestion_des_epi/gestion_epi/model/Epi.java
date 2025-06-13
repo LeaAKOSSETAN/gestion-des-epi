@@ -2,7 +2,9 @@ package com.example.gestion_des_epi.gestion_epi.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name= "epis")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -12,8 +14,9 @@ public class Epi {
     private int id;
     private String nom;
     private int quantite_en_stock;
+    private int dureeValidite;
     private int seuil_alerte;
-
+/*
     public Epi() {
     }
 
@@ -24,7 +27,7 @@ public class Epi {
         this.seuil_alerte = seuil_alerte;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -54,5 +57,5 @@ public class Epi {
 
     public void setSeuil_alerte(int seuil_alerte) {
         this.seuil_alerte = seuil_alerte;
-    }
+    }*/
 }

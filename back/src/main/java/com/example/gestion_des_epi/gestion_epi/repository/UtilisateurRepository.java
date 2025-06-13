@@ -1,15 +1,13 @@
 package com.example.gestion_des_epi.gestion_epi.repository;
 
-import com.example.gestion_des_epi.gestion_epi.model.Utilisateur;
-import org.springframework.data.domain.Pageable;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-
-import java.util.List;
-import java.util.Optional;
+import com.example.gestion_des_epi.gestion_epi.model.Utilisateur;
 
 @Repository
 public interface UtilisateurRepository extends JpaRepository<Utilisateur, Integer> {
@@ -22,4 +20,9 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, Intege
 
     Optional<Utilisateur> findByEmail(String email);
 
+    Optional<Object> findByTypeCompte(String dqhse);
+
+//    Optional<Object> findByTypeCompte(String gestionnaire);
+
+//    <T> ScopedValue<T> findByTypeCompte(String dqhse);
 }

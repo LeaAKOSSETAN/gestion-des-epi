@@ -1,65 +1,60 @@
 package com.example.gestion_des_epi.gestion_epi.controller;
 
-import com.example.gestion_des_epi.gestion_epi.dto.DemandeEpiDto;
-import com.example.gestion_des_epi.gestion_epi.dto.ValidationDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.gestion_des_epi.gestion_epi.model.DemandeEpi;
 import com.example.gestion_des_epi.gestion_epi.service.DemandeEpiService;
+
+
+import com.example.gestion_des_epi.gestion_epi.dto.DemandeEpiDto;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
+@Slf4j
 @RestController
 @RequestMapping("/demandes")
-@RequiredArgsConstructor
 public class DemandeEpiController {
+
     private final DemandeEpiService demandeEpiService;
-@PreAuthorize("hasAnyRole(\"ROLE_ADMIN\", \"ROLE_DQHSE\", \"ROLE_GESTIONNAIRE\", \"ROLE_EMPLOYE\")")
+
+    public DemandeEpiController(DemandeEpiService demandeEpiService) {
+        this.demandeEpiService = demandeEpiService;
+    }
+
     @PostMapping
-    public ResponseEntity<DemandeEpi> creerDemande(
-            @RequestBody DemandeEpiDto dto,
-            Authentication authentication) {
-        String emailDemandeur = authentication.getName();
-        return ResponseEntity.ok(demandeEpiService.creerDemande(dto, emailDemandeur));
+    public ResponseEntity<DemandeEpi> createDemande(
+            @RequestBody @Valid DemandeEpiDto demandeEpiDto,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        log.info("Tentative de création d'une demande EPI par l'utilisateur: {}", userDetails.getUsername());
+        log.debug("Détails de la demande: {}", demandeEpiDto);
+
+        try {
+            DemandeEpi createdDemande = demandeEpiService.createDemande(demandeEpiDto, userDetails.getUsername());
+            log.info("Demande EPI créée avec succès - ID: {}", createdDemande.getId());
+            return ResponseEntity.ok(createdDemande);
+        } catch (Exception e) {
+            log.error("Erreur lors de la création de la demande EPI", e);
+            throw e;
+        }
     }
 
-    @PostMapping("/{id}/validation")
-    @PreAuthorize("hasAnyRole(\"ROLE_ADMIN\", \"ROLE_DQHSE\")")
-    public ResponseEntity<DemandeEpi> validerDemande(
-            @PathVariable Integer id,
-            @RequestBody ValidationDto dto,
-            Authentication authentication) {
-        String emailValidateur = authentication.getName();
-        return ResponseEntity.ok(demandeEpiService.traiterDemande(Long.valueOf(id), dto, emailValidateur));
-    }
-    @PreAuthorize("hasAnyRole(\"ROLE_ADMIN\", \"ROLE_DQHSE\", \"ROLE_GESTIONNAIRE\", \"ROLE_EMPLOYE\")")
-    @GetMapping("/mes-demandes")
-    public ResponseEntity<List<DemandeEpi>> getMesDemandes(Authentication authentication) {
-        String email = authentication.getName();
-        return ResponseEntity.ok(demandeEpiService.getDemandesByUtilisateurConnecte(email));
-    }
+    @GetMapping("/{id}")
+    public ResponseEntity<DemandeEpi> getDemande(@PathVariable Long id) {
+        log.debug("Tentative de récupération de la demande EPI ID: {}", id);
 
-    @GetMapping("/a-valider")
-    @PreAuthorize("hasRole('ROLE_DQHSE')")
-    public ResponseEntity<List<DemandeEpi>> getDemandesAValider() {
-        return ResponseEntity.ok(demandeEpiService.getDemandesEnAttentePourValidation());
-    }
-    @PutMapping("/{id}")
-    public ResponseEntity<DemandeEpi> modifierDemande(
-            @PathVariable Integer id,
-            @RequestBody @Valid DemandeEpiDto dto,
-            Authentication authentication) {
-        String email = authentication.getName();
-        return ResponseEntity.ok(demandeEpiService.modifierDemande(Long.valueOf(id), dto, email));
+        DemandeEpi demande = demandeEpiService.findById(id);
+        log.info("Demande EPI trouvée - ID: {}, Statut: {}", demande.getId(), demande.getStatut());
+
+        return ResponseEntity.ok(demande);
     }
 }

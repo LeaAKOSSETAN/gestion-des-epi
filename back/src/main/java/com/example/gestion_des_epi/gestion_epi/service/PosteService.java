@@ -26,7 +26,7 @@ public class PosteService {
 
     public String creer(PosteDto posteDto) {
         log.info("Tentative création poste: {}", posteDto.getNom());
-        Departement departement = departementRepository.findById(posteDto.getDepartement())
+        Departement departement = departementRepository.findById((int) posteDto.getDepartement())
                 .orElseThrow(() -> {
                     log.error("Département introuvable ID: {}", posteDto.getDepartement());
                     return new RuntimeException("Département non trouvé");
@@ -51,10 +51,10 @@ public class PosteService {
 
 
     public String modifier(Long id, PosteDto posteDto) {
-        Departement departement = departementRepository.findById(posteDto.getDepartement()).orElse(null);
+        Departement departement = departementRepository.findById((int) posteDto.getDepartement()).orElse(null);
         if (departement == null) return "Département non trouvé";
 
-        Poste poste = posteRepository.findById(id).orElse(null);
+        Poste poste = posteRepository.findById(Math.toIntExact(id)).orElse(null);
         if (poste == null) return "Poste introuvable";
 
         poste.setNom(posteDto.getNom());
@@ -65,10 +65,10 @@ public class PosteService {
     }
 
     public String delete(int id) {
-        if (!posteRepository.existsById((long) id)) {
+        if (!posteRepository.existsById( id)) {
             return "Poste introuvable";
         }
-        posteRepository.deleteById((long) id);
+        posteRepository.deleteById(id);
         return "Poste supprimé avec succès";
     }
 }

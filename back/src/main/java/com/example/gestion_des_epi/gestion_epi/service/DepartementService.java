@@ -48,7 +48,7 @@ public class DepartementService {
 
     public String Modifier(int id, DepartementDto departementDto) {
 
-        Departement departement1= departementRepository.findById((long) id).orElse(null);
+        Departement departement1= departementRepository.findById((int) id).orElse(null);
         if (departement1 != null) {
             departement1.setNom(departementDto.getNom());
             departement1.setCodeDep(departementDto.getCode());
@@ -59,7 +59,7 @@ public class DepartementService {
     }
 
     public String Delete(int id) {
-        this.departementRepository.deleteById((long) id);
+        this.departementRepository.deleteById((int) id);
         return "Departement supprime avec succes";
     }
 

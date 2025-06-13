@@ -41,16 +41,18 @@ public class SecurityConfig {
                                 "/auth/login",
                                 "/departement/**",
                                 "/poste/**",
-                                "/epi/**"
+                                "/epi/**",
+                                "/besoins/**",
+                                "/demandes"
                         ).permitAll()
 
                         .requestMatchers("/user/**").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers("/demandes").hasAnyAuthority("ROLE_ADMIN", "ROLE_DQHSE", "ROLE_GESTIONNAIRE", "ROLE_EMPLOYE")
+                       /* .requestMatchers("/demandes").hasAnyAuthority("ROLE_ADMIN", "ROLE_DQHSE", "ROLE_GESTIONNAIRE", "ROLE_EMPLOYE")
                         .requestMatchers("/demandes/a-valider").hasAnyAuthority("ROLE_DQHSE","ROLE_ADMIN")
                         .requestMatchers("/demandes/{id}/validation").hasAnyAuthority("ROLE_DQHSE","ROLE_ADMIN")
                         .requestMatchers("/demandes/mes-demandes").hasAnyAuthority("ROLE_ADMIN", "ROLE_DQHSE", "ROLE_GESTIONNAIRE", "ROLE_EMPLOYE")
                         .requestMatchers("/demandes/{id}").hasAnyAuthority("ROLE_ADMIN", "ROLE_DQHSE", "ROLE_GESTIONNAIRE", "ROLE_EMPLOYE")
-                        .requestMatchers("/livraisons").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/livraisons").hasAuthority("ROLE_ADMIN")*/
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

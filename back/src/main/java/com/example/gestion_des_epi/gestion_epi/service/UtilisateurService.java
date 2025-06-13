@@ -46,7 +46,7 @@ public class UtilisateurService {
         try {
             // 1. Vérification du poste
             log.debug("Recherche du poste avec ID: {}", dto.getPoste());
-            Poste poste = posteRepository.findById(dto.getPoste())
+            Poste poste = posteRepository.findById(Math.toIntExact(dto.getPoste()))
                     .orElseThrow(() -> {
                         log.error("Poste introuvable - ID: {}", dto.getPoste());
                         return new IllegalArgumentException("Poste non trouvé");
@@ -132,7 +132,7 @@ public class UtilisateurService {
         Utilisateur user = utilisateurRepository.findById(id).orElse(null);
         if (user == null) return "Utilisateur non trouvé.";
 
-        Poste poste = posteRepository.findById(dto.getPoste()).orElse(null);
+        Poste poste = posteRepository.findById(Math.toIntExact(dto.getPoste())).orElse(null);
         if (poste == null) return "Poste non trouvé.";
 
 //        user.setNom(dto.getNom()); // facultatif si tu veux permettre de modifier le nom

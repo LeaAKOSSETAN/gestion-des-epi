@@ -1,10 +1,8 @@
 package com.example.gestion_des_epi.gestion_epi.service;
 
-import com.example.gestion_des_epi.gestion_epi.enume.TypeCompte;
-import com.example.gestion_des_epi.gestion_epi.model.Utilisateur;
-import com.example.gestion_des_epi.gestion_epi.repository.UtilisateurRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.Collection;
+import java.util.Collections;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -14,9 +12,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
+import com.example.gestion_des_epi.gestion_epi.enume.TypeCompte;
+import com.example.gestion_des_epi.gestion_epi.model.Utilisateur;
+import com.example.gestion_des_epi.gestion_epi.repository.UtilisateurRepository;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service

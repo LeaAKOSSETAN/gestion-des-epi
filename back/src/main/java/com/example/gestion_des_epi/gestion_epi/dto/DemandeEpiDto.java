@@ -1,17 +1,24 @@
 package com.example.gestion_des_epi.gestion_epi.dto;
 
-//import jakarta.validation.constraints.*;
-//import javax.validation.constraints.NotNull;
-public record DemandeEpiDto(
-//        @NotNull(message = "L'ID EPI est obligatoire")
-//        @Positive(message = "L'ID EPI doit être positif")
-        Integer epiId,
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.Data;
 
-//        @NotNull(message = "La quantité est obligatoire")
-//        @Min(value = 1, message = "La quantité minimale est 1")
-        Integer quantite,
+import java.util.Date;
+import java.util.List;
 
-//        @NotBlank(message = "La justification est obligatoire")
-//        @Size(max = 500, message = "La justification ne doit pas dépasser 500 caractères")
-        String justification
-) {}
+@Data
+public class DemandeEpiDto{
+    @NotNull
+    private List<BesoinRequest> besoins;
+
+    @Data
+    public static class BesoinRequest {
+        @NotBlank
+        private String epiNom;
+
+        @Positive
+        private Integer quantite;
+    }
+}
