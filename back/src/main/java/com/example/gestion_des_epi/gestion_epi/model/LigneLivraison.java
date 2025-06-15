@@ -1,24 +1,33 @@
 package com.example.gestion_des_epi.gestion_epi.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 @Entity
 @Table(name = "lignes_livraison")
-@Data
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Builder
 public class LigneLivraison {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
-    private int quantiteLivree;
+    private Integer quantiteLivree;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "besoin_id")
+    @JoinColumn(name = "livraison_id", nullable = false)
+    @ToString.Exclude
+    private Livraison livraison;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "besoin_id", nullable = false)
+    @ToString.Exclude
     private Besoin besoin;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "livraison_id")
-    private Livraison livraison;
+    @PrePersist
+    public void prePersist() {
+        if (quantiteLivree == null || quantiteLivree <= 0) {
+            throw new IllegalArgumentException("La quantité livrée doit être positive");
+        }
+    }
 }

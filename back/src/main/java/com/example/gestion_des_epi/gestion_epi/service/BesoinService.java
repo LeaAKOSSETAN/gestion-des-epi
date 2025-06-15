@@ -1,6 +1,8 @@
 package com.example.gestion_des_epi.gestion_epi.service;
 
 import com.example.gestion_des_epi.gestion_epi.dto.BesoinRequestDto;
+import com.example.gestion_des_epi.gestion_epi.enume.StatutBesoin;
+import com.example.gestion_des_epi.gestion_epi.enume.StatutValidation;
 import com.example.gestion_des_epi.gestion_epi.model.Besoin;
 import com.example.gestion_des_epi.gestion_epi.model.DemandeEpi;
 import com.example.gestion_des_epi.gestion_epi.model.Epi;
@@ -74,5 +76,54 @@ public class BesoinService {
                     return new ResponseStatusException(HttpStatus.NOT_FOUND,
                             "Besoin non trouvé avec ID: " + id);
                 });
+    }
+
+    @Transactional
+    public Besoin updateBesoin(Long id, BesoinRequestDto dto) {
+        logger.debug("Début mise à jour besoin - ID: {}", id);
+
+        Besoin besoin = besoinRepository.findById(Math.toIntExact(id))
+                .orElseThrow(() -> {
+                    logger.error("Besoin non trouvé - ID: {}", id);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Besoin non trouvé avec ID: " + id);
+                });
+
+        // Vérifier si le besoin est déjà validé en utilisant le statut
+        if (StatutValidation.VALIDEE.equals(besoin.getStatut())) {
+            logger.error("Impossible de modifier le besoin car il est déjà validé - ID: {}", id);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Le besoin a déjà été validé et ne peut pas être modifié.");
+        }
+
+        // Mettre à jour les champs
+        besoin.setQuantite(dto.getQuantite());
+
+        // Enregistrer et retourner le besoin mis à jour
+        Besoin updatedBesoin = besoinRepository.save(besoin);
+        logger.info("Besoin mis à jour avec succès - ID: {}", updatedBesoin.getId());
+        return updatedBesoin;
+    }
+
+    @Transactional
+    public void deleteBesoin(Long id) {
+        logger.debug("Début suppression besoin - ID: {}", id);
+
+        Besoin besoin = besoinRepository.findById(Math.toIntExact(id))
+                .orElseThrow(() -> {
+                    logger.error("Besoin non trouvé - ID: {}", id);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Besoin non trouvé avec ID: " + id);
+                });
+
+        // Vérifier si le besoin est déjà validé
+        if (StatutValidation.VALIDEE.equals(besoin.getStatut())) {
+            logger.error("Impossible de supprimer le besoin car il est déjà validé - ID: {}", id);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Le besoin a déjà été validé et ne peut pas être supprimé.");
+        }
+
+        besoinRepository.delete(besoin);
+        logger.info("Besoin supprimé avec succès - ID: {}", id);
     }
 }

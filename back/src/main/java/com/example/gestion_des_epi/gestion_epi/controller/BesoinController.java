@@ -44,4 +44,16 @@ public class BesoinController {
         logger.info("Besoin trouvé - ID: {}", id);
         return ResponseEntity.ok(besoinMapper.toDto(besoin));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Besoin> updateBesoin(@PathVariable Long id, @RequestBody BesoinRequestDto besoinRequestDto) {
+        Besoin besoin = besoinService.updateBesoin(id, besoinRequestDto);
+        return ResponseEntity.ok(besoin);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBesoin(@PathVariable Long id) {
+        besoinService.deleteBesoin(id);
+        return ResponseEntity.noContent().build();
+    }
 }

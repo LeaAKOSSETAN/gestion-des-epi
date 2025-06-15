@@ -1,6 +1,10 @@
 package com.example.gestion_des_epi.gestion_epi.service;
 
 
+import com.example.gestion_des_epi.gestion_epi.dto.BesoinRequestDto;
+import com.example.gestion_des_epi.gestion_epi.enume.StatutValidation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.example.gestion_des_epi.gestion_epi.model.DemandeEpi;
@@ -30,6 +34,8 @@ public class DemandeEpiService {
     private final UtilisateurRepository utilisateurRepository;
     private final EpiRepository epiRepository;
     private final BesoinRepository besoinRepository;
+    private static final Logger logger = LoggerFactory.getLogger(BesoinService.class);
+
 
     @Transactional
     public DemandeEpi createDemande(DemandeEpiDto demandeEpiDto, String username) {
@@ -138,4 +144,59 @@ public class DemandeEpiService {
                             "Demande non trouvée avec ID: " + id);
                 });
     }
+
+    // Méthode pour mettre à jour une demande
+    public DemandeEpi updateDemande(Long id, DemandeEpiDto demandeEpiDto, String username) {
+        logger.debug("Début de la mise à jour de la demande avec ID: {}", id);
+
+        DemandeEpi demandeExistante = demandeEpiRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("Demande non trouvée avec ID: {}", id);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Demande non trouvée avec ID: " + id);
+                });
+
+        // Vérifiez que la demande est toujours en attente
+        if (!StatutValidation.EN_ATTENTE.equals(demandeExistante.getStatut())) {
+            logger.error("La demande avec ID: {} ne peut pas être modifiée car elle n'est pas en attente.", id);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "La demande ne peut pas être modifiée car elle n'est pas en attente.");
+        }
+
+        // Mise à jour des champs de la demande selon les données fournies dans le DTO
+        // Exemple: mise à jour du titre et de la description (ajustez selon vos champs)
+        // demandeExistante.setTitre(demandeEpiDto.getTitre());
+        // demandeExistante.setDescription(demandeEpiDto.getDescription());
+
+
+
+        // Sauvegardez et retournez la demande mise à jour
+        DemandeEpi updatedDemande = demandeEpiRepository.save(demandeExistante);
+        logger.info("Demande EPI mise à jour avec succès - ID: {}", updatedDemande.getId());
+        return updatedDemande;
+    }
+
+    // Méthode pour supprimer une demande
+    public void deleteDemande(Long id) {
+        logger.debug("Début de la suppression de la demande avec ID: {}", id);
+
+        DemandeEpi demande = demandeEpiRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("Demande non trouvée avec ID: {}", id);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "Demande non trouvée avec ID: " + id);
+                });
+
+        // Vérifiez si la demande est toujours en attente
+        if (!StatutValidation.EN_ATTENTE.equals(demande.getStatut())) {
+            logger.error("La demande avec ID: {} ne peut pas être supprimée car elle n'est pas en attente.", id);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "La demande ne peut pas être supprimée car elle n'est pas en attente.");
+        }
+
+        // Suppression de la demande
+        demandeEpiRepository.delete(demande);
+        logger.info("Demande EPI supprimée avec succès - ID: {}", id);
+    }
+
 }

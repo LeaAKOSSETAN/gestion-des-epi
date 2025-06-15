@@ -57,4 +57,36 @@ public class DemandeEpiController {
 
         return ResponseEntity.ok(demande);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<DemandeEpi> updateDemande(
+            @PathVariable Long id,
+            @RequestBody @Valid DemandeEpiDto demandeEpiDto,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        log.info("Tentative de mise à jour de la demande EPI par l'utilisateur: {}", userDetails.getUsername());
+        log.debug("Détails de la demande à mettre à jour: {}", demandeEpiDto);
+
+        try {
+            DemandeEpi updatedDemande = demandeEpiService.updateDemande(id, demandeEpiDto, userDetails.getUsername());
+            log.info("Demande EPI mise à jour avec succès - ID: {}", updatedDemande.getId());
+            return ResponseEntity.ok(updatedDemande);
+        } catch (Exception e) {
+            log.error("Erreur lors de la mise à jour de la demande EPI", e);
+            throw e;
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteDemande(@PathVariable Long id) {
+        log.debug("Tentative de suppression de la demande EPI ID: {}", id);
+        try {
+            demandeEpiService.deleteDemande(id);
+            log.info("Demande EPI supprimée avec succès - ID: {}", id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            log.error("Erreur lors de la suppression de la demande EPI", e);
+            throw e;
+        }
+    }
 }
