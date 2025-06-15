@@ -1,5 +1,5 @@
 import { useState } from "react";
-import EmployeeNavbar from "./navbar";
+import EmployeeNavbar from "./EmployeNavbar";
 
 const stock = [
   {

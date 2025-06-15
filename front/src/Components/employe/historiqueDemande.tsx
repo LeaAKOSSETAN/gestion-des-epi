@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Edit, Trash2, Save, X } from "lucide-react";
-import EmployeeNavbar from "./navbar";
+import EmployeeNavbar from "./EmployeNavbar";
 
 type Demande = {
   poste: string,
@@ -84,7 +84,7 @@ function HistoriqueDemandes() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <EmployeeNavbar />
+      <EmployeeNavbar>
 
       <div className="p-6 max-w-5xl mx-auto">
         <h2 className="text-4xl font-extrabold mb-6 text-center text-indigo-400">
@@ -233,6 +233,7 @@ function HistoriqueDemandes() {
           </div>
         )}
       </div>
+      </EmployeeNavbar>
     </div>
   );
 }

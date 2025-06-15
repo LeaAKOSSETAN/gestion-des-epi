@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { CheckCircle } from "lucide-react"; // pour l’icône
-import EmployeeNavbar from "./navbar";
+import EmployeeNavbar from "./EmployeNavbar";
 
 type Demande = {
   id: number;
@@ -28,7 +28,7 @@ function Historique() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
-      <EmployeeNavbar />
+      <EmployeeNavbar>
 
       <div className="p-6 max-w-4xl mx-auto">
         <h2 className="text-3xl font-bold text-blue-400 mb-6">Historique des EPI reçus</h2>
@@ -67,6 +67,8 @@ function Historique() {
           </ul>
         )}
       </div>
+      </EmployeeNavbar>
+
     </div>
   );
 }

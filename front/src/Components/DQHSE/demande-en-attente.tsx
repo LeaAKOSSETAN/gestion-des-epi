@@ -1,4 +1,4 @@
-import DQHSENavbar from "./Navbar";
+import DqhseLayout from "./DqhseLayout";
 
 function DqhseDemandesEnAttente() {
     const demandes = [
@@ -26,8 +26,8 @@ function DqhseDemandesEnAttente() {
   
     return (
      <div>
-  <DQHSENavbar/>
-<div className="p-6">
+  <DqhseLayout>
+      <div className="p-6">
         <h2 className="text-2xl font-bold mb-4">Demandes en attente de validation finale</h2>
         <table className="w-full border">
           <thead>
@@ -61,6 +61,8 @@ function DqhseDemandesEnAttente() {
           </tbody>
         </table>
       </div>
+  </DqhseLayout>
+    
      </div>
     );
   }

@@ -1,4 +1,4 @@
-import DQHSENavbar from "./Navbar";
+import DqhseLayout from "./DqhseLayout";
 
 function DqhseHistoriqueTransactions() {
     const historique = [
@@ -26,8 +26,8 @@ function DqhseHistoriqueTransactions() {
   
     return (
     <div>
-<DQHSENavbar/>
-<div className="p-6">
+    <DqhseLayout >
+      <div className="p-6">
         <h2 className="text-2xl font-bold mb-4">Historique des transactions</h2>
         <table className="w-full border">
           <thead>
@@ -58,9 +58,10 @@ function DqhseHistoriqueTransactions() {
           </tbody>
         </table>
       </div>
+  </DqhseLayout>
+    
     </div>
     );
   }
   
   export default DqhseHistoriqueTransactions;
-  

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import AdminLayout from "../admin/AdminLayout";
+import AdminLayout from "./DashboardLayout";
 
 export default function AjouterUsers() {
   const [form, setForm] = useState({
     nom: "",
+    prenoms: "",
     email: "",
     motDePasse: "",
     typeCompte: "GESTIONNAIRE", // correspond à l'enum Java
@@ -47,6 +48,7 @@ export default function AjouterUsers() {
         alert("Utilisateur créé avec succès : " + message);
         setForm({
           nom: "",
+          prenoms: "",
           email: "",
           motDePasse: "",
           typeCompte: "GESTIONNAIRE",
@@ -64,11 +66,40 @@ export default function AjouterUsers() {
 
   return (
     <AdminLayout>
-      <div className="max-w-2xl mx-auto bg-white shadow-xl rounded-2xl p-8">
+      <div className="max-w-5xl mx-auto bg-white shadow-xl rounded-2xl p-10">
         <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
           Créer un nouvel utilisateur
         </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+            <label className="block mb-1 text-gray-700 font-medium">
+              Nom
+            </label>
+            <input
+              type="String"
+              name="nom"
+              value={form.nom}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border rounded-lg shadow-sm"
+              placeholder="nom"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 text-gray-700 font-medium">
+              Prénoms
+            </label>
+            <input
+              type="String"
+              name="prenoms"
+              value={form.prenoms}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-2 border rounded-lg shadow-sm"
+              placeholder="prenoms"
+            />
+          </div>
          
           <div>
             <label className="block mb-1 text-gray-700 font-medium">
@@ -84,7 +115,6 @@ export default function AjouterUsers() {
               placeholder="exemple@domaine.com"
             />
           </div>
-
 
           <div>
             <label className="block mb-1 text-gray-700 font-medium">
@@ -105,7 +135,7 @@ export default function AjouterUsers() {
 
           <div>
             <label className="block mb-1 text-gray-700 font-medium">
-              ID du poste
+              Poste
             </label>
             <input
               type="number"
@@ -116,17 +146,6 @@ export default function AjouterUsers() {
               className="w-full px-4 py-2 border rounded-lg shadow-sm"
               placeholder="1"
             />
-          </div>
-
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              name="status"
-              checked={form.status}
-              onChange={handleChange}
-              className="mr-2"
-            />
-            <label className="text-gray-700 font-medium">Actif</label>
           </div>
 
           <button
