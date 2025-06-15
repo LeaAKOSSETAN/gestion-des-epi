@@ -1,26 +1,26 @@
 package com.example.gestion_des_epi.gestion_epi.service;
 
-
 import com.example.gestion_des_epi.gestion_epi.dto.BesoinRequestDto;
-import com.example.gestion_des_epi.gestion_epi.enume.StatutValidation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
-import com.example.gestion_des_epi.gestion_epi.model.DemandeEpi;
-import com.example.gestion_des_epi.gestion_epi.repository.DemandeEpiRepository;
-
-import jakarta.transaction.Transactional;
-
 import com.example.gestion_des_epi.gestion_epi.dto.DemandeEpiDto;
-import com.example.gestion_des_epi.gestion_epi.model.*;
-import com.example.gestion_des_epi.gestion_epi.repository.*;
+import com.example.gestion_des_epi.gestion_epi.dto.ValidationDto;
+import com.example.gestion_des_epi.gestion_epi.enume.StatutValidation;
+import com.example.gestion_des_epi.gestion_epi.enume.TypeCompte;
+import com.example.gestion_des_epi.gestion_epi.model.Besoin;
+import com.example.gestion_des_epi.gestion_epi.model.DemandeEpi;
+import com.example.gestion_des_epi.gestion_epi.model.Epi;
+import com.example.gestion_des_epi.gestion_epi.model.Utilisateur;
+import com.example.gestion_des_epi.gestion_epi.repository.BesoinRepository;
+import com.example.gestion_des_epi.gestion_epi.repository.DemandeEpiRepository;
+import com.example.gestion_des_epi.gestion_epi.repository.EpiRepository;
+import com.example.gestion_des_epi.gestion_epi.repository.UtilisateurRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +34,6 @@ public class DemandeEpiService {
     private final UtilisateurRepository utilisateurRepository;
     private final EpiRepository epiRepository;
     private final BesoinRepository besoinRepository;
-    private static final Logger logger = LoggerFactory.getLogger(BesoinService.class);
-
 
     @Transactional
     public DemandeEpi createDemande(DemandeEpiDto demandeEpiDto, String username) {
@@ -52,6 +50,11 @@ public class DemandeEpiService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Au moins un besoin EPI est requis");
         }
 
+        if (demandeEpiDto.getJustification() == null || demandeEpiDto.getJustification().trim().isEmpty()) {
+            log.error("Aucune justification fournie dans la demande");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Une justification est requise pour la demande");
+        }
+
         // 2. Récupération de l'utilisateur
         Utilisateur demandeur = utilisateurRepository.findByUsername(username)
                 .orElseThrow(() -> {
@@ -63,8 +66,9 @@ public class DemandeEpiService {
         // 3. Création de la demande EPI
         DemandeEpi demande = new DemandeEpi();
         demande.setDateDemande(LocalDateTime.now());
-        demande.setStatut("EN_ATTENTE");
+        demande.setStatut(StatutValidation.valueOf("EN_ATTENTE"));
         demande.setDemandeur(demandeur);
+        demande.setJustification(demandeEpiDto.getJustification()); // Ajout de la justification
 
         // Génération de la référence
         demande.onCreate();
@@ -147,56 +151,144 @@ public class DemandeEpiService {
 
     // Méthode pour mettre à jour une demande
     public DemandeEpi updateDemande(Long id, DemandeEpiDto demandeEpiDto, String username) {
-        logger.debug("Début de la mise à jour de la demande avec ID: {}", id);
+        log.debug("Début de la mise à jour de la demande avec ID: {}", id);
 
         DemandeEpi demandeExistante = demandeEpiRepository.findById(id)
                 .orElseThrow(() -> {
-                    logger.error("Demande non trouvée avec ID: {}", id);
+                    log.error("Demande non trouvée avec ID: {}", id);
                     return new ResponseStatusException(HttpStatus.NOT_FOUND,
                             "Demande non trouvée avec ID: " + id);
                 });
 
-        // Vérifiez que la demande est toujours en attente
-        if (!StatutValidation.EN_ATTENTE.equals(demandeExistante.getStatut())) {
-            logger.error("La demande avec ID: {} ne peut pas être modifiée car elle n'est pas en attente.", id);
+        // Vérifier que la demande est toujours en attente de validation DQHSE
+        if (demandeExistante.getValidationDQHSE() != StatutValidation.EN_ATTENTE) {
+            log.error("La demande avec ID: {} ne peut pas être modifiée car elle a déjà été traitée par le DQHSE", id);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "La demande ne peut pas être modifiée car elle n'est pas en attente.");
+                    "La demande ne peut pas être modifiée car elle a déjà été traitée par le DQHSE");
         }
 
-        // Mise à jour des champs de la demande selon les données fournies dans le DTO
-        // Exemple: mise à jour du titre et de la description (ajustez selon vos champs)
-        // demandeExistante.setTitre(demandeEpiDto.getTitre());
-        // demandeExistante.setDescription(demandeEpiDto.getDescription());
+        // Mise à jour de la justification si fournie
+        if (demandeEpiDto.getJustification() != null && !demandeEpiDto.getJustification().isEmpty()) {
+            demandeExistante.setJustification(demandeEpiDto.getJustification());
+            log.debug("Justification mise à jour pour la demande ID: {}", id);
+        }
 
-
-
-        // Sauvegardez et retournez la demande mise à jour
+        // Sauvegarder et retourner la demande mise à jour
         DemandeEpi updatedDemande = demandeEpiRepository.save(demandeExistante);
-        logger.info("Demande EPI mise à jour avec succès - ID: {}", updatedDemande.getId());
+        log.info("Demande EPI mise à jour avec succès - ID: {}", updatedDemande.getId());
         return updatedDemande;
     }
 
     // Méthode pour supprimer une demande
     public void deleteDemande(Long id) {
-        logger.debug("Début de la suppression de la demande avec ID: {}", id);
+        log.debug("Début de la suppression de la demande avec ID: {}", id);
 
         DemandeEpi demande = demandeEpiRepository.findById(id)
                 .orElseThrow(() -> {
-                    logger.error("Demande non trouvée avec ID: {}", id);
+                    log.error("Demande non trouvée avec ID: {}", id);
                     return new ResponseStatusException(HttpStatus.NOT_FOUND,
                             "Demande non trouvée avec ID: " + id);
                 });
 
-        // Vérifiez si la demande est toujours en attente
-        if (!StatutValidation.EN_ATTENTE.equals(demande.getStatut())) {
-            logger.error("La demande avec ID: {} ne peut pas être supprimée car elle n'est pas en attente.", id);
+        // Vérifier si la demande est toujours en attente de validation DQHSE
+        if (demande.getValidationDQHSE() != StatutValidation.EN_ATTENTE) {
+            log.error("La demande avec ID: {} ne peut pas être supprimée car elle a déjà été traitée par le DQHSE", id);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "La demande ne peut pas être supprimée car elle n'est pas en attente.");
+                    "La demande ne peut pas être supprimée car elle a déjà été traitée par le DQHSE");
         }
 
         // Suppression de la demande
         demandeEpiRepository.delete(demande);
-        logger.info("Demande EPI supprimée avec succès - ID: {}", id);
+        log.info("Demande EPI supprimée avec succès - ID: {}", id);
     }
 
+    @Transactional
+    public DemandeEpi validerDemandeDQHSE(Long demandeId, ValidationDto validationDto, String username) {
+        log.info("Tentative de validation DQHSE pour la demande ID: {} par l'utilisateur: {}", demandeId, username);
+
+        // Vérification de l'utilisateur
+        Utilisateur validateur = utilisateurRepository.findByUsername(username)
+                .orElseThrow(() -> {
+                    log.error("Utilisateur non trouvé: {}", username);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur non trouvé");
+                });
+
+        // Vérification du rôle DQHSE
+        if (validateur.getTypeCompte() != TypeCompte.DQHSE) {
+            log.error("Accès refusé - Utilisateur: {}, Rôle: {}", username, validateur.getTypeCompte());
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Seul un DQHSE peut valider les demandes");
+        }
+
+        // Récupération de la demande
+        DemandeEpi demande = demandeEpiRepository.findById(demandeId)
+                .orElseThrow(() -> {
+                    log.error("Demande non trouvée - ID: {}", demandeId);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Demande non trouvée");
+                });
+
+        // Vérification du statut actuel
+        if (demande.getValidationDQHSE() != StatutValidation.EN_ATTENTE) {
+            log.error("Demande déjà traitée - ID: {}, Statut: {}", demandeId, demande.getValidationDQHSE());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La demande a déjà été traitée");
+        }
+
+        // Validation basée sur le DTO
+        if (validationDto.getEstValide() != null) {
+            // Mode manuel : décision explicite du DQHSE
+            if (validationDto.getEstValide()) {
+                demande.setValidationDQHSE(StatutValidation.VALIDEE);
+                demande.setStatut(StatutValidation.VALIDEE);
+                log.info("Validation manuelle - Demande ID: {} approuvée par DQHSE", demandeId);
+            } else {
+                demande.setValidationDQHSE(StatutValidation.REFUSEE);
+                demande.setStatut(StatutValidation.REFUSEE);
+                log.info("Validation manuelle - Demande ID: {} refusée par DQHSE", demandeId);
+            }
+        } else {
+            // Mode automatique : validation basée sur la justification
+            boolean justificationValide = verifierJustification(demande.getJustification());
+            log.info("Validation automatique - ID: {}, Résultat: {}", demandeId, justificationValide ? "VALIDE" : "INVALIDE");
+
+            if (justificationValide) {
+                demande.setValidationDQHSE(StatutValidation.VALIDEE);
+                demande.setStatut(StatutValidation.VALIDEE);
+                log.info("Demande validée automatiquement - ID: {}", demandeId);
+            } else {
+                demande.setValidationDQHSE(StatutValidation.REFUSEE);
+                demande.setStatut(StatutValidation.REFUSEE);
+                log.info("Demande refusée automatiquement - ID: {}", demandeId);
+            }
+        }
+
+        return demandeEpiRepository.save(demande);
+    }
+
+    private boolean verifierJustification(String justification) {
+        if (justification == null || justification.isBlank()) {
+            return false;
+        }
+
+        String cleanText = justification.toLowerCase()
+                .replaceAll("[éèêë]", "e")
+                .replaceAll("[àâä]", "a")
+                .replaceAll("[îï]", "i")
+                .replaceAll("[ôö]", "o")
+                .replaceAll("[ùûü]", "u");
+
+        // Vérification de la longueur
+        if (cleanText.length() < 20 || cleanText.length() > 1000) {
+            return false;
+        }
+
+        // Compter les mots-clés
+        int count = 0;
+        String[] keywords = {"securite", "protection", "risque", "norme", "epi", "danger"};
+        for (String keyword : keywords) {
+            if (cleanText.contains(keyword)) {
+                count++;
+            }
+        }
+
+        return count >= 2;
+    }
 }

@@ -7,14 +7,12 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-
-
 @Entity
 @Table(name = "besoins")
-@Data // Génère getters, setters, toString, equals, hashCode
-@NoArgsConstructor // Constructeur sans arguments
-@AllArgsConstructor // Constructeur avec tous les arguments
-@Builder // Pattern builder pour la création d'instances
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Besoin {
 
     @Id
@@ -25,7 +23,10 @@ public class Besoin {
     private Integer quantite;
 
     @Column(name = "quantite_livre")
-    private Integer quantiteLivre ; // Valeur par défaut
+    private Integer quantiteLivre = 0; // Valeur par défaut
+
+    @Column(name = "quantite_restante", nullable = false)
+    private Integer quantiteRestante; // Nouveau champ pour la quantité restante
 
     @Column(name = "date_creation", updatable = false)
     private LocalDateTime dateCreation;
@@ -38,9 +39,8 @@ public class Besoin {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "demande_epi_id", nullable = false)
-    @ToString.Exclude // Évite la récursion dans toString()
+    @ToString.Exclude
     @JsonBackReference
-
     private DemandeEpi demandeEPI;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -53,6 +53,8 @@ public class Besoin {
     protected void onCreate() {
         this.dateCreation = LocalDateTime.now();
         this.dateModification = LocalDateTime.now();
+        this.quantiteLivre = 0;
+        this.quantiteRestante = this.quantite; // Initialiser la quantité restante
     }
 
     @PreUpdate
@@ -65,15 +67,29 @@ public class Besoin {
         if (quantiteLivree <= 0) {
             throw new IllegalArgumentException("La quantité livrée doit être positive");
         }
-        if (quantiteLivree > this.quantite) {
-            throw new IllegalArgumentException("La quantité livrée ne peut pas dépasser la quantité demandée");
+        if (quantiteLivree > this.quantiteRestante) {
+            throw new IllegalArgumentException("La quantité livrée ne peut pas dépasser la quantité restante");
         }
 
-        this.quantiteLivre = quantiteLivree;
-        this.statut = quantiteLivree == this.quantite
-                ? StatutBesoin.LIVRE_COMPLET
-                : StatutBesoin.LIVRE_PARTIEL;
+        this.quantiteLivre += quantiteLivree;
+        this.quantiteRestante = this.quantite - this.quantiteLivre;
+
+        if (this.quantiteRestante == 0) {
+            this.statut = StatutBesoin.LIVRE_COMPLET;
+        } else {
+            this.statut = StatutBesoin.LIVRE_PARTIEL;
+        }
     }
 
+    // Méthode pour annuler une livraison
+    public void annulerLivraison(int quantiteLivree) {
+        this.quantiteLivre -= quantiteLivree;
+        this.quantiteRestante = this.quantite - this.quantiteLivre;
 
+        if (this.quantiteRestante == this.quantite) {
+            this.statut = StatutBesoin.EN_ATTENTE;
+        } else if (this.quantiteRestante > 0) {
+            this.statut = StatutBesoin.LIVRE_PARTIEL;
+        }
+    }
 }

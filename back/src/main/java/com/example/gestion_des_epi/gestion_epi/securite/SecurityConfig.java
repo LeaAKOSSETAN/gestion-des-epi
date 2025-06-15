@@ -43,7 +43,8 @@ public class SecurityConfig {
                                 "/poste/**",
                                 "/epi/**",
                                 "/besoins/**",
-                                "/demandes/**"
+                                "/demandes/**",
+                                "/livraisons/**"
                         ).permitAll()
 
                         .requestMatchers("/user/**").hasAuthority("ROLE_ADMIN")

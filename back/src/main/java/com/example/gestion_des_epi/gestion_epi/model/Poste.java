@@ -1,18 +1,20 @@
 package com.example.gestion_des_epi.gestion_epi.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name= "postes")
 public class Poste {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String nom;
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Departement departement_id;
     
-    public Poste() {
+   /* public Poste() {
     }
 
     public Poste(int id, String nom, Departement departement_id) {
@@ -21,7 +23,7 @@ public class Poste {
         this.departement_id = departement_id;
     }
 
-    public int getId() {
+    public boolean getId() {
         return id;
     }
 
@@ -43,5 +45,5 @@ public class Poste {
 
     public void setDepartement_id(Departement departement_id) {
         this.departement_id = departement_id;
-    }
+    }*/
 }

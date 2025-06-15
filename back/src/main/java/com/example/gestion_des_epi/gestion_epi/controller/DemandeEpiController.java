@@ -1,23 +1,16 @@
 package com.example.gestion_des_epi.gestion_epi.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.example.gestion_des_epi.gestion_epi.dto.DemandeEpiDto;
+import com.example.gestion_des_epi.gestion_epi.dto.ValidationDto;
 import com.example.gestion_des_epi.gestion_epi.model.DemandeEpi;
 import com.example.gestion_des_epi.gestion_epi.service.DemandeEpiService;
-
-
-import com.example.gestion_des_epi.gestion_epi.dto.DemandeEpiDto;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @RestController
@@ -71,6 +64,9 @@ public class DemandeEpiController {
             DemandeEpi updatedDemande = demandeEpiService.updateDemande(id, demandeEpiDto, userDetails.getUsername());
             log.info("Demande EPI mise à jour avec succès - ID: {}", updatedDemande.getId());
             return ResponseEntity.ok(updatedDemande);
+        } catch (ResponseStatusException e) {
+            log.error("Erreur lors de la mise à jour: {}", e.getReason());
+            throw e;
         } catch (Exception e) {
             log.error("Erreur lors de la mise à jour de la demande EPI", e);
             throw e;
@@ -84,9 +80,38 @@ public class DemandeEpiController {
             demandeEpiService.deleteDemande(id);
             log.info("Demande EPI supprimée avec succès - ID: {}", id);
             return ResponseEntity.noContent().build();
+        } catch (ResponseStatusException e) {
+            log.error("Erreur lors de la suppression: {}", e.getReason());
+            throw e;
         } catch (Exception e) {
             log.error("Erreur lors de la suppression de la demande EPI", e);
             throw e;
+        }
+    }
+
+    @PostMapping("/{id}/validation-dqhse")
+    public ResponseEntity<DemandeEpi> validerDemandeDQHSE(
+            @PathVariable Long id,
+            @RequestBody(required = false) ValidationDto validationDto, // Ajoutez cette ligne
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        log.info("Validation DQHSE déclenchée pour la demande ID: {} par l'utilisateur: {}", id, userDetails.getUsername());
+
+        try {
+            // Créez un DTO par défaut si aucun n'est fourni
+            if (validationDto == null) {
+                validationDto = new ValidationDto();
+                validationDto.setEstValide(null); // Mode automatique
+            }
+
+            DemandeEpi demandeValidee = demandeEpiService.validerDemandeDQHSE(id, validationDto, userDetails.getUsername());
+            return ResponseEntity.ok(demandeValidee);
+        } catch (ResponseStatusException e) {
+            log.error("Erreur de validation DQHSE: {}", e.getReason());
+            throw e;
+        } catch (Exception e) {
+            log.error("Erreur lors de la validation DQHSE: {}", e.getMessage(), e);
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

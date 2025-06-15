@@ -1,6 +1,7 @@
 package com.example.gestion_des_epi.gestion_epi.model;
 
 
+import com.example.gestion_des_epi.gestion_epi.enume.StatutValidation;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,8 +23,11 @@ public class DemandeEpi {
     private Long id;
 
     private LocalDateTime dateDemande;
-    private String statut;
+    @Enumerated(EnumType.STRING)
+    private StatutValidation statut;
     private String reference;
+    @Column(columnDefinition = "TEXT")
+    private String justification;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "utilisateur_id")
@@ -34,11 +38,14 @@ public class DemandeEpi {
     @OneToMany(mappedBy = "demandeEPI", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Besoin> besoins = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    private StatutValidation validationDQHSE = StatutValidation.EN_ATTENTE;
+
     @PrePersist
     public void onCreate() {
         this.dateDemande = LocalDateTime.now();
         this.reference = "DEM-" + UUID.randomUUID().toString().substring(0, 8);
-        this.statut = "EN_ATTENTE";
+        this.statut = StatutValidation.valueOf("EN_ATTENTE");
     }
 
     public void ajouterBesoin(Besoin besoin) {

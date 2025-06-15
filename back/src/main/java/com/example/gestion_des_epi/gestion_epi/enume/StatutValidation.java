@@ -4,5 +4,7 @@ public enum StatutValidation {
     EN_ATTENTE,
     VALIDEE,
     REFUSEE,
-    LIVRE
+    LIVRE,
+    EN_COURS_LIVRAISON
+
 }

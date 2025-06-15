@@ -35,6 +35,6 @@ public class PosteController {
     }
     @DeleteMapping(path = "{id}")
     public String delete(@PathVariable int id) {
-        return this.posteService.delete(id);
+        return this.posteService.delete((long) id);
     }
 }

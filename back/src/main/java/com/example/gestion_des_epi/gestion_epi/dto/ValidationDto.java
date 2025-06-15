@@ -9,7 +9,7 @@ public class ValidationDto {
     private Boolean estValide;
 
 //    @Size(max = 500)
-    private String commentaire;
+//    private String commentaire;
 
 //    @NotNull
 //    @Positive

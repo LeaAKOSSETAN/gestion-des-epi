@@ -10,6 +10,9 @@ import java.util.List;
 
 @Data
 public class DemandeEpiDto{
+
+    @NotBlank(message = "La justification est obligatoire")
+    private String justification;
     @NotNull
     private List<BesoinRequest> besoins;
 
@@ -20,5 +23,7 @@ public class DemandeEpiDto{
 
         @Positive
         private Integer quantite;
+
+
     }
 }

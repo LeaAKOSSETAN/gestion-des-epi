@@ -6,8 +6,11 @@ import org.springframework.data.repository.query.Param;
 
 import com.example.gestion_des_epi.gestion_epi.model.Poste;
 
+import java.util.Optional;
+
 public interface PosteRepository  extends JpaRepository<Poste, Integer> {
     @Query(value = "select * from poste p where p.id=:id", nativeQuery = true)
     Poste getPoste(@Param("id") int id);
 
+    Optional<Poste> findByNomIgnoreCase(String trim);
 }
