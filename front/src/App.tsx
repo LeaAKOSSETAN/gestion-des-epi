@@ -16,17 +16,17 @@ import DqhseDashboard from './Components/DQHSE/dasboard-dqhse'
 
 import Login from './login'
 import Dashboard from './Components/employe/Dashboard'
-import DemandeEPI from './Components/employe/DemandeEpi'
+import DemandeEPI from './Components/employe/DemandeForm'
 import Historique from './Components/employe/historique'
 import ListeDispo from './Components/employe/listedispo'
 import HistoriqueDemandes from './Components/employe/historiqueDemande'
 
-import GestionnaireDashboard from './Components/gestionnaire/GestionnaireDashbord';
-import EpiDashboard from './Components/gestionnaire/EpiDashbord';
-import AjouterEPI from './Components/gestionnaire/AjouterEPI';
-import ModifierEPI from './Components/gestionnaire/ModifierEPI';
-import LivraisonSave from './Components/gestionnaire/LivraisonSave';
-import RestockRequest from './Components/gestionnaire/Reapprovisionnement';
+import GestionnaireDashboard from './Components/Gestionnaire/GestionnaireDashbord';
+import EpiDashboard from './Components/Gestionnaire/EpiDashbord';
+import AjouterEPI from './Components/Gestionnaire/AjouterEPI';
+import ModifierEPI from './Components/Gestionnaire/ModifierEPI';
+import LivraisonSave from './Components/Gestionnaire/LivraisonSave';
+import RestockRequest from './Components/Gestionnaire/Reapprovisionnement';
 
 function App() {
   return (

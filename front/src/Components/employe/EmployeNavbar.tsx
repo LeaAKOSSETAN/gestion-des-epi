@@ -10,6 +10,9 @@ import {
   FileText,
   ListChecks,
   ChevronRight,
+  Search,
+  Bell,
+  UserCircle,
 } from "lucide-react";
 
 export default function EmployeNavbar({ children }: { children?: React.ReactNode }) {
@@ -23,80 +26,84 @@ export default function EmployeNavbar({ children }: { children?: React.ReactNode
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#f0f4f9]">
-      {/* Sidebar */}
+    <div className="min-h-screen flex bg-gray-100">
+      {/* SIDEBAR */}
       <aside
         className={`${
-          collapsed ? "w-16" : "w-64"
-        } bg-blue-600 text-white transition-all duration-300 flex flex-col justify-between`}
+          collapsed ? "w-16" : "w-60"
+        } bg-sky-900 text-white transition-all duration-300 flex flex-col justify-between shadow-lg`}
       >
-        <div className="p-4">
-          <button onClick={() => setCollapsed(!collapsed)} className="mb-6">
-            {collapsed ? <Menu size={24} /> : <X size={24} />}
-          </button>
-          {!collapsed && <h1 className="text-xl font-bold mb-8">Espace Employé</h1>}
+        <div>
+          <div className="p-4 flex items-center justify-between">
+            {!collapsed && <span className="text-lg font-bold tracking-wide">Port de Cotonou</span>}
+            <button onClick={() => setCollapsed(!collapsed)} className="text-gray-300 hover:text-white">
+              {collapsed ? <Menu size={24} /> : <X size={24} />}
+            </button>
+          </div>
 
-          <nav className="flex flex-col space-y-4">
-            <NavItem
-              to="/dashboard"
-              icon={<LayoutDashboard size={20} />}
-              label="Dashboard"
-              collapsed={collapsed}
-            />
-            <NavItem
-              to="/demande-epi"
-              icon={<ListChecks size={20} />}
-              label="Demande"
-              collapsed={collapsed}
-            />
+          <nav className="mt-4 space-y-1 px-2">
+            <NavItem to="/demande-dashboard" icon={<LayoutDashboard size={20} />} label="Dashboard" collapsed={collapsed} />
+            <NavItem to="/demande-epi" icon={<ListChecks size={20} />} label="Faire une demande" collapsed={collapsed} />
             <NavItem
               to="/historique-demandes"
               icon={<ClipboardList size={20} />}
-              label="Historique des demandes"
+              label="Historique demandes"
               collapsed={collapsed}
             />
-            <NavItem
-              to="/ListeDispo"
-              icon={<FileText size={20} />}
-              label="EPI disponibles"
-              collapsed={collapsed}
-            />
-            <NavItem
-              to="/historique"
-              icon={<FileText size={20} />}
-              label="Historique mise à dispo"
-              collapsed={collapsed}
-            />
+            <NavItem to="/listeDispo" icon={<FileText size={20} />} label="EPI disponibles" collapsed={collapsed} />
+            <NavItem to="/historique" icon={<FileText size={20} />} label="Mises à dispo" collapsed={collapsed} />
           </nav>
         </div>
 
-        {/* Menu Profil */}
-        <div className="relative p-4">
+        {/* PROFIL */}
+        <div className="relative p-4 border-t border-gray-700">
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="flex items-center gap-2 px-4 py-3 rounded-lg hover:bg-blue-500 transition-all w-full"
+            className="flex items-center gap-2 px-2 py-2 w-full text-sm hover:bg-gray-700 rounded-md transition"
           >
-            <div className="w-6 h-6">
-              <UserCheck size={24} />
-            </div>
+            <UserCheck size={20} />
             {!collapsed && <span>Profil</span>}
           </button>
 
-          {showMenu && !collapsed && (
-            <div className="absolute bottom-14 left-4 bg-white text-gray-800 rounded shadow w-48 z-30">
+          {!collapsed && showMenu && (
+            <div className="absolute bottom-14 left-4 w-48 bg-white text-black rounded shadow-lg z-50">
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-2 px-4 py-2 text-sm rounded-lg hover:bg-blue-500 transition-colors"
+                className="w-full text-left px-4 py-2 text-sm hover:bg-blue-500 hover:text-white transition rounded"
               >
-                <LogOut size={18} /> Se Déconnecter
+                <LogOut className="inline-block mr-2" size={16} /> Se déconnecter
               </button>
             </div>
           )}
         </div>
       </aside>
 
-      {/* Contenu principal */}
-      <main className="flex-1 p-8 overflow-y-auto">{children}</main>
+      {/* MAIN CONTENT */}
+      <div className="flex-1 flex flex-col">
+        {/* TOPBAR */}
+        <header className="flex justify-between items-center px-6 py-4 bg-white border-b shadow-sm">
+          <div className="flex items-center gap-4 text-gray-800 font-medium">
+            <img src="/images/logoPort2.jpg" alt="Logo" className="h-10" />
+            <span className="text-lg hidden md:inline">Espace Employé</span>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Rechercher..."
+                className="bg-gray-100 border border-gray-300 rounded-md pl-8 pr-3 py-1 text-sm focus:ring-blue-500 focus:outline-none"
+              />
+              <Search className="absolute left-2 top-1.5 w-4 h-4 text-gray-500" />
+            </div>
+            <Bell className="text-gray-600 hover:text-blue-500 w-5 h-5 cursor-pointer" />
+            <UserCircle className="text-gray-700 hover:text-blue-500 w-7 h-7 cursor-pointer" />
+          </div>
+        </header>
+
+        {/* PAGE CONTENT */}
+        <main className="flex-1 overflow-y-auto p-6 bg-gray-50">{children}</main>
+      </div>
     </div>
   );
 }
@@ -115,13 +122,11 @@ function NavItem({
   return (
     <Link
       to={to}
-      className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg hover:bg-blue-500 transition-colors"
+      className="flex items-center gap-3 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-md transition group"
     >
-      <div className="flex items-center gap-3">
-        <div className="w-6 h-6 flex items-center justify-center">{icon}</div>
-        {!collapsed && <span>{label}</span>}
-      </div>
-      {!collapsed && <ChevronRight size={16} />}
+      <span className="w-5 h-5">{icon}</span>
+      {!collapsed && <span className="group-hover:font-semibold">{label}</span>}
+      {!collapsed && <ChevronRight className="ml-auto opacity-30" size={14} />}
     </Link>
   );
 }

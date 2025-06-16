@@ -73,7 +73,7 @@
 
 
 import React, { useState } from "react";
-import DashboardLayout from "./DashboardLayout"; // Ou DashboardLayout si tu préfères
+import AdminLayout from "./AdminLayout"; // Ou DashboardLayout si tu préfères
 import { UserCheck, UserX, Users, PlusCircle, Search } from "lucide-react";
 
 export default function AdminDashboard() {
@@ -101,10 +101,8 @@ export default function AdminDashboard() {
       : "bg-red-100 text-red-700";
 
   return (
-    <DashboardLayout>
-      <div className="p-6 space-y-8 w-full">
-        {/* Titre */}
-        <h2 className="text-3xl font-bold text-gray-900">Bonjour Evano 👋</h2>
+    <AdminLayout>
+      <div className="p-6 space-y-8 w-full background-gray-100" >
 
         {/* Stat Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
@@ -142,7 +140,7 @@ export default function AdminDashboard() {
               <input
                 type="text"
                 placeholder="Rechercher un utilisateur..."
-                className="border border-gray-300 px-3 py-1 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className=" border-gray-500 px-3 py-1 rounded-md  px-6 py-1 text-sm bg-gray-100 text-gray-800 placeholder-gray-500"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -151,7 +149,7 @@ export default function AdminDashboard() {
           </div>
 
           <table className="min-w-full table-auto text-left text-gray-700">
-            <thead className="bg-blue-600 text-white">
+            <thead className="bg-gray-800 text-white">
               <tr>
                 <th className="px-6 py-3 text-sm font-semibold">Nom</th>
                 <th className="px-6 py-3 text-sm font-semibold">Prénom</th>
@@ -161,7 +159,7 @@ export default function AdminDashboard() {
                 <th className="px-6 py-3 text-sm font-semibold">Statut</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-500">
               {filteredUsers.length > 0 ? (
                 filteredUsers.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-50">
@@ -188,7 +186,7 @@ export default function AdminDashboard() {
           </table>
         </div>
       </div>
-    </DashboardLayout>
+    </AdminLayout>
   );
 }
 

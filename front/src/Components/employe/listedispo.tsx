@@ -1,5 +1,5 @@
 import { useState } from "react";
-import EmployeeNavbar from "./EmployeNavbar";
+import EmployeNavbar from "./EmployeNavbar";
 
 const stock = [
   {
@@ -51,7 +51,7 @@ function ListeDispo() {
 
   return (
     <div>
-      <EmployeeNavbar />
+      <EmployeNavbar>
       <div className="p-6 max-w-5xl mx-auto">
         <h2 className="text-3xl font-extrabold mb-6 text-blue-400"> Liste des EPI disponibles</h2>
 
@@ -113,6 +113,7 @@ function ListeDispo() {
           </div>
         )}
       </div>
+      </EmployeNavbar>
     </div>
   );
 }

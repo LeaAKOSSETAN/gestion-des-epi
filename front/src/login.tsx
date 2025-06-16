@@ -1,22 +1,91 @@
-import React from "react";
+// import { useState } from "react";
+// import { Lock, Mail } from "lucide-react";
+
+// export default function LoginPage() {
+//   const [email, setEmail] = useState("");
+//   const [motDePasse, setMotDePasse] = useState("");
+
+//   const handleSubmit = (e: React.FormEvent) => {
+//     e.preventDefault();
+//     // Logique de connexion
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-gradient-to-br from-[#f5f7fa] to-[#c3cfe2] flex items-center justify-center px-4">
+//       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">
+//         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
+//           Connexion à la plateforme
+//         </h2>
+
+//         <form onSubmit={handleSubmit} className="space-y-5">
+//           <div>
+//             <label className="block text-sm font-medium text-gray-600 mb-1">
+//               Adresse e-mail
+//             </label>
+//             <div className="flex items-center border rounded-lg px-3 py-2 shadow-sm bg-gray-50">
+//               <Mail className="text-gray-400 mr-2" size={18} />
+//               <input
+//                 type="email"
+//                 required
+//                 value={email}
+//                 onChange={(e) => setEmail(e.target.value)}
+//                 className="bg-transparent w-full outline-none text-sm"
+//                 placeholder="exemple@entreprise.com"
+//               />
+//             </div>
+//           </div>
+
+//           <div>
+//             <label className="block text-sm font-medium text-gray-600 mb-1">
+//               Mot de passe
+//             </label>
+//             <div className="flex items-center border rounded-lg px-3 py-2 shadow-sm bg-gray-50">
+//               <Lock className="text-gray-400 mr-2" size={18} />
+//               <input
+//                 type="password"
+//                 required
+//                 value={motDePasse}
+//                 onChange={(e) => setMotDePasse(e.target.value)}
+//                 className="bg-transparent w-full outline-none text-sm"
+//                 placeholder="••••••••"
+//               />
+//             </div>
+//           </div>
+
+//           <button
+//             type="submit"
+//             className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl font-semibold transition duration-300"
+//           >
+//             Se connecter
+//           </button>
+
+//           <p className="text-xs text-center text-gray-500 mt-4">
+//             Mot de passe oublié ? <span className="text-blue-600 hover:underline cursor-pointer">Réinitialiser</span>
+//           </p>
+//         </form>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Login() {
+export default function Login() {
   const navigate = useNavigate();
+  const [nom, setNom] = useState("");
+  const [motDePasse, setMotDePasse] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
-    const nom = formData.get("nom")?.toString() || "";
-    const motDePasse = formData.get("motDePasse")?.toString() || "";
-
     try {
       const response = await fetch("http://localhost:8080/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nom, motDePasse }),
       });
 
@@ -28,105 +97,82 @@ function Login() {
       const data = await response.json();
       const typeCompte = data.typeCompte;
 
-      if (typeCompte === "ADMIN") {
-        navigate("/admin");
-      } else if (typeCompte === "GESTIONNAIRE") {
-        navigate("/gestionnaire");
-      } else {
-        navigate("/dashboard");
-      }
+      if (typeCompte === "ADMIN") navigate("/admin");
+      else if (typeCompte === "GESTIONNAIRE") navigate("/gestionnaire");
+      else navigate("/demande-dashboard");
     } catch (error) {
-      console.error("Erreur lors de la connexion :", error);
+      console.error("Erreur de connexion :", error);
       alert("Erreur serveur");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
-      <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-sky-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
-        <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-          <div className="max-w-md mx-auto">
-            <div>
-              <h1 className="text-2xl font-semibold text-center mb-6">Connexion</h1>
-            </div>
-            <div className="divide-y divide-gray-200">
-              <form onSubmit={handleSubmit} className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-                <div className="relative">
-                  <input
-                    autoComplete="off"
-                    id="nom"
-                    name="nom"
-                    type="text"
-                    className="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:border-cyan-600"
-                    placeholder="Nom d'utilisateur"
-                    required
-                  />
-                  <label
-                    htmlFor="nom"
-                    className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
-                  >
-                    Nom d'utilisateur
-                  </label>
-                </div>
+    <div className="min-h-screen flex items-center justify-center bg-white px-4">
+      <div className="bg-white shadow-2xl rounded-2xl flex w-full max-w-3xl overflow-hidden h-[80vh]">
+        {/* Image à gauche */}
+        <div className="hidden md:block w-1/2 h-full">
+          <img
+            src="/images/Epi_3.jpg"
+            alt=""
+            className="w-full h-full object-cover"
+          />
+        </div>
 
-                <div className="relative">
-                  <input
-                    autoComplete="on"
-                    id="motDePasse"
-                    name="motDePasse"
-                    type="password"
-                    className="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:border-cyan-600"
-                    placeholder="Mot de passe"
-                    required
-                  />
-                  <label
-                    htmlFor="motDePasse"
-                    className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
-                  >
-                    Mot de passe
-                  </label>
-                </div>
+        {/* Formulaire à droite */}
+        <div className="w-full md:w-1/2 p-10 overflow-y-auto">
 
-                <div className="relative">
-                  <button type="submit" className="bg-cyan-500 text-white rounded-md px-4 py-2 w-full">
-                    Se connecter
-                  </button>
-                </div>
-              </form>
-            </div>
-
-            <div className="w-full flex justify-center mt-4">
-              <button className="flex items-center bg-white border border-gray-300 rounded-lg shadow-md px-6 py-2 text-sm font-medium text-gray-800 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                {/* Icône Google (facultatif) */}
-                <svg
-                  className="h-6 w-6 mr-2"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="800px"
-                  height="800px"
-                  viewBox="-0.5 0 48 48"
-                  version="1.1"
-                >
-                  <g id="Icons" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-                    <g id="Color-" transform="translate(-401.000000, -860.000000)">
-                      <g id="Google" transform="translate(401.000000, 860.000000)">
-                        <path d="M9.82727273,24 ..." fill="#FBBC05"></path>
-                        <path d="M23.7136364,10.1333333 ..." fill="#EB4335"></path>
-                        <path d="M23.7136364,37.8666667 ..." fill="#34A853"></path>
-                        <path d="M46.1454545,24 ..." fill="#4285F4"></path>
-                      </g>
-                    </g>
-                  </g>
-                </svg>
-                <span>Se connecter avec Google</span>
-              </button>
-            </div>
-
+          {/* Logo centré au-dessus du formulaire */}
+          <div className="flex justify-center mb-6">
+            <img
+              src="/images/logoCo.png" // Remplace par le bon chemin de ton logo
+              alt=""
+              className="h-20 "
+            />
           </div>
+          <p className="flex justify-center text-sm text-gray-700 mb-6">
+            Connectez-vous pour continuer
+          </p>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <input
+              type="text"
+              name="nom"
+              value={nom}
+              onChange={(e) => setNom(e.target.value)}
+              placeholder="Nom d'utilisateur"
+              required
+              className="w-full px-4 py-3 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <input
+              type="password"
+              name="motDePasse"
+              value={motDePasse}
+              onChange={(e) => setMotDePasse(e.target.value)}
+              placeholder="Mot de passe"
+              required
+              className="w-full px-4 py-3 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+
+            <div className="flex justify-between items-center text-sm text-indigo-700">
+              <label className="flex items-center">
+               <input type="checkbox" className="mr-2 accent-purple-600" />
+                Se souvenir de moi
+              </label>
+              <a href="#" className="hover:underline text-purple-600">
+                Mot de passe oublié ?
+              </a>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-gradient-to-r from-orange-500 to-purple-700 hover:bg-purple-700 text-white py-2 rounded-md font-semibold transition"
+            >
+              Connexion
+            </button>
+          </form>
         </div>
       </div>
     </div>
+
   );
 }
-
-export default Login;

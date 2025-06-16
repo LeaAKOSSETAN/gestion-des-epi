@@ -71,7 +71,7 @@ export default function AjouterUsers() {
           Créer un nouvel utilisateur
         </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
-                    <div>
+          <div>
             <label className="block mb-1 text-gray-700 font-medium">
               Nom
             </label>

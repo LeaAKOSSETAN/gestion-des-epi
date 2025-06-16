@@ -1,47 +1,124 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LogOut, UserCircle } from "lucide-react";
-
+import {
+  Menu,
+  X,
+  UserCheck,
+  LogOut,
+  LayoutDashboard,
+  UserPlus,
+  Users,
+  ChevronRight,
+  Search,
+  Bell,
+  UserCircle,
+} from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-      const [showMenu, setShowMenu] = useState(false);
-      const navigate = useNavigate();
-    
-      const handleLogout = () => {
-        // Ici tu peux nettoyer les données d'authentification
-        // ex : localStorage.removeItem("token");
-        navigate("/login"); // Redirection après déconnexion
-      };
-  return (
-    <div className="min-h-screen bg-gradient-to-tr from-gray-100 to-white">
-      <header className="bg-gradient-to-r from-blue-600 to-blue-800 shadow p-6 flex justify-between items-center relative">
-        <h1 className="text-3xl font-bold text-white">Tableau de bord Administrateur</h1>
-        <div className="flex items-center space-x-6">
-          <nav className="space-x-6">
-            <Link to="/admin" className="text-white hover:text-yellow-200 font-medium">Dashboard</Link>
-            <Link to="/admin/utilisateurs" className="text-white hover:text-yellow-200 font-medium">Comptes</Link>
-            <Link to="/admin/ajouter-utilisateur" className="text-white hover:text-yellow-200 font-medium">Créer un compte</Link>
-          </nav>
-          <div className="relative">
-            <button onClick={() => setShowMenu(!showMenu)} className="text-white hover:text-yellow-300">
-              <UserCircle className="w-8 h-8" />
-            </button>
-            {showMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Déconnexion
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
+  const [collapsed, setCollapsed] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const navigate = useNavigate();
 
-      <main className="p-8">{children}</main>
+  const handleLogout = () => {
+    alert("Déconnexion réussie !");
+    navigate("/login");
+  };
+
+  return (
+    <div className="min-h-screen flex bg-gray-100">
+      {/* SIDEBAR */}
+      <aside
+        className={`${
+          collapsed ? "w-16" : "w-60"
+        } bg-[#1E293B] text-white transition-all duration-300 flex flex-col justify-between shadow-lg`}
+      >
+        <div>
+          <div className="p-4 flex items-center justify-between">
+            {!collapsed && <span className="text-lg font-bold tracking-wide">Port de Cotonou</span>}
+            <button onClick={() => setCollapsed(!collapsed)} className="text-gray-300 hover:text-white">
+              {collapsed ? <Menu size={24} /> : <X size={24} />}
+            </button>
+          </div>
+
+          <nav className="mt-4 space-y-1 px-2">
+            <NavItem to="/admin" icon={<LayoutDashboard size={20} />} label="Dashboard" collapsed={collapsed} />
+            <NavItem to="/admin/utilisateurs" icon={<Users size={20} />} label="Comptes" collapsed={collapsed} />
+            <NavItem to="/admin/ajouter-utilisateur" icon={<UserPlus size={20} />} label="Créer un compte" collapsed={collapsed} />
+          </nav>
+        </div>
+
+        {/* PROFIL */}
+        <div className="relative p-4 border-t border-gray-700">
+          <button
+            onClick={() => setShowMenu(!showMenu)}
+            className="flex items-center gap-2 px-2 py-2 w-full text-sm hover:bg-gray-700 rounded-md transition"
+          >
+            <UserCheck size={20} />
+            {!collapsed && <span>Profil</span>}
+          </button>
+
+          {!collapsed && showMenu && (
+            <div className="absolute bottom-14 left-4 w-48 bg-white text-black rounded shadow-lg z-50">
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-4 py-2 text-sm hover:bg-blue-500 hover:text-white transition rounded"
+              >
+                <LogOut className="inline-block mr-2" size={16} /> Se déconnecter
+              </button>
+            </div>
+          )}
+        </div>
+      </aside>
+
+      {/* CONTENU PRINCIPAL */}
+      <div className="flex-1 flex flex-col">
+        {/* TOPBAR */}
+        <header className="flex justify-between items-center px-6 py-4 bg-white border-b shadow-sm">
+          <div className="flex items-center gap-4 text-gray-800 font-medium">
+            <img src="/images/logoPort2.jpg" alt="Logo" className="h-10" />
+            <span className="text-lg hidden md:inline">Espace Admin</span>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Rechercher..."
+                className="bg-gray-100 border border-gray-300 rounded-md pl-8 pr-3 py-1 text-sm focus:ring-blue-500 focus:outline-none"
+              />
+              <Search className="absolute left-2 top-1.5 w-4 h-4 text-gray-500" />
+            </div>
+            <Bell className="text-gray-600 hover:text-blue-500 w-5 h-5 cursor-pointer" />
+            <UserCircle className="text-gray-700 hover:text-blue-500 w-7 h-7 cursor-pointer" />
+          </div>
+        </header>
+
+        {/* CONTENU */}
+        <main className="flex-1 overflow-y-auto p-6 bg-gray-50">{children}</main>
+      </div>
     </div>
+  );
+}
+
+function NavItem({
+  to,
+  icon,
+  label,
+  collapsed,
+}: {
+  to: string;
+  icon: React.ReactNode;
+  label: string;
+  collapsed: boolean;
+}) {
+  return (
+    <Link
+      to={to}
+      className="flex items-center gap-3 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-md transition group"
+    >
+      <span className="w-5 h-5">{icon}</span>
+      {!collapsed && <span className="group-hover:font-semibold">{label}</span>}
+      {!collapsed && <ChevronRight className="ml-auto opacity-30" size={14} />}
+    </Link>
   );
 }

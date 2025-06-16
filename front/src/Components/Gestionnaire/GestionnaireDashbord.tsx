@@ -167,11 +167,11 @@ export default function AdminDashboard() {
           {!collapsed && <h1 className="text-xl font-bold mb-8">Admin EPI</h1>}
 
           <nav className="flex flex-col space-y-5">
-            <NavLink to="/admin" icon={<UserCircle size={20} />} label="Dashboard" collapsed={collapsed} />
-            <NavLink to="/admin/comptes-actifs" icon={<UserCheck size={20} />} label="Actifs" collapsed={collapsed} />
-            <NavLink to="/admin/comptes-inactifs" icon={<UserX size={20} />} label="Inactifs" collapsed={collapsed} />
-            <NavLink to="/admin/utilisateurs" icon={<Users size={20} />} label="Utilisateurs" collapsed={collapsed} />
-            <NavLink to="/admin/ajouter-utilisateur" icon={<PlusCircle size={20} />} label="Ajouter" collapsed={collapsed} />
+            <NavLink to="" icon={<UserCircle size={20} />} label="Dashboard" collapsed={collapsed} />
+            <NavLink to="" icon={<UserCheck size={20} />} label="Actifs" collapsed={collapsed} />
+            <NavLink to="" icon={<UserX size={20} />} label="Inactifs" collapsed={collapsed} />
+            <NavLink to="" icon={<Users size={20} />} label="Approvisonnement" collapsed={collapsed} />
+            <NavLink to="" icon={<PlusCircle size={20} />} label="Ajouter" collapsed={collapsed} />
           </nav>
         </div>
 
