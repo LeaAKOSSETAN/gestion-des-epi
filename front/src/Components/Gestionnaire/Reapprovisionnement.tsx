@@ -1,60 +1,60 @@
-// Exemple de page demande réapprovisionnement
-import React, { useState } from 'react';
-import GestionnaireLayout from './GestionnaireLayout';
+import React from "react";
+import { ClipboardList, Check, X } from "lucide-react";
+import GestionnaireLayout from "./GestionnaireLayout";
 
-const RestockRequest = () => {
-  const [nomEpi, setNomEpi] = useState('');
-  const [quantite, setQuantite] = useState(0);
-  const [raison, setRaison] = useState('');
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Envoyer la demande de réapprovisionnement à l'API
-    console.log({ nomEpi, quantite, raison });
-  };
+export default function DemandesReapprovisionnement() {
+  const demandes = [
+    { id: 1, produit: "Casques", quantite: 30, date: "10/06/2025", statut: "En attente" },
+    { id: 2, produit: "Gants", quantite: 50, date: "09/06/2025", statut: "Validée" },
+  ];
 
   return (
     <GestionnaireLayout>
-        <div className="min-h-screen bg-gray-50 p-6">
-          <h1 className="text-3xl font-bold text-gray-800 mb-8">Demande de Réapprovisionnement d'EPI</h1>
-          <form onSubmit={handleSubmit} className="bg-white p-3 rounded-xl shadow-md">
-            <div className="mb-4">
-              <label className="block text-sm font-semibold">Nom de l'EPI</label>
-              <input
-                type="text"
-                value={nomEpi}
-                onChange={(e) => setNomEpi(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-semibold">Quantité demandée</label>
-              <input
-                type="number"
-                value={quantite}
-                onChange={(e) => setQuantite(Number(e.target.value))}
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-semibold">Raison de la demande</label>
-              <textarea
-                value={raison}
-                onChange={(e) => setRaison(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-lg"
-                required
-              />
-            </div>
-            <button type="submit" className="w-full bg-blue-600 text-white py-3 rounded-xl">
-              Soumettre la demande
-            </button>
-          </form>
+      <div className="p-8">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">Demandes de Réapprovisionnement</h1>
+
+        <div className="bg-white rounded-xl shadow-md overflow-x-auto">
+          <table className="min-w-full text-sm">
+            <thead className="bg-gray-100 text-left text-gray-600">
+              <tr>
+                <th className="p-4">Produit</th>
+                <th className="p-4">Quantité</th>
+                <th className="p-4">Date</th>
+                <th className="p-4">Statut</th>
+                <th className="p-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {demandes.map((demande) => (
+                <tr key={demande.id} className="border-b hover:bg-gray-50">
+                  <td className="p-4">{demande.produit}</td>
+                  <td className="p-4">{demande.quantite}</td>
+                  <td className="p-4">{demande.date}</td>
+                  <td className="p-4">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        demande.statut === "Validée"
+                          ? "bg-green-100 text-green-600"
+                          : "bg-yellow-100 text-yellow-600"
+                      }`}
+                    >
+                      {demande.statut}
+                    </span>
+                  </td>
+                  <td className="p-4 text-right space-x-2">
+                    <button className="text-green-600 hover:underline">
+                      <Check size={16} />
+                    </button>
+                    <button className="text-red-600 hover:underline">
+                      <X size={16} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
+      </div>
     </GestionnaireLayout>
-
   );
-};
-
-export default RestockRequest;
+}

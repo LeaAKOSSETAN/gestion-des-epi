@@ -11,7 +11,7 @@ import AdminHelp from './Components/admin/AdminHelp';
 import AdminJournal from './Components/admin/AdminJournal';
 import AdminSettings from './Components/admin/AdminSetting';
 
-import DqhseValidationDemandes from './Components/DQHSE/validation-demandes'
+import DqhseValidation from './Components/DQHSE/validation-demandes'
 import DqhseHistoriqueTransactions from './Components/DQHSE/historique-transactions'
 import DqhseDemandesEnAttente from './Components/DQHSE/demande-en-attente'
 import DqhseDashboard from './Components/DQHSE/dasboard-dqhse'
@@ -70,7 +70,7 @@ export default function App() {
         {/* Route pour la page de connexion */}
         {/* Routes pour le dqhse de Département */}
         <Route path="/DQHSE-Dashboard" element={<DqhseDashboard/>} /> 
-        <Route path="/DQHSE-Validation" element={<DqhseValidationDemandes/>} />
+        <Route path="/DQHSE-Validation" element={<DqhseValidation children={undefined}/>} />
         <Route path="/DQHSE-Transactions" element={<DqhseHistoriqueTransactions />} />
         <Route path="/DQHSE-Historique" element={<DqhseDemandesEnAttente />} />
         {/* <Route path="/historique-demandes" element={<HistoriqueDemandes/>} />  */}
