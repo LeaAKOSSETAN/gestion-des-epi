@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AdminLayout from "./DashboardLayout";
+import AdminLayout from "./AdminLayout";
 
 export default function AjouterUsers() {
   const [form, setForm] = useState({
@@ -150,7 +150,7 @@ export default function AjouterUsers() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg"
+            className="w-full bg-gray-800 hover:bg-orange-800 text-white font-semibold py-2 rounded-lg"
           >
             Créer le compte
           </button>

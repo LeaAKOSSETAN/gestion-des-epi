@@ -17,9 +17,12 @@ import DqhseDashboard from './Components/DQHSE/dasboard-dqhse'
 import Login from './login'
 import Dashboard from './Components/employe/Dashboard'
 import DemandeEPI from './Components/employe/DemandeForm'
-import Historique from './Components/employe/historique'
-import ListeDispo from './Components/employe/listedispo'
-import HistoriqueDemandes from './Components/employe/historiqueDemande'
+import HistoriqueDemandes from './Components/employe/HistoriqueDemande';
+import Dotations from './Components/employe/Dotations';
+import RefaireDemande from './Components/employe/RefaireDemande';
+import Profil from './Components/employe/Profil';
+import Notifications from './Components/employe/Notifications';
+import Aide from './Components/employe/Aide';
 
 import GestionnaireDashboard from './Components/Gestionnaire/GestionnaireDashbord';
 import EpiDashboard from './Components/Gestionnaire/EpiDashbord';
@@ -27,8 +30,9 @@ import AjouterEPI from './Components/Gestionnaire/AjouterEPI';
 import ModifierEPI from './Components/Gestionnaire/ModifierEPI';
 import LivraisonSave from './Components/Gestionnaire/LivraisonSave';
 import RestockRequest from './Components/Gestionnaire/Reapprovisionnement';
+import Historique from './Components/Gestionnaire/Historique';
 
-function App() {
+export default function App() {
   return (
     <Router>
       <Routes>
@@ -52,10 +56,15 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/demande-dashboard" element={<Dashboard />} />
         <Route path="/demande-epi" element={<DemandeEPI />} />
-        <Route path="/historique" element={<Historique />} />
-        <Route path="/listeDispo" element={<ListeDispo />} />
+        <Route path="/profil" element={<Profil />} />
+        <Route path="/dotation" element={<Dotations />} />
         <Route path="/historique-demandes" element={<HistoriqueDemandes />} />
+        <Route path="/dotation" element={<Dotations />} />
+        <Route path="/refaire-demande" element={<RefaireDemande />} />
+        <Route path="/notifications" element={<Notifications />} /> 
+        <Route path="/aide" element={<Aide />} />
 
+        {/* Route pour la page de connexion */}
         {/* Routes pour le dqhse de Département */}
         <Route path="/DQHSE-Dashboard" element={<DqhseDashboard/>} /> 
         <Route path="/DQHSE-Validation" element={<DqhseValidationDemandes/>} />
@@ -70,4 +79,4 @@ function App() {
 
 }
 
-export default App
+ 

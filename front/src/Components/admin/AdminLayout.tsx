@@ -61,7 +61,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="absolute bottom-14 left-4 w-48 bg-white text-black rounded shadow-lg z-50">
               <button
                 onClick={handleLogout}
-                className="w-full text-left px-4 py-2 text-sm hover:bg-blue-500 hover:text-white transition rounded"
+                className="w-full text-left px-4 py-2 text-sm hover:bg-gray-500 hover:text-white transition rounded"
               >
                 <LogOut className="inline-block mr-2" size={16} /> Se déconnecter
               </button>
@@ -88,8 +88,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               />
               <Search className="absolute left-2 top-1.5 w-4 h-4 text-gray-500" />
             </div>
-            <Bell className="text-gray-600 hover:text-blue-500 w-5 h-5 cursor-pointer" />
-            <UserCircle className="text-gray-700 hover:text-blue-500 w-7 h-7 cursor-pointer" />
+            <Bell className="text-gray-600 hover:text-orange-700 w-5 h-5 cursor-pointer" />
+            <UserCircle className="text-gray-700 hover:text-orange-700 w-7 h-7 cursor-pointer" />
           </div>
         </header>
 

@@ -63,8 +63,8 @@ function Dashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <StatCard icon={<Clipboard size={28} />} label="Demandes" count={totalDemandes} color="bg-sky-100 text-sky-700" />
             <StatCard icon={<Clock size={28} />} label="En Attente" count={countStatut("En attente")} color="bg-amber-100 text-amber-700" />
-            <StatCard icon={<CheckCircle size={28} />} label="Validées" count={countStatut("Validée")} color="bg-emerald-100 text-emerald-700" />
-            <StatCard icon={<XCircle size={28} />} label="Rejetées" count={countStatut("Refusée")} color="bg-rose-100 text-rose-700" />
+            <StatCard icon={<CheckCircle size={28} />} label="Validees" count={countStatut("Validée")} color="bg-emerald-100 text-emerald-700" />
+            <StatCard icon={<XCircle size={28} />} label="Rejetees" count={countStatut("Refusée")} color="bg-rose-100 text-rose-700" />
           </div>
 
           {/* Barre de recherche + bouton */}
@@ -83,9 +83,9 @@ function Dashboard() {
               </div>
               <Link
                 to="/demande-epi"
-                className="bg-sky-700 text-white px-4 py-2 rounded-lg shadow hover:bg-sky-800 transition"
+                className="bg-sky-800 text-white px-4 py-2 rounded-lg shadow hover:bg-sky-600 transition"
               >
-                + Nouvelle Demande
+                +Demande
               </Link>
             </div>
           </div>
@@ -115,7 +115,7 @@ function Dashboard() {
                       <td className="px-6 py-4 whitespace-nowrap space-x-2">
                         <button
                           onClick={() => handleModifier(demande.id)}
-                          className="text-sky-700 hover:underline font-medium"
+                          className="text-sky-900 hover:underline font-medium"
                         >
                           Modifier
                         </button>

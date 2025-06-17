@@ -113,7 +113,7 @@ function DemandeEPIForm() {
             <button
               type="button"
               onClick={ajouterBesoin}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-sky-100 border border-sky-300 rounded-md text-sm text-sky-800 hover:bg-sky-200"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-sky-100 border border-sky-400 rounded-md text-sm text-sky-800 hover:bg-sky-200"
             >
               <PlusCircle className="w-4 h-4" />
               Ajouter un EPI
@@ -124,18 +124,18 @@ function DemandeEPIForm() {
             <button
               type="button"
               onClick={annulerDemande}
-              className="inline-flex items-center px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white font-medium rounded-md transition"
+              className="inline-flex items-center px-5 py-2.5 bg-red-700 hover:bg-red-600 text-white font-medium rounded-md transition"
             >
               <XCircle className="w-5 h-5 mr-2" />
-              Annuler la demande
+              Annuler 
             </button>
 
             <button
               type="submit"
-              className="inline-flex items-center px-6 py-3 bg-sky-700 hover:bg-sky-800 text-white font-semibold rounded-md transition"
+              className="inline-flex items-center px-6 py-3 bg-sky-800 hover:bg-sky-600 text-white font-semibold rounded-md transition"
             >
               <CheckCircle className="w-5 h-5 mr-2" />
-              Soumettre la demande
+              Soumettre 
             </button>
           </div>
         </form>

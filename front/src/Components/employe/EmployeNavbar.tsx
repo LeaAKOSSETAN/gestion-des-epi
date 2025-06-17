@@ -1,38 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-  Menu,
-  X,
-  UserCheck,
-  LogOut,
-  LayoutDashboard,
-  ClipboardList,
-  FileText,
-  ListChecks,
-  ChevronRight,
-  Search,
-  Bell,
-  UserCircle,
+  Menu, X, UserCheck, LogOut, LayoutDashboard, ClipboardList, FileText,
+  ListChecks, RefreshCw, HelpCircle, Bell, ChevronRight, Search, UserCircle
 } from "lucide-react";
 
 export default function EmployeNavbar({ children }: { children?: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [showProfileCard, setShowProfileCard] = useState(false);
   const navigate = useNavigate();
+  const profileRef = useRef(null);
 
   const handleLogout = () => {
     alert("Déconnexion réussie !");
     navigate("/login");
   };
 
+  // Fermer le profil si clic en dehors
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (profileRef.current && !(profileRef.current as any).contains(event.target)) {
+        setShowProfileCard(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <div className="min-h-screen flex bg-gray-100">
       {/* SIDEBAR */}
-      <aside
-        className={`${
-          collapsed ? "w-16" : "w-60"
-        } bg-sky-900 text-white transition-all duration-300 flex flex-col justify-between shadow-lg`}
-      >
+      <aside className={`${collapsed ? "w-16" : "w-64"} bg-sky-900 text-white transition-all duration-300 flex flex-col justify-between shadow-lg`}>
         <div>
           <div className="p-4 flex items-center justify-between">
             {!collapsed && <span className="text-lg font-bold tracking-wide">Port de Cotonou</span>}
@@ -42,20 +42,16 @@ export default function EmployeNavbar({ children }: { children?: React.ReactNode
           </div>
 
           <nav className="mt-4 space-y-1 px-2">
-            <NavItem to="/demande-dashboard" icon={<LayoutDashboard size={20} />} label="Dashboard" collapsed={collapsed} />
+            <NavItem to="/demande-dashboard" icon={<LayoutDashboard size={20} />} label="Tableau de bord" collapsed={collapsed} />
             <NavItem to="/demande-epi" icon={<ListChecks size={20} />} label="Faire une demande" collapsed={collapsed} />
-            <NavItem
-              to="/historique-demandes"
-              icon={<ClipboardList size={20} />}
-              label="Historique demandes"
-              collapsed={collapsed}
-            />
-            <NavItem to="/listeDispo" icon={<FileText size={20} />} label="EPI disponibles" collapsed={collapsed} />
-            <NavItem to="/historique" icon={<FileText size={20} />} label="Mises à dispo" collapsed={collapsed} />
+            <NavItem to="/historique-demandes" icon={<ClipboardList size={20} />} label="Historique demandes" collapsed={collapsed} />
+            <NavItem to="/dotation" icon={<FileText size={20} />} label="Dotations reçues" collapsed={collapsed} />
+            <NavItem to="/refaire-demande" icon={<RefreshCw size={20} />} label="Refaire une demande" collapsed={collapsed} />
+            <NavItem to="/aide" icon={<HelpCircle size={20} />} label="Aide / Contact" collapsed={collapsed} />
           </nav>
         </div>
 
-        {/* PROFIL */}
+        {/* PROFIL (Menu bas sidebar) */}
         <div className="relative p-4 border-t border-gray-700">
           <button
             onClick={() => setShowMenu(!showMenu)}
@@ -69,7 +65,7 @@ export default function EmployeNavbar({ children }: { children?: React.ReactNode
             <div className="absolute bottom-14 left-4 w-48 bg-white text-black rounded shadow-lg z-50">
               <button
                 onClick={handleLogout}
-                className="w-full text-left px-4 py-2 text-sm hover:bg-blue-500 hover:text-white transition rounded"
+                className="w-full text-left px-4 py-2 text-sm hover:bg-orange-500 hover:text-white transition rounded"
               >
                 <LogOut className="inline-block mr-2" size={16} /> Se déconnecter
               </button>
@@ -79,15 +75,15 @@ export default function EmployeNavbar({ children }: { children?: React.ReactNode
       </aside>
 
       {/* MAIN CONTENT */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col relative">
         {/* TOPBAR */}
         <header className="flex justify-between items-center px-6 py-4 bg-white border-b shadow-sm">
           <div className="flex items-center gap-4 text-gray-800 font-medium">
             <img src="/images/logoPort2.jpg" alt="Logo" className="h-10" />
-            <span className="text-lg hidden md:inline">Espace Employé</span>
+            <span className="text-lg hidden md:inline">Espace Employe</span>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 relative">
             <div className="relative">
               <input
                 type="text"
@@ -96,13 +92,45 @@ export default function EmployeNavbar({ children }: { children?: React.ReactNode
               />
               <Search className="absolute left-2 top-1.5 w-4 h-4 text-gray-500" />
             </div>
-            <Bell className="text-gray-600 hover:text-blue-500 w-5 h-5 cursor-pointer" />
-            <UserCircle className="text-gray-700 hover:text-blue-500 w-7 h-7 cursor-pointer" />
+
+            <Link to="/notifications">
+              <Bell className="text-gray-600 hover:text-sky-600 w-5 h-5 cursor-pointer" />
+            </Link>
+
+            {/* 👤 Profil : déclencheur de la carte */}
+            <button onClick={() => setShowProfileCard(!showProfileCard)}>
+              <UserCircle className="text-gray-700 hover:text-sky-600 w-7 h-7 cursor-pointer" />
+            </button>
           </div>
         </header>
 
         {/* PAGE CONTENT */}
         <main className="flex-1 overflow-y-auto p-6 bg-gray-50">{children}</main>
+
+        {/* 🧾 Carte flottante Profil */}
+        {showProfileCard && (
+          <div
+            ref={profileRef}
+            className="absolute top-20 right-6 w-80 bg-sky-100 rounded-lg shadow-xl border border-gray-200 z-50 p-5"
+          >
+          <div className="flex flex-col items-center cursor-pointer group">
+            <img
+              src="/images/logoCo2.png"
+              alt="Profil"
+              className="w-20 h-30 rounded-full group-hover:border-sky-800 transition"
+            />
+            <span className="text-xs text-gray-700 group-hover:text-gray-600">Mon Profil</span>
+          </div>
+
+            <div className="space-y-2 text-sm text-gray-700">
+              <p><strong>Nom :</strong> Doe</p>
+              <p><strong>Prénom :</strong> Jean</p>
+              <p><strong>Email :</strong> jean.doe@example.com</p>
+              <p><strong>Poste :</strong> Magasinier</p>
+              <p><strong>Service :</strong> Logistique</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
