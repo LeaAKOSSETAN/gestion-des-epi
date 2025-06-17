@@ -4,7 +4,7 @@ import EmployeNavbar from "./EmployeNavbar";
 export default function Aide() {
   return (
     <EmployeNavbar>
-    <div className="bg-white p-6 rounded-lg shadow max-w-3xl mx-auto">
+    <div className="p-6 rounded-lg shadow max-w-3xl mx-auto bg-sky-50">
       <h2 className="text-xl font-semibold text-sky-900 mb-4">Centre d'aide</h2>
       <div className="space-y-4 text-sm text-gray-700">
         <p>

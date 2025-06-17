@@ -1,124 +1,158 @@
-import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
-  LayoutDashboard,
-  Package,
-  ClipboardList,
-  Truck,
-  History,
-  LogOut,
-  UserCircle,
-  Menu,
-  X,
+  Menu, X, UserCheck, LogOut, LayoutDashboard, ClipboardList, FileText,
+  ListChecks, RefreshCw, HelpCircle, Bell, ChevronRight, Search, UserCircle, HardHat, Truck
 } from "lucide-react";
 
-export default function GestionnaireLayout({ children }: { children: React.ReactNode }) {
+export default function GestionnaireLayout({ children }: { children?: React.ReactNode }) {
+  const [collapsed, setCollapsed] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [showProfileCard, setShowProfileCard] = useState(false);
   const navigate = useNavigate();
-
-  const user = {
-    name: "Jean Dupont",
-    email: "jean.dupont@entreprise.com",
-  };
-
-  const navItems = [
-    { to: "/gestionnaire", label: "Tableau de bord", icon: <LayoutDashboard size={18} /> },
-    { to: "/gestionnaire/stock", label: "Gérer le stock", icon: <Package size={18} /> },
-    { to: "/gestionnaire/reapprovisionnement", label: "Réapprovisionnement", icon: <ClipboardList size={18} /> },
-    { to: "/gestionnaire/livraison", label: "Livraisons", icon: <Truck size={18} /> },
-    { to: "/gestionnaire/historique", label: "Historique", icon: <History size={18} /> },
-  ];
+  const profileRef = useRef(null);
 
   const handleLogout = () => {
+    alert("Déconnexion réussie !");
     navigate("/login");
   };
 
-  return (
-    // <div className="min-h-screen flex bg-gray-100">
-    <div className="flex min-h-screen bg-gray-500">
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (profileRef.current && !(profileRef.current as any).contains(event.target)) {
+        setShowProfileCard(false);
+      }
+    }
 
-      {/* Sidebar */}
-      <aside
-        className={`${
-          sidebarOpen ? "w-64" : "w-20"
-        } bg-white shadow-lg transition-all duration-300 flex flex-col justify-between`}
-      >
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div className="min-h-screen flex bg-gray-100">
+      {/* SIDEBAR */}
+      <aside className={`${collapsed ? "w-16" : "w-64"} bg-sky-900 text-white transition-all duration-300 flex flex-col justify-between shadow-lg`}>
         <div>
-          <div className="flex items-center justify-end px-6 py-6">
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="text-gray-500 hover:text-gray-700"
-            >
-              {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+          <div className="p-4 flex items-center justify-between">
+            {!collapsed && <span className="text-lg font-bold tracking-wide">Gestion EPI</span>}
+            <button onClick={() => setCollapsed(!collapsed)} className="text-gray-300 hover:text-white">
+              {collapsed ? <Menu size={24} /> : <X size={24} />}
             </button>
           </div>
 
-
-          <nav className="flex flex-col space-y-1 px-2">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all ${
-                    isActive ? "bg-sky-100 text-sky-800" : "text-gray-700 hover:bg-gray-50"
-                  }`
-                }
-              >
-                {item.icon}
-                {sidebarOpen && item.label}
-              </NavLink>
-            ))}
+          <nav className="mt-4 space-y-1 px-2">
+            <NavItem to="/gestionnaire" icon={<LayoutDashboard size={20} />} label="Tableau de bord" collapsed={collapsed} />
+            <NavItem to="/gestionnaire/ajouter" icon={<HardHat size={20} />} label="Ajouter EPI" collapsed={collapsed} />
+            <NavItem to="/gestionnaire/livraisons" icon={<Truck size={20} />} label="Livraisons" collapsed={collapsed} />
+            <NavItem to="/gestionnaire/demandes" icon={<ClipboardList size={20} />} label="Demandes reçues" collapsed={collapsed} />
+            <NavItem to="/gestionnaire/dotations" icon={<FileText size={20} />} label="Dotations envoyées" collapsed={collapsed} />
+            <NavItem to="/gestionnaire/aide" icon={<HelpCircle size={20} />} label="Aide / Contact" collapsed={collapsed} />
           </nav>
         </div>
 
-        <div className="px-4 py-4 border-t">
+        {/* PROFIL */}
+        <div className="relative p-4 border-t border-gray-700">
           <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 text-sm text-orange-600 hover:text-orange-800"
+            onClick={() => setShowMenu(!showMenu)}
+            className="flex items-center gap-2 px-2 py-2 w-full text-sm hover:bg-gray-700 rounded-md transition"
           >
-            <LogOut size={18} />
-            {sidebarOpen && "Déconnexion"}
+            <UserCheck size={20} />
+            {!collapsed && <span>Profil</span>}
           </button>
+
+          {!collapsed && showMenu && (
+            <div className="absolute bottom-14 left-4 w-48 bg-white text-black rounded shadow-lg z-50">
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-4 py-2 text-sm hover:bg-orange-500 hover:text-white transition rounded"
+              >
+                <LogOut className="inline-block mr-2" size={16} /> Se déconnecter
+              </button>
+            </div>
+          )}
         </div>
       </aside>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col">
-        {/* Topbar */}
-        <header className="bg-white shadow px-6 py-4 flex items-center justify-between sticky top-0 z-10">
-          <h1 className="text-xl font-semibold text-gray-700">Gestionnaire</h1>
-          <div className="relative">
-            <button
-              onClick={() => setShowMenu(!showMenu)}
-              className="flex items-center space-x-2 text-gray-700 hover:text-Sky-700"
-            >
-              <UserCircle className="w-8 h-8" />
-              <span className="hidden md:inline">Profil</span>
-            </button>
+      {/* MAIN CONTENT */}
+      <div className="flex-1 flex flex-col relative">
+        {/* TOPBAR */}
+        <header className="flex justify-between items-center px-6 py-4 bg-white border-b shadow-sm">
+          <div className="flex items-center gap-4 text-gray-800 font-medium">
+            <img src="/images/logoPort2.jpg" alt="Logo" className="h-10" />
+            <span className="text-lg hidden md:inline">Espace Gestionnaire</span>
+          </div>
 
-            {showMenu && (
-              <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-md z-20 p-4">
-                <div className="mb-3">
-                  <p className="font-semibold text-gray-800">{user.name}</p>
-                  <p className="text-sm text-gray-500">{user.email}</p>
-                </div>
-                <button
-                  onClick={handleLogout}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-sm text-orange-600 hover:bg-orange-50 rounded"
-                >
-                  <LogOut size={16} />
-                  Déconnexion
-                </button>
-              </div>
-            )}
+          <div className="flex items-center gap-4 relative">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Rechercher..."
+                className="bg-gray-100 border border-gray-300 rounded-md pl-8 pr-3 py-1 text-sm focus:ring-blue-500 focus:outline-none"
+              />
+              <Search className="absolute left-2 top-1.5 w-4 h-4 text-gray-500" />
+            </div>
+
+            <Link to="/notifications">
+              <Bell className="text-gray-600 hover:text-sky-600 w-5 h-5 cursor-pointer" />
+            </Link>
+
+            <button onClick={() => setShowProfileCard(!showProfileCard)}>
+              <UserCircle className="text-gray-700 hover:text-sky-600 w-7 h-7 cursor-pointer" />
+            </button>
           </div>
         </header>
 
-        {/* Page content */}
-        <main className="flex-1 p-6 bg-gray-50">{children}</main>
+        {/* PAGE CONTENT */}
+        <main className="flex-1 overflow-y-auto p-6 bg-gray-50">{children}</main>
+
+        {/* Carte Profil */}
+        {showProfileCard && (
+          <div
+            ref={profileRef}
+            className="absolute top-20 right-6 w-80 bg-sky-100 rounded-lg shadow-xl border border-gray-200 z-50 p-5"
+          >
+            <div className="flex flex-col items-center cursor-pointer group">
+              <img
+                src="/images/logoCo2.png"
+                alt="Profil"
+                className="w-20 h-30 rounded-full group-hover:border-sky-800 transition"
+              />
+              <span className="text-xs text-gray-700 group-hover:text-gray-600">Mon Profil</span>
+            </div>
+
+            <div className="space-y-2 text-sm text-gray-700">
+              <p><strong>Nom :</strong> Doe</p>
+              <p><strong>Prénom :</strong> Jean</p>
+              <p><strong>Email :</strong> gestionnaire@port.com</p>
+              <p><strong>Poste :</strong> Gestionnaire EPI</p>
+              <p><strong>Service :</strong> Logistique</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
+  );
+}
+
+function NavItem({
+  to,
+  icon,
+  label,
+  collapsed,
+}: {
+  to: string;
+  icon: React.ReactNode;
+  label: string;
+  collapsed: boolean;
+}) {
+  return (
+    <Link
+      to={to}
+      className="flex items-center gap-3 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-md transition group"
+    >
+      <span className="w-5 h-5">{icon}</span>
+      {!collapsed && <span className="group-hover:font-semibold">{label}</span>}
+      {!collapsed && <ChevronRight className="ml-auto opacity-30" size={14} />}
+    </Link>
   );
 }
