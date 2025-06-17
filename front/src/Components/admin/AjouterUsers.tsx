@@ -1,161 +1,27 @@
 import React, { useState } from "react";
 import AdminLayout from "./AdminLayout";
 
-export default function AjouterUsers() {
-  const [form, setForm] = useState({
-    nom: "",
-    prenoms: "",
-    email: "",
-    motDePasse: "",
-    typeCompte: "GESTIONNAIRE", // correspond à l'enum Java
-    poste: 1,
-    status: true,
-  });
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value, type } = e.target;
-
-    const newValue =
-      type === "checkbox" && "checked" in e.target
-        ? (e.target as HTMLInputElement).checked
-        : type === "number"
-        ? parseInt(value)
-        : value;
-
-    setForm({
-      ...form,
-      [name]: newValue,
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try {
-      const response = await fetch("http://localhost:8080/user/creer", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
-      });
-
-      const message = await response.text();
-
-      if (response.ok) {
-        alert("Utilisateur créé avec succès : " + message);
-        setForm({
-          nom: "",
-          prenoms: "",
-          email: "",
-          motDePasse: "",
-          typeCompte: "GESTIONNAIRE",
-          poste: 1,
-          status: true,
-        });
-      } else {
-        alert("Erreur lors de la création : " + message);
-      }
-    } catch (error) {
-      console.error("Erreur réseau :", error);
-      alert("Erreur lors de l'envoi des données !");
-    }
-  };
+export default function AdminAddUser() {
+  const [form, setForm] = useState({ nom: "", prenoms: "", email: "", role: "GESTIONNAIRE" });
+  const handleChange = (e: { target: { name: any; value: any; }; }) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleSubmit = (e: { preventDefault: () => void; }) => { e.preventDefault(); alert("Utilisateur ajouté"); };
 
   return (
     <AdminLayout>
-      <div className="max-w-5xl mx-auto bg-white shadow-xl rounded-2xl p-10">
-        <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">
-          Créer un nouvel utilisateur
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block mb-1 text-gray-700 font-medium">
-              Nom
-            </label>
-            <input
-              type="String"
-              name="nom"
-              value={form.nom}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border rounded-lg shadow-sm"
-              placeholder="nom"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 text-gray-700 font-medium">
-              Prénoms
-            </label>
-            <input
-              type="String"
-              name="prenoms"
-              value={form.prenoms}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border rounded-lg shadow-sm"
-              placeholder="prenoms"
-            />
-          </div>
-         
-          <div>
-            <label className="block mb-1 text-gray-700 font-medium">
-              Adresse email
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border rounded-lg shadow-sm"
-              placeholder="exemple@domaine.com"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 text-gray-700 font-medium">
-              Type de compte
-            </label>
-            <select
-              name="typeCompte"
-              value={form.typeCompte}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg shadow-sm"
-            >
-              <option value="GESTIONNAIRE">Gestionnaire</option>
-              <option value="ADMIN">Admin</option>
-              <option value="DQHSE">DQHSE</option>
-              <option value="EMPLOYE_STANDARD">Employé Standard</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block mb-1 text-gray-700 font-medium">
-              Poste
-            </label>
-            <input
-              type="number"
-              name="poste"
-              value={form.poste}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border rounded-lg shadow-sm"
-              placeholder="1"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-gray-800 hover:bg-orange-800 text-white font-semibold py-2 rounded-lg"
-          >
-            Créer le compte
-          </button>
+      <div className="p-6 max-w-3xl mx-auto bg-white rounded-2xl shadow-xl">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Ajouter un utilisateur</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input name="nom" placeholder="Nom" onChange={handleChange} required className="w-full p-2 border rounded-lg" />
+          <input name="prenoms" placeholder="Prénoms" onChange={handleChange} required className="w-full p-2 border rounded-lg" />
+          <input name="email" type="email" placeholder="Email" onChange={handleChange} required className="w-full p-2 border rounded-lg" />
+          <select name="role" onChange={handleChange} className="w-full p-2 border rounded-lg">
+            <option value="GESTIONNAIRE">Gestionnaire</option>
+            <option value="ADMIN">Admin</option>
+          </select>
+          <button className="bg-gray-800 hover:bg-orange-700 text-white px-4 py-2 rounded-lg">Créer</button>
         </form>
       </div>
     </AdminLayout>
   );
 }
+

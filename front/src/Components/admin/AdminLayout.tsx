@@ -12,6 +12,10 @@ import {
   Search,
   Bell,
   UserCircle,
+  Settings,
+  FileText,
+  HelpCircle,
+  Activity
 } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -41,9 +45,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
 
           <nav className="mt-4 space-y-1 px-2">
-            <NavItem to="/admin" icon={<LayoutDashboard size={20} />} label="Dashboard" collapsed={collapsed} />
+            <NavItem to="/admin" icon={<LayoutDashboard size={20} />} label="Tableau de bord" collapsed={collapsed} />
             <NavItem to="/admin/utilisateurs" icon={<Users size={20} />} label="Comptes" collapsed={collapsed} />
             <NavItem to="/admin/ajouter-utilisateur" icon={<UserPlus size={20} />} label="Créer un compte" collapsed={collapsed} />
+            <NavItem to="/admin/role" icon={<Settings size={20} />} label="Rôles & Permissions" collapsed={collapsed} />
+            <NavItem to="/admin/journal" icon={<Activity size={20} />} label="Journal d'activités" collapsed={collapsed} />
+            <NavItem to="/admin/parametres" icon={<FileText size={20} />} label="Paramètres" collapsed={collapsed} />
+            <NavItem to="/admin/aide" icon={<HelpCircle size={20} />} label="Aide / Support" collapsed={collapsed} />
           </nav>
         </div>
 
@@ -84,7 +92,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <input
                 type="text"
                 placeholder="Rechercher..."
-                className="bg-gray-100 border border-gray-300 rounded-md pl-8 pr-3 py-1 text-sm focus:ring-blue-500 focus:outline-none"
+                className="bg-gray-100 border border-gray-300 rounded-md pl-8 pr-3 py-1 text-sm focus:ring-gray-600 focus:outline-none"
               />
               <Search className="absolute left-2 top-1.5 w-4 h-4 text-gray-500" />
             </div>

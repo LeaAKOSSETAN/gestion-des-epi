@@ -5,9 +5,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import ComptesGestion from './Components/admin/AdminDashbord';
 import AjouterUsers from './Components/admin/AjouterUsers';
-import ComptesInactifs from './Components/admin/ComptesInactifs';
-import ComptesActifs from './Components/admin/ComptesActifs';
-import List from './Components/admin/UserList';
+import AdminRole from './Components/admin/AdminRole';
+import AdminUsers from './Components/admin/AdminUsers';
+import AdminHelp from './Components/admin/AdminHelp';
+import AdminJournal from './Components/admin/AdminJournal';
+import AdminSettings from './Components/admin/AdminSetting';
 
 import DqhseValidationDemandes from './Components/DQHSE/validation-demandes'
 import DqhseHistoriqueTransactions from './Components/DQHSE/historique-transactions'
@@ -20,7 +22,6 @@ import DemandeEPI from './Components/employe/DemandeForm'
 import HistoriqueDemandes from './Components/employe/HistoriqueDemande';
 import Dotations from './Components/employe/Dotations';
 import RefaireDemande from './Components/employe/RefaireDemande';
-import Profil from './Components/employe/Profil';
 import Notifications from './Components/employe/Notifications';
 import Aide from './Components/employe/Aide';
 
@@ -48,15 +49,17 @@ export default function App() {
         {/* Routes pour les administrateurs */}
         <Route path="/admin" element={<ComptesGestion />}/>
         <Route path="/admin/ajouter-utilisateur" element={<AjouterUsers />} />
-        <Route path="/admin/comptes-actifs" element={<ComptesActifs />} />
-        <Route path="/admin/comptes-inactifs" element={<ComptesInactifs />} />
-        <Route path="/admin/list" element={<List users={undefined}/>} />
+        <Route path="/admin/role" element={<AdminRole />} />
+        <Route path="/admin/utilisateurs" element={<AdminUsers />} />
+        <Route path="/admin/journal" element={<AdminJournal />} />
+        <Route path="/admin/parametres" element={<AdminSettings />} />
+        <Route path="/admin/aide" element={<AdminHelp />} />
+
 
         {/* Routes pour les employés */}
         <Route path="/" element={<Login />} />
         <Route path="/demande-dashboard" element={<Dashboard />} />
         <Route path="/demande-epi" element={<DemandeEPI />} />
-        <Route path="/profil" element={<Profil />} />
         <Route path="/dotation" element={<Dotations />} />
         <Route path="/historique-demandes" element={<HistoriqueDemandes />} />
         <Route path="/dotation" element={<Dotations />} />
