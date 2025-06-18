@@ -5,6 +5,7 @@ public enum StatutValidation {
     VALIDEE,
     REFUSEE,
     LIVRE,
-    EN_COURS_LIVRAISON
+    EN_COURS_LIVRAISON,
+    PARTIELLEMENT_LIVRE
 
 }

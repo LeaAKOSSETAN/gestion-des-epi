@@ -3,48 +3,68 @@ package com.example.gestion_des_epi.gestion_epi.service;
 import com.example.gestion_des_epi.gestion_epi.dto.EpiDto;
 import com.example.gestion_des_epi.gestion_epi.model.Epi;
 import com.example.gestion_des_epi.gestion_epi.repository.EpiRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import com.example.gestion_des_epi.gestion_epi.exception.EpiAlreadyExistsException;
+
 @Service
 public class EpiService {
     @Autowired
     private EpiRepository epiRepository;
-
-    public String Add(EpiDto epiDto) {
-        Epi epi = new Epi();
-
-        // Vérifiez que les valeurs ne sont pas null avant de les utiliser
-        if (epiDto.getNom() == null) {
-            throw new IllegalArgumentException("Le nom de l'EPI ne peut pas être null.");
-        }
-        epi.setNom(epiDto.getNom());
-
-        if (epiDto.getQuantite_en_stock() == null) {
-            throw new IllegalArgumentException("La quantité en stock ne peut pas être null.");
-        }
-        epi.setQuantite_en_stock(epiDto.getQuantite_en_stock());
-
-        if (epiDto.getSeuil_alerte() == null) {
-            throw new IllegalArgumentException("Le seuil d'alerte ne peut pas être null.");
-        }
-        epi.setSeuil_alerte(epiDto.getSeuil_alerte());
-
-        if (epiDto.getDure_de_vie() == null || !epiDto.getDure_de_vie().matches("\\d+")) {
-            throw new IllegalArgumentException("La durée de vie doit être un nombre valide.");
+public String Add(EpiDto epiDto) {
+    try {
+        // Validation des entrées
+        if (epiDto.getNom() == null || epiDto.getNom().isBlank()) {
+            throw new IllegalArgumentException("Le nom de l'EPI est obligatoire");
         }
 
+        // Vérification existence EPI
+        epiRepository.findByNom(epiDto.getNom())
+            .ifPresent(epi -> {
+                throw new EpiAlreadyExistsException(
+                    String.format("L'EPI '%s' existe déjà (ID: %d)", 
+                    epi.getNom(), epi.getId())
+                );
+            });
+
+        // Validation des autres champs
+        if (epiDto.getQuantite_en_stock() == null || epiDto.getQuantite_en_stock() < 0) {
+            throw new IllegalArgumentException("La quantité doit être un nombre positif");
+        }
+
+        if (epiDto.getSeuil_alerte() == null || epiDto.getSeuil_alerte() < 0) {
+            throw new IllegalArgumentException("Le seuil d'alerte doit être un nombre positif");
+        }
+
+        // Conversion durée de vie
+        int duree;
         try {
-            epi.setDureeValidite(Integer.parseInt(epiDto.getDure_de_vie()));
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("La durée de vie doit être un nombre valide.");
+            duree = Integer.parseInt(epiDto.getDure_de_vie());
+            if (duree <= 0) throw new IllegalArgumentException();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("La durée de vie doit être un nombre entier positif");
         }
+
+        // Création et sauvegarde
+        Epi epi = new Epi();
+        epi.setNom(epiDto.getNom().trim());
+        epi.setQuantite_en_stock(epiDto.getQuantite_en_stock());
+        epi.setSeuil_alerte(epiDto.getSeuil_alerte());
+        epi.setDureeValidite(duree);
 
         epiRepository.save(epi);
-        return "EPI a été bien ajouté";
+        return "EPI ajouté avec succès";
+
+    } catch (EpiAlreadyExistsException e) {
+        throw e; // Exception spécifique - à traiter dans le controller
+    } catch (IllegalArgumentException e) {
+        throw new IllegalArgumentException("Données invalides: " + e.getMessage());
     }
+}
 
 
 

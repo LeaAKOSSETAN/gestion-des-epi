@@ -1,19 +1,26 @@
 package com.example.gestion_des_epi.gestion_epi.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Data
 @Entity
-@Table(name= "epis")
+@Table(name = "epis")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Slf4j // Ajout pour la journalisation
 public class Epi {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String nom;
     private int quantite_en_stock;
     private int dureeValidite;
@@ -24,7 +31,6 @@ public class Epi {
 
     @Column(name = "is_deleted", nullable = false)
     private boolean deleted = false;*/
-
     @Column(name = "besoin_reapprovisionnement")
     private Boolean besoinReapprovisionnement = false;
 

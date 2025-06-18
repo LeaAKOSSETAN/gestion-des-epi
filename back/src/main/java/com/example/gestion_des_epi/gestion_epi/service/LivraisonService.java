@@ -1,24 +1,32 @@
 package com.example.gestion_des_epi.gestion_epi.service;
 
-import com.example.gestion_des_epi.gestion_epi.dto.LivraisonDto;
-import com.example.gestion_des_epi.gestion_epi.enume.StatutBesoin;
-import com.example.gestion_des_epi.gestion_epi.enume.StatutValidation;
-import com.example.gestion_des_epi.gestion_epi.exception.EpiIndisponibleException;
-import com.example.gestion_des_epi.gestion_epi.exception.SeuilAlerteAtteintException;
-import com.example.gestion_des_epi.gestion_epi.exception.StockInsuffisantException;
-import com.example.gestion_des_epi.gestion_epi.model.*;
-import com.example.gestion_des_epi.gestion_epi.repository.BesoinRepository;
-import com.example.gestion_des_epi.gestion_epi.repository.DemandeEpiRepository;
-import com.example.gestion_des_epi.gestion_epi.repository.LivraisonRepository;
-import com.example.gestion_des_epi.gestion_epi.repository.EpiRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.example.gestion_des_epi.gestion_epi.dto.LivraisonDto;
+import com.example.gestion_des_epi.gestion_epi.enume.StatutBesoin;
+import com.example.gestion_des_epi.gestion_epi.enume.StatutValidation;
+import com.example.gestion_des_epi.gestion_epi.exception.SeuilAlerteAtteintException;
+import com.example.gestion_des_epi.gestion_epi.exception.StockInsuffisantException;
+import com.example.gestion_des_epi.gestion_epi.model.Besoin;
+import com.example.gestion_des_epi.gestion_epi.model.DemandeEpi;
+import com.example.gestion_des_epi.gestion_epi.model.Epi;
+import com.example.gestion_des_epi.gestion_epi.model.Livraison;
+import com.example.gestion_des_epi.gestion_epi.repository.BesoinRepository;
+import com.example.gestion_des_epi.gestion_epi.repository.DemandeEpiRepository;
+import com.example.gestion_des_epi.gestion_epi.repository.EpiRepository;
+import com.example.gestion_des_epi.gestion_epi.repository.LivraisonRepository;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +56,7 @@ public class LivraisonService {
         }
 
         // 2. Vérifier l'EPI
-        Epi epi = epiRepository.findById(livraisonDto.getEpiId().intValue())
+        Epi epi = epiRepository.findById(Math.toIntExact(livraisonDto.getEpiId()))
                 .orElseThrow(() -> {
                     log.error("EPI non trouvé avec l'id: {}", livraisonDto.getEpiId());
                     return new IllegalArgumentException("EPI non trouvé");
@@ -72,18 +80,18 @@ public class LivraisonService {
         if (epi.getQuantite_en_stock() < livraisonDto.getQuantite()) {
             log.error("Stock insuffisant pour l'EPI {}: stock={}, demande={}",
                     epi.getId(), epi.getQuantite_en_stock(), livraisonDto.getQuantite());
-            String message = "Stock insuffisant pour l'EPI " + epi.getNom() +
-                    ". Disponible: " + epi.getQuantite_en_stock() +
-                    ", Demandé: " + livraisonDto.getQuantite();
+            String message = "Stock insuffisant pour l'EPI " + epi.getNom()
+                    + ". Disponible: " + epi.getQuantite_en_stock()
+                    + ", Demandé: " + livraisonDto.getQuantite();
             throw new StockInsuffisantException(message, epi);
         }
 
         // 6. Vérifier le seuil d'alerte après livraison
         int stockApresLivraison = epi.getQuantite_en_stock() - livraisonDto.getQuantite();
         if (stockApresLivraison <= epi.getSeuil_alerte()) {
-            String message = "Le stock de l'EPI " + epi.getNom() +
-                    " atteindra le seuil d'alerte (" + epi.getSeuil_alerte() +
-                    ") après cette livraison";
+            String message = "Le stock de l'EPI " + epi.getNom()
+                    + " atteindra le seuil d'alerte (" + epi.getSeuil_alerte()
+                    + ") après cette livraison";
             throw new SeuilAlerteAtteintException(message, epi);
         }
 
@@ -195,9 +203,9 @@ public class LivraisonService {
             // Vérifier si le seuil d'alerte est atteint après livraison
             int stockApresLivraison = epi.getQuantite_en_stock() - quantiteTotale;
             if (stockApresLivraison <= epi.getSeuil_alerte()) {
-                String message = "Le stock de l'EPI " + epi.getNom() +
-                        " atteindra le seuil d'alerte (" + epi.getSeuil_alerte() +
-                        ") après cette livraison";
+                String message = "Le stock de l'EPI " + epi.getNom()
+                        + " atteindra le seuil d'alerte (" + epi.getSeuil_alerte()
+                        + ") après cette livraison";
                 throw new SeuilAlerteAtteintException(message, epi);
             }
         }
@@ -227,9 +235,9 @@ public class LivraisonService {
         // Vérifier le seuil d'alerte après livraison
         int stockApresLivraison = epi.getQuantite_en_stock() - quantite;
         if (stockApresLivraison <= epi.getSeuil_alerte()) {
-            String message = "Le stock de l'EPI " + epi.getNom() +
-                    " atteindra le seuil d'alerte (" + epi.getSeuil_alerte() +
-                    ") après cette livraison";
+            String message = "Le stock de l'EPI " + epi.getNom()
+                    + " atteindra le seuil d'alerte (" + epi.getSeuil_alerte()
+                    + ") après cette livraison";
             throw new SeuilAlerteAtteintException(message, epi);
         }
 
@@ -246,8 +254,8 @@ public class LivraisonService {
         int nouvelleQuantiteRestante = besoin.getQuantite() - nouvelleQuantiteLivre;
         besoin.setQuantiteLivre(nouvelleQuantiteLivre);
         besoin.setQuantiteRestante(nouvelleQuantiteRestante);
-        besoin.setStatut(nouvelleQuantiteRestante == 0 ?
-                StatutBesoin.LIVRE_COMPLET : StatutBesoin.LIVRE_PARTIEL);
+        besoin.setStatut(nouvelleQuantiteRestante == 0
+                ? StatutBesoin.LIVRE_COMPLET : StatutBesoin.LIVRE_PARTIEL);
 
         // Mise à jour stock
         epi.setQuantite_en_stock(stockApresLivraison);
@@ -263,11 +271,26 @@ public class LivraisonService {
         DemandeEpi demandeActualisee = demandeEpiRepository.findByIdWithBesoins(demande.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Demande non trouvée"));
 
+        // Calculer le statut de la demande
         boolean tousLivres = demandeActualisee.getBesoins().stream()
                 .allMatch(b -> b.getStatut() == StatutBesoin.LIVRE_COMPLET);
 
-        demandeActualisee.setStatut(tousLivres ?
-                StatutValidation.LIVRE : StatutValidation.EN_COURS_LIVRAISON);
+        boolean aucunLivré = demandeActualisee.getBesoins().stream()
+                .allMatch(b -> b.getStatut() == StatutBesoin.EN_ATTENTE);
+
+        boolean partiellementLivres = demandeActualisee.getBesoins().stream()
+                .anyMatch(b -> b.getStatut() == StatutBesoin.LIVRE_PARTIEL);
+
+        // Déterminer le statut global
+        if (tousLivres) {
+            demandeActualisee.setStatut(StatutValidation.LIVRE);
+        } else if (partiellementLivres) {
+            demandeActualisee.setStatut(StatutValidation.PARTIELLEMENT_LIVRE);
+        } else if (aucunLivré) {
+            demandeActualisee.setStatut(StatutValidation.EN_ATTENTE);
+        } else {
+            demandeActualisee.setStatut(StatutValidation.EN_COURS_LIVRAISON);
+        }
 
         demandeEpiRepository.save(demandeActualisee);
     }
@@ -321,9 +344,9 @@ public class LivraisonService {
             // Vérifier le seuil d'alerte après augmentation
             int stockApresMAJ = epi.getQuantite_en_stock() - difference;
             if (stockApresMAJ <= epi.getSeuil_alerte()) {
-                String message = "Le stock de l'EPI " + epi.getNom() +
-                        " atteindra le seuil d'alerte (" + epi.getSeuil_alerte() +
-                        ") après cette augmentation";
+                String message = "Le stock de l'EPI " + epi.getNom()
+                        + " atteindra le seuil d'alerte (" + epi.getSeuil_alerte()
+                        + ") après cette augmentation";
                 throw new SeuilAlerteAtteintException(message, epi);
             }
         } else {
@@ -340,8 +363,10 @@ public class LivraisonService {
 
         if (besoin.getQuantiteRestante() == 0) {
             besoin.setStatut(StatutBesoin.LIVRE_COMPLET);
-        } else {
+        } else if (besoin.getQuantiteLivre() > 0) {
             besoin.setStatut(StatutBesoin.LIVRE_PARTIEL);
+        } else {
+            besoin.setStatut(StatutBesoin.EN_ATTENTE);
         }
 
         // 7. Mettre à jour le stock
@@ -403,18 +428,18 @@ public class LivraisonService {
         if (epi.getQuantite_en_stock() < nouvelleQuantite) {
             log.error("Stock insuffisant pour la mise à jour: stock={}, demande={}",
                     epi.getQuantite_en_stock(), nouvelleQuantite);
-            String message = "Stock insuffisant pour l'EPI " + epi.getNom() +
-                    ". Disponible: " + epi.getQuantite_en_stock() +
-                    ", Demandé: " + nouvelleQuantite;
+            String message = "Stock insuffisant pour l'EPI " + epi.getNom()
+                    + ". Disponible: " + epi.getQuantite_en_stock()
+                    + ", Demandé: " + nouvelleQuantite;
             throw new StockInsuffisantException(message, epi);
         }
 
         // Vérifier le seuil d'alerte après mise à jour
         int stockApresMAJ = epi.getQuantite_en_stock() - nouvelleQuantite;
         if (stockApresMAJ <= epi.getSeuil_alerte()) {
-            String message = "Le stock de l'EPI " + epi.getNom() +
-                    " atteindra le seuil d'alerte (" + epi.getSeuil_alerte() +
-                    ") après cette mise à jour";
+            String message = "Le stock de l'EPI " + epi.getNom()
+                    + " atteindra le seuil d'alerte (" + epi.getSeuil_alerte()
+                    + ") après cette mise à jour";
             throw new SeuilAlerteAtteintException(message, epi);
         }
 
@@ -498,5 +523,67 @@ public class LivraisonService {
                     return new IllegalArgumentException("Demande non trouvée");
                 });
         return livraisonRepository.findByDemandeEpi(demande);
+    }
+
+    @Transactional
+    public Livraison completerLivraison(Long besoinId) {
+        log.info("Complétion de la livraison pour le besoin ID: {}", besoinId);
+
+        // Récupérer le besoin
+        Besoin besoin = besoinRepository.findById(Math.toIntExact(besoinId))
+                .orElseThrow(() -> new IllegalArgumentException("Besoin non trouvé"));
+
+        // Vérifier que le besoin est partiellement livré
+        if (besoin.getStatut() != StatutBesoin.LIVRE_PARTIEL) {
+            throw new IllegalArgumentException("Le besoin n'est pas partiellement livré");
+        }
+
+        // Récupérer la quantité restante
+        int quantiteRestante = besoin.getQuantiteRestante();
+        Epi epi = besoin.getEpi();
+        DemandeEpi demande = besoin.getDemandeEPI();
+
+        // Vérifier le stock
+        if (epi.getQuantite_en_stock() < quantiteRestante) {
+            String message = "Stock insuffisant pour compléter la livraison de l'EPI " + epi.getNom();
+            throw new StockInsuffisantException(message, epi);
+        }
+
+        // Vérifier le seuil d'alerte
+        int stockApresLivraison = epi.getQuantite_en_stock() - quantiteRestante;
+        if (stockApresLivraison <= epi.getSeuil_alerte()) {
+            String message = "Le stock de l'EPI " + epi.getNom()
+                    + " atteindra le seuil d'alerte après complétion";
+            throw new SeuilAlerteAtteintException(message, epi);
+        }
+
+        // Créer la livraison
+        Livraison livraison = new Livraison();
+        livraison.setDateLivraison(LocalDateTime.now());
+        livraison.setReference("LIV-" + UUID.randomUUID().toString().substring(0, 8));
+        livraison.setDemandeEpi(demande);
+        livraison.setEpi(epi);
+        livraison.setQuantiteLivree(quantiteRestante);
+
+        // Mettre à jour le besoin
+        besoin.setQuantiteLivre(besoin.getQuantiteLivre() + quantiteRestante);
+        besoin.setQuantiteRestante(0);
+        besoin.setStatut(StatutBesoin.LIVRE_COMPLET);
+
+        // Mettre à jour le stock
+        epi.setQuantite_en_stock(stockApresLivraison);
+
+        // Sauvegarder
+        epiRepository.save(epi);
+        besoinRepository.save(besoin);
+        Livraison livraisonSauvegardee = livraisonRepository.save(livraison);
+
+        // Mettre à jour le statut de la demande
+        mettreAJourStatutDemande(demande);
+
+        log.info("Livraison complétée pour le besoin {} - Quantité restante livrée: {}",
+                besoinId, quantiteRestante);
+
+        return livraisonSauvegardee;
     }
 }

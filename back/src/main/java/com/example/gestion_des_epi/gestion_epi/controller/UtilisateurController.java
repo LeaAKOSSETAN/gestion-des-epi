@@ -2,7 +2,7 @@ package com.example.gestion_des_epi.gestion_epi.controller;
 
 import com.example.gestion_des_epi.gestion_epi.dto.UtilisateurDto;
 import com.example.gestion_des_epi.gestion_epi.model.Utilisateur;
-import com.example.gestion_des_epi.gestion_epi.service.PosteEpiService;
+import com.example.gestion_des_epi.gestion_epi.service.AttribuerService;
 import com.example.gestion_des_epi.gestion_epi.service.UtilisateurService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,10 +22,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping(path = "/user", produces = APPLICATION_JSON_VALUE)
 public class UtilisateurController  {
 
-    private final PosteEpiService posteEpiService;
+    private final AttribuerService posteEpiService;
     private final UtilisateurService utilisateurService;
 
-    public UtilisateurController(PosteEpiService posteEpiService, UtilisateurService utilisateurService) {
+    public UtilisateurController(AttribuerService posteEpiService, UtilisateurService utilisateurService) {
         this.posteEpiService = posteEpiService;
         this.utilisateurService = utilisateurService;
     }
