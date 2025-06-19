@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import com.example.gestion_des_epi.gestion_epi.model.Attribuer;
 import com.example.gestion_des_epi.gestion_epi.model.Attribuer.AttribuerId;
 
-public interface AttribuerRepository extends JpaRepository<Attribuer, Integer> {
+public interface AttribuerRepository extends JpaRepository<Attribuer, Long> {
 
     List<Attribuer> findByPosteId(Long posteId);
 
@@ -33,6 +33,11 @@ public interface AttribuerRepository extends JpaRepository<Attribuer, Integer> {
     Optional<Attribuer> findWithDetailsById(AttribuerId id);
 
     public Object findById(AttribuerId id);
+
+    public boolean existsById(AttribuerId id);
+
+    public void deleteById(AttribuerId id);
+
 
 
 

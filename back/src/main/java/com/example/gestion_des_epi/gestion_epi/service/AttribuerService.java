@@ -20,10 +20,12 @@ import com.example.gestion_des_epi.gestion_epi.repository.PosteRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class AttribuerService {
 
     private final AttribuerRepository attribuerRepository;
@@ -32,6 +34,9 @@ public class AttribuerService {
     private final AttribuerMapper attribuerMapper;
 
     public AttribuerDto createAttribution(CreateAttribuerDto dto) {
+        log.info("Création d'une nouvelle attribution - EPI: {}, Poste: {}, Année: {}", 
+                dto.getEpiId(), dto.getPosteId(), dto.getAnnee());
+
         // Vérification de l'existence de l'attribution
         if (attribuerRepository.existsByEpiIdAndPosteIdAndAnnee(
                 dto.getEpiId(), dto.getPosteId(), dto.getAnnee())) {
@@ -59,72 +64,76 @@ public class AttribuerService {
 
         // Sauvegarde
         Attribuer savedAttribuer = attribuerRepository.save(attribuer);
+        log.info("Attribution créée avec succès - ID: {}", savedAttribuer.getId());
 
         return attribuerMapper.toDto(savedAttribuer);
     }
 
     public List<AttribuerDto> getAttributionsByPoste(Long posteId) {
+        log.info("Récupération des attributions pour le poste ID: {}", posteId);
         return attribuerRepository.findByPosteId(posteId).stream()
                 .map(attribuerMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     public List<AttribuerDto> getAttributionsByEpi(Long epiId) {
+        log.info("Récupération des attributions pour l'EPI ID: {}", epiId);
         return attribuerRepository.findByEpiId(epiId).stream()
                 .map(attribuerMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public AttribuerDto updateQuantite(Long epiId, Long posteId, int annee, int nouvelleQuantite) {
+    public Optional<AttribuerDto> getAttributionById(Long epiId, Long posteId) {
+        log.info("Récupération de l'attribution - EPI ID: {}, Poste ID: {}", epiId, posteId);
         Attribuer.AttribuerId id = new Attribuer.AttribuerId();
         id.setEpiId(epiId);
         id.setPosteId(posteId);
-
-        Attribuer attribuer = attribuerRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                String.format("Attribution non trouvée pour EPI ID: %d et Poste ID: %d", epiId, posteId)));
-
-        // Vérification de l'année
-        if (attribuer.getAnnee() != annee) {
-            throw new IllegalStateException("L'année ne correspond pas à l'attribution existante");
-        }
-
-        attribuer.setQuantite(nouvelleQuantite);
-        Attribuer updatedAttribuer = attribuerRepository.save(attribuer);
-
-        return attribuerMapper.toDto(updatedAttribuer);
+        
+        Optional<Attribuer> attribuerOpt = (Optional<Attribuer>) attribuerRepository.findById(id);
+        return attribuerOpt.map(attribuerMapper::toDto);
     }
 
-    @Transactional
-    public AttribuerDto updateQuantite(UpdateQuantiteDto dto) {
-        // Création de l'ID composite
-        Attribuer.AttribuerId id = new Attribuer.AttribuerId();
-        id.setEpiId(dto.getEpiId());
-        id.setPosteId(dto.getPosteId());
-
-        // Récupération de l'attribution existante
-        Attribuer attribuer = ((Optional<Attribuer>) attribuerRepository.findById(id))
-                .orElseThrow(() -> new EntityNotFoundException(
-                String.format("Attribution non trouvée pour EPI ID: %d et Poste ID: %d",
-                        dto.getEpiId(), dto.getPosteId())));
-
-        // Vérification de l'année
-        if (attribuer.getAnnee() != dto.getAnnee()) {
-            throw new IllegalStateException(
-                    "L'année ne correspond pas à l'attribution existante");
-        }
-
-        // Mise à jour de la quantité
-        attribuer.setQuantite(dto.getQuantite());
-
-        // Sauvegarde
-        Attribuer updatedAttribuer = attribuerRepository.save(attribuer);
-
-        // Conversion en DTO
-        return attribuerMapper.toDto(updatedAttribuer);
+   @Transactional
+public AttribuerDto updateQuantite(UpdateQuantiteDto dto) {
+    // Vérification de l'existence de l'attribution
+    Attribuer.AttribuerId id = new Attribuer.AttribuerId();
+    id.setEpiId(dto.getEpiId());
+    id.setPosteId(dto.getPosteId());
+    
+    Attribuer attribuer = ((Optional<Attribuer>) attribuerRepository.findById(id))
+        .orElseThrow(() -> new EntityNotFoundException(
+            "Attribution non trouvée pour EPI ID: " + dto.getEpiId() + 
+            " et Poste ID: " + dto.getPosteId()));
+    
+    // Vérification de l'année
+    if (attribuer.getAnnee() != dto.getAnnee()) {
+        throw new IllegalStateException(
+            "L'année ne correspond pas à l'attribution existante");
     }
+    
+    // Mise à jour
+    attribuer.setQuantite(dto.getQuantite());
+    attribuer = attribuerRepository.save(attribuer);
+    
+    return attribuerMapper.toDto(attribuer);
+}
 
     public void deleteAttribution(Long epiId, Long posteId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        log.info("Suppression de l'attribution - EPI ID: {}, Poste ID: {}", epiId, posteId);
+        Attribuer.AttribuerId id = new Attribuer.AttribuerId();
+        id.setEpiId(epiId);
+        id.setPosteId(posteId);
+        
+        if (!attribuerRepository.existsById(id)) {
+            throw new EntityNotFoundException(
+                String.format("Attribution non trouvée pour EPI ID: %d et Poste ID: %d", epiId, posteId));
+        }
+        
+        attribuerRepository.deleteById(id);
+        log.info("Attribution supprimée avec succès");
+    }
+
+    public boolean existsAttribution(Long epiId, Long posteId, int annee) {
+        return attribuerRepository.existsByEpiIdAndPosteIdAndAnnee(epiId, posteId, annee);
     }
 }
