@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   Menu, X, UserCheck, LogOut, LayoutDashboard, ClipboardList, FileText,
-  ListChecks, RefreshCw, HelpCircle, Bell, ChevronRight, Search, UserCircle
+  ListChecks, RefreshCw, HelpCircle, Bell, ChevronRight, Search, UserCircle, Settings
 } from "lucide-react";
 
 export default function EmployeNavbar({ children }: { children?: React.ReactNode }) {
@@ -33,22 +33,18 @@ export default function EmployeNavbar({ children }: { children?: React.ReactNode
       {/* SIDEBAR */}
       <aside className={`${collapsed ? "w-16" : "w-64"} bg-white text-gray-600 transition-all duration-300 flex flex-col justify-between shadow-lg`}>
         <div>
-          <div className="p-4 flex items-center justify-between gap-3 text-gray-800 font-medium">
+          <div className="pt-1 flex items-center justify-between gap-0.5 text-gray-800 font-medium">
             <div
               className="flex items-center gap-0.5 cursor-pointer"
               onClick={() => collapsed && setCollapsed(false)}
             >
-              <img src="/images/logoPort2.jpg" alt="Logo" className="h-10" />
-              {!collapsed && (
-                <span className="text-xs font-bold text-gray-800 self-center">
-                  PORT AUTONOME <br /> DE COTONOU
-                </span>
-              )}
+              <img src="/images/port-re.png" alt="Logo" className="h-16" />
+
             </div>
 
             <button
               onClick={() => setCollapsed(!collapsed)}
-              className="flex items-center gap-1 px-2 text-gray-400 hover:bg-orange-600 rounded-md transition group"
+              className="flex items-center gap-1 px-4 py-3 text-gray-400 hover:bg-orange-600 rounded-md transition group"
             >
               {collapsed ? <Menu size={24} /> : <X size={24} />}
             </button>
@@ -60,7 +56,8 @@ export default function EmployeNavbar({ children }: { children?: React.ReactNode
             <NavItem to="/historique-demandes" icon={<ClipboardList size={20} />} label="Historique demandes" collapsed={collapsed} />
             <NavItem to="/dotation" icon={<FileText size={20} />} label="Dotations reçues" collapsed={collapsed} />
             <NavItem to="/refaire-demande" icon={<RefreshCw size={20} />} label="Refaire une demande" collapsed={collapsed} />
-            <NavItem to="/aide" icon={<HelpCircle size={20} />} label="Aide / Contact" collapsed={collapsed} />
+            <NavItem to="/admin/parametres" icon={<Settings size={20} />} label="Paramètres" collapsed={collapsed} />
+            
           </nav>
         </div>
 

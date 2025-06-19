@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate, NavLink } from "react-router-dom";
 import {
   Menu, X, UserCheck, LogOut, LayoutDashboard, ClipboardList, FileText,
-  HardHat, Truck, HelpCircle, Bell, ChevronRight, Search, UserCircle
+  HardHat, Truck, HelpCircle, Bell, ChevronRight, Search, UserCircle, Settings
 } from "lucide-react";
 
 export default function GestionnaireLayout({ children }: { children?: React.ReactNode }) {
@@ -33,17 +33,13 @@ export default function GestionnaireLayout({ children }: { children?: React.Reac
       {/* SIDEBAR */}
       <aside className={`${collapsed ? "w-16" : "w-64"} bg-white text-gray-600 transition-all duration-300 flex flex-col justify-between shadow-lg`}>
         <div>
-          <div className="p-4 flex items-center justify-between gap-3 text-gray-800 font-medium">
+          <div className="pt-1 flex items-center justify-between gap-3 text-gray-800 font-medium">
             <div
               className="flex items-center gap-0.5 cursor-pointer"
               onClick={() => collapsed && setCollapsed(false)}
             >
-              <img src="/images/logoPort2.jpg" alt="Logo" className="h-10" />
-              {!collapsed && (
-                <span className="text-xs font-bold text-gray-800 self-center">
-                  PROT AUTONOME <br /> DE COTONOU
-                </span>
-              )}
+              <img src="/images/port-re.png" alt="Logo" className="h-16" />
+
             </div>
             <button
               onClick={() => setCollapsed(!collapsed)}
@@ -58,8 +54,12 @@ export default function GestionnaireLayout({ children }: { children?: React.Reac
             <NavItem to="/gestionnaire/ajouter" icon={<HardHat size={20} />} label="Ajouter EPI" collapsed={collapsed} />
             <NavItem to="/gestionnaire/livraisons" icon={<Truck size={20} />} label="Livraisons" collapsed={collapsed} />
             <NavItem to="/gestionnaire/demandes" icon={<ClipboardList size={20} />} label="Demandes reçues" collapsed={collapsed} />
-            <NavItem to="/gestionnaire/dotations" icon={<FileText size={20} />} label="Dotations envoyées" collapsed={collapsed} />
-            <NavItem to="/gestionnaire/aide" icon={<HelpCircle size={20} />} label="Aide / Contact" collapsed={collapsed} />
+            <NavItem to="/gestionnaire/dotations" icon={<FileText size={20} />} label="Historique Dotations " collapsed={collapsed} />
+            <NavItem to="/gestionnaire/reapprovinnement" icon={<FileText size={20} />} label="Reapprovisionnement " collapsed={collapsed} />
+            <NavItem to="/admin/aide" icon={<UserCheck size={20} />} label="Espace Employe" collapsed={collapsed} />
+            <NavItem to="/admin/parametres" icon={<Settings size={20} />} label="Paramètres" collapsed={collapsed} />
+            
+          
           </nav>
         </div>
 

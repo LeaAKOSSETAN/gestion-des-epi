@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate, NavLink } from "react-router-dom";
 import {
   Menu, X, UserCheck, LogOut, LayoutDashboard, ClipboardList, FileText,
-  ListChecks, FileBarChart, Bell, ChevronRight, Search, UserCircle
+  ListChecks, FileBarChart, Bell, ChevronRight, Search, UserCircle, HelpCircle, Settings
 } from "lucide-react";
 
 export default function DqshseNavbar({ children }: { children?: React.ReactNode }) {
@@ -32,26 +32,28 @@ export default function DqshseNavbar({ children }: { children?: React.ReactNode 
       {/* SIDEBAR */}
       <aside className={`${collapsed ? "w-16" : "w-64"} bg-white text-gray-600 transition-all duration-300 flex flex-col justify-between shadow-lg`}>
         <div>
-          <div className="p-4 flex items-center justify-between gap-3 text-gray-800 font-medium">
-            <div className="flex items-center gap-0.5 cursor-pointer" onClick={() => collapsed && setCollapsed(false)}>
-              <img src="/images/logoPort2.jpg" alt="Logo" className="h-10" />
-              {!collapsed && (
-                <span className="text-xs font-bold text-gray-800 self-center">
-                  PORT AUTONOME <br /> DE COTONOU
-                </span>
-              )}
+          <div className="pt-1 flex items-center justify-between text-gray-800 font-medium">
+            <div className="flex items-center cursor-pointer" onClick={() => collapsed && setCollapsed(false)}>
+              <img src="/images/port-re.png" alt="Logo" className="h-16" />
+          
             </div>
-            <button onClick={() => setCollapsed(!collapsed)} className="text-gray-400 hover:bg-orange-600 rounded-md transition">
+            <button onClick={() => setCollapsed(!collapsed)} className="flex items-center gap-1 px-4 py-3 text-gray-400 hover:bg-orange-600 rounded-md transition group"
+>
               {collapsed ? <Menu size={24} /> : <X size={24} />}
             </button>
           </div>
 
           <nav className="mt-4 space-y-1 px-2">
-            <NavItem to="/DQHSE/DQHSE-Dashboard" icon={<LayoutDashboard size={20} />} label="Tableau de bord" collapsed={collapsed} />
-            <NavItem to="/DQHSE/Validation-Demandes" icon={<ListChecks size={20} />} label="Demandes à valider" collapsed={collapsed} />
+            <NavItem to="/DQHSE-Dashboard" icon={<LayoutDashboard size={20} />} label="Tableau de bord" collapsed={collapsed} />
+            <NavItem to="/DQHSE-validation" icon={<ListChecks size={20} />} label="Demandes à valider" collapsed={collapsed} />
             <NavItem to="/DQHSE/Historique" icon={<ClipboardList size={20} />} label="Historique" collapsed={collapsed} />
             <NavItem to="/DQHSE/Rapports" icon={<FileBarChart size={20} />} label="Rapports" collapsed={collapsed} />
-            <NavItem to="/DQHSE/Transactions" icon={<FileText size={20} />} label="Transactions" collapsed={collapsed} />
+            <NavItem to="/DQHSE-transactions" icon={<FileText size={20} />} label="Transactions" collapsed={collapsed} />
+            <NavItem to="/admin/aide" icon={<UserCheck size={20} />} label="Espace Employe" collapsed={collapsed} />
+            <NavItem to="/admin/parametres" icon={<Settings size={20} />} label="Parametres" collapsed={collapsed} />
+            
+            
+
           </nav>
         </div>
 
@@ -79,7 +81,7 @@ export default function DqshseNavbar({ children }: { children?: React.ReactNode 
         {/* TOPBAR */}
         <header className="flex justify-between items-center px-6 py-4 bg-white border-b shadow-sm">
           <div className="flex items-center gap-4 text-gray-800 font-medium">
-            <span className="text-lg hidden md:inline">Espace Chef de Service</span>
+            <span className="text-lg hidden md:inline">Espace Validation</span>
           </div>
 
           <div className="flex items-center gap-4 relative">
@@ -148,16 +150,15 @@ function NavItem({
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `flex items-center gap-3 px-3 py-2 text-sm rounded-md transition group
-         ${
-           isActive
-             ? "bg-orange-600 text-gray-700"
-             : "text-gray-600 hover:bg-orange-600 hover:text-gray-800"
-         }`
+        `flex items-center gap-3 px-3 py-2 text-sm rounded-md transition group ${
+          isActive
+            ? "bg-orange-600 text-gray-800 font-semibold"
+            : "text-gray-600 hover:bg-orange-600 hover:text-gray-800"
+        }`
       }
     >
       <span className="w-5 h-5">{icon}</span>
-      {!collapsed && <span className="group-hover:font-semibold">{label}</span>}
+      {!collapsed && <span>{label}</span>}
       {!collapsed && <ChevronRight className="ml-auto opacity-30" size={14} />}
     </NavLink>
   );

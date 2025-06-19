@@ -125,6 +125,7 @@ import {
   Package,
   Truck,
   AlertCircle,
+  Settings
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -163,13 +164,12 @@ export default function DashboardGestionnaire() {
   return (
     <GestionnaireLayout>
       <div className="p-6 bg-gray-50 min-h-screen">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Tableau de bord du gestionnaire</h1>
 
         {/* Statistiques principales */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           <StatCard icon={<ClipboardList size={28} />} title="Demandes en attente" value="28" bgColor="bg-orange-100 text-orange-500" />
           <StatCard icon={<Truck size={28} />} title="Livraisons en cours" value="5" bgColor="bg-green-100 text-green-500" />
-          <StatCard icon={<Package size={28} />} title="Stock disponible" value="1 240 articles" bgColor="bg-blue-100 text-blue-500" />
+          <StatCard icon={<Package size={28} />} title="Stock disponible" value="1 240 " bgColor="bg-blue-100 text-blue-500" />
           <StatCard icon={<AlertCircle size={28} />} title="Produits critiques" value="3 alertes" bgColor="bg-rose-100 text-rose-500" />
         </div>
 

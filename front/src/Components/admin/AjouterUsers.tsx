@@ -9,7 +9,7 @@ export default function AdminAddUser() {
   return (
     <AdminLayout>
       <div className="p-6 max-w-3xl mx-auto bg-white rounded-2xl shadow-xl">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Ajouter un utilisateur</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Créer un compte utilisateur</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input name="nom" placeholder="Nom" onChange={handleChange} required className="w-full p-2 border rounded-lg" />
           <input name="prenoms" placeholder="Prénoms" onChange={handleChange} required className="w-full p-2 border rounded-lg" />
@@ -17,6 +17,18 @@ export default function AdminAddUser() {
           <select name="role" onChange={handleChange} className="w-full p-2 border rounded-lg">
             <option value="GESTIONNAIRE">Gestionnaire</option>
             <option value="ADMIN">Admin</option>
+          </select>
+          <select name="role" onChange={handleChange} className="w-full p-2 border rounded-lg">
+            <option value="GESTIONNAIRE">Departement</option>
+            <option value="ADMIN">Capitaine</option>
+            <option value="ADMIN">Acosteur</option>
+
+          </select>
+          <select name="role" onChange={handleChange} className="w-full p-2 border rounded-lg">
+            <option value="GESTIONNAIRE">Docker</option>
+            <option value="ADMIN">Capitaine</option>
+            <option value="ADMIN">Acosteur</option>
+
           </select>
           <button className="bg-gray-800 hover:bg-orange-700 text-white px-4 py-2 rounded-lg">Créer</button>
         </form>
