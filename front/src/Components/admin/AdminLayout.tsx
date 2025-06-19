@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, NavLink } from "react-router-dom";
 import {
   Menu,
   X,
@@ -59,7 +59,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="relative p-4 border-t border-gray-700">
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="flex items-center gap-2 px-2 py-2 w-full text-sm hover:bg-gray-700 rounded-md transition"
+            className="flex items-center gap-2 px-2 py-2 w-full text-sm hover:bg-orange-600 rounded-md transition"
           >
             <UserCheck size={20} />
             {!collapsed && <span>Profil</span>}
@@ -69,7 +69,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="absolute bottom-14 left-4 w-48 bg-white text-black rounded shadow-lg z-50">
               <button
                 onClick={handleLogout}
-                className="w-full text-left px-4 py-2 text-sm hover:bg-gray-500 hover:text-white transition rounded"
+                className="w-full text-left px-4 py-2 text-sm hover:bg-orange-600 hover:text-white transition rounded"
               >
                 <LogOut className="inline-block mr-2" size={16} /> Se déconnecter
               </button>
@@ -108,6 +108,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   );
 }
 
+
+
+
 function NavItem({
   to,
   icon,
@@ -120,13 +123,20 @@ function NavItem({
   collapsed: boolean;
 }) {
   return (
-    <Link
+    <NavLink
       to={to}
-      className="flex items-center gap-3 px-3 py-2 text-sm text-gray-200 hover:bg-gray-700 rounded-md transition group"
+      className={({ isActive }) =>
+        `flex items-center gap-3 px-3 py-2 text-sm rounded-md transition group
+         ${
+           isActive
+             ? "bg-orange-600 text-white"
+             : "text-gray-600 hover:bg-orange-600 hover:text-gray-800"
+         }`
+      }
     >
       <span className="w-5 h-5">{icon}</span>
       {!collapsed && <span className="group-hover:font-semibold">{label}</span>}
       {!collapsed && <ChevronRight className="ml-auto opacity-30" size={14} />}
-    </Link>
+    </NavLink>
   );
 }

@@ -42,7 +42,7 @@ const AjouterEPI = () => {
                 value={form.nom}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                 placeholder="Ex : Casque de sécurité"
               />
             </div>
@@ -58,7 +58,7 @@ const AjouterEPI = () => {
                 value={form.categorie}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                 placeholder="Ex : Protection tête"
               />
             </div>
@@ -75,7 +75,7 @@ const AjouterEPI = () => {
                   value={form.quantite}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="Ex : 50"
                 />
               </div>
@@ -91,7 +91,7 @@ const AjouterEPI = () => {
                   value={form.seuil}
                   onChange={handleChange}
                   required
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="Ex : 10"
                 />
               </div>
@@ -101,14 +101,14 @@ const AjouterEPI = () => {
               <button
                 type="button"
                 onClick={() => navigate("/gestionnaire")}
-                className="bg-red-600 hover:bg-red-500 text-white px-6 py-2 rounded-lg shadow-md transition"
+                className="bg-red-600 hover:bg-orange-600 text-white px-6 py-2 rounded-lg shadow-md transition"
               >
                 Annuler
               </button>
 
               <button
                 type="submit"
-                className="bg-sky-700 hover:bg-sky-500 text-white px-6 py-2 rounded-lg shadow-md transition"
+                className="bg-blue-700 hover:bg-orange-600 text-white px-6 py-2 rounded-lg shadow-md transition"
               >
                 Enregistrer
               </button>

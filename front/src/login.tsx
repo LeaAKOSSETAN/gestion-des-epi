@@ -60,7 +60,7 @@ export default function Login() {
               onChange={(e) => setNom(e.target.value)}
               placeholder="Nom d'utilisateur"
               required
-              className="w-full px-4 py-3 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full px-4 py-3 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
             />
             <input
               type="password"
@@ -69,22 +69,22 @@ export default function Login() {
               onChange={(e) => setMotDePasse(e.target.value)}
               placeholder="Mot de passe"
               required
-              className="w-full px-4 py-3 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full px-4 py-3 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
             />
 
             <div className="flex justify-between items-center text-sm text-blue-600">
               <label className="flex items-center">
-               <input type="checkbox" className="mr-2 accent-blue-600" />
+               <input type="checkbox" className="mr-2 accent-blue-700" />
                 Se souvenir de moi
               </label>
-              <a href="#" className="hover:underline text-blue-600">
+              <a href="#" className="hover:underline text-blue-700">
                 Mot de passe oublié ?
               </a>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-orange-500 to-blue-700 hover:bg-sky-700 text-white py-2 rounded-md font-semibold transition"
+              className="w-full bg-orange-600  hover:bg-blue-800 text-white py-2 rounded-md font-semibold transition"
             >
               Connexion
             </button>

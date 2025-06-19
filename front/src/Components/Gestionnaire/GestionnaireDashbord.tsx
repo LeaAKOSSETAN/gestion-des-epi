@@ -119,119 +119,124 @@
 
 
 
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, {JSX} from "react";
 import {
-  Package, ClipboardList, Truck, History,
+  ClipboardList,
+  Package,
+  Truck,
+  AlertCircle,
 } from "lucide-react";
 import {
+  ResponsiveContainer,
   BarChart,
   Bar,
   XAxis,
   YAxis,
   Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
   Legend,
+  CartesianGrid,
+  PieChart,
+  Pie,
+  Cell
 } from "recharts";
-
 import GestionnaireLayout from "./GestionnaireLayout";
 
-const epiData = [
-  { month: "Jan", Casques: 40, Gants: 24, Bottes: 12 },
-  { month: "Feb", Casques: 30, Gants: 13, Bottes: 22 },
-  { month: "Mar", Casques: 20, Gants: 98, Bottes: 30 },
-  { month: "Apr", Casques: 27, Gants: 39, Bottes: 20 },
-  { month: "May", Casques: 18, Gants: 48, Bottes: 21 },
-  { month: "Jun", Casques: 23, Gants: 38, Bottes: 25 },
-  { month: "Jul", Casques: 34, Gants: 43, Bottes: 19 },
+const demandesMensuelles = [
+  { mois: "Jan", demandes: 22 },
+  { mois: "Fév", demandes: 35 },
+  { mois: "Mar", demandes: 18 },
+  { mois: "Avr", demandes: 40 },
+  { mois: "Mai", demandes: 9 },
+  { mois: "Juin", demandes: 25 },
 ];
 
-export default function GestionnaireDashboard() {
-  const [collapsed] = useState(false);
-  const [showMenu] = useState(false);
-  const navigate = useNavigate();
+const repartitionEPI = [
+  { name: "Casques", value: 40 },
+  { name: "Gants", value: 30 },
+  { name: "Bottes", value: 20 },
+  { name: "Gilets", value: 10 },
+];
 
-  const handleLogout = () => navigate("/login");
+const COLORS = ["#f97316", "#facc15", "#4ade80", "#60a5fa"];
 
+export default function DashboardGestionnaire() {
   return (
-
     <GestionnaireLayout>
+      <div className="p-6 bg-gray-50 min-h-screen">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">Tableau de bord du gestionnaire</h1>
 
-      <div className="flex min-h-screen bg-gray-100"> 
-
-      {/* Main Content */}
-      <main className="flex-1 p-8">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">Tableau de bord</h1>
-
-        {/* Stat Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          <CardStat
-            title="Stock"
-            value="235 produits"
-            color="blue"
-            icon={<Package className="text-blue-600 w-8 h-8" />}
-            to="/gestionnaire/stock"
-          />
-          <CardStat
-            title="Réapprovisionnement"
-            value="8 demandes"
-            color="yellow"
-            icon={<ClipboardList className="text-yellow-500 w-8 h-8" />}
-            to="/gestionnaire/reapprovisionnement"
-          />
-          <CardStat
-            title="Livraisons"
-            value="3 en cours"
-            color="green"
-            icon={<Truck className="text-green-600 w-8 h-8" />}
-            to="/gestionnaire/livraison"
-          />
-          <CardStat
-            title="Historique"
-            value="+ de 120 logs"
-            color="gray"
-            icon={<History className="text-gray-700 w-8 h-8" />}
-            to="/gestionnaire/historique"
-          />
+        {/* Statistiques principales */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+          <StatCard icon={<ClipboardList size={28} />} title="Demandes en attente" value="28" bgColor="bg-orange-100 text-orange-500" />
+          <StatCard icon={<Truck size={28} />} title="Livraisons en cours" value="5" bgColor="bg-green-100 text-green-500" />
+          <StatCard icon={<Package size={28} />} title="Stock disponible" value="1 240 articles" bgColor="bg-blue-100 text-blue-500" />
+          <StatCard icon={<AlertCircle size={28} />} title="Produits critiques" value="3 alertes" bgColor="bg-rose-100 text-rose-500" />
         </div>
 
-        {/* Chart */}
-        <div className="bg-white rounded-2xl shadow-md p-6">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Distribution des EPI par mois</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={epiData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="Casques" fill="#3B82F6" />
-              <Bar dataKey="Gants" fill="#10B981" />
-              <Bar dataKey="Bottes" fill="#F59E0B" />
-            </BarChart>
-          </ResponsiveContainer>
+
+        {/* Graphiques */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Histogramme demandes */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <h2 className="text-base font-semibold mb-4 text-gray-800">Evolution des demandes mensuelles</h2>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={demandesMensuelles}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="mois" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="demandes" fill="#ea580c" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Répartition EPI */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <h2 className="text-base font-semibold mb-4 text-gray-800">Répartition des EPI distribués</h2>
+            <ResponsiveContainer width="100%" height={220}>
+              <PieChart>
+                <Pie
+                  data={repartitionEPI}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={70}
+                  label
+                >
+                  {repartitionEPI.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
         </div>
-      </main>
-    </div>
+      </div>
     </GestionnaireLayout>
   );
 }
 
-
-function CardStat({ title, value, color, icon, to }: { title: string; value: string; color: string; icon: React.ReactNode; to: string }) {
+function StatCard({ icon, title, value, bgColor}: { icon: JSX.Element; title: string; value: string; bgColor: string }) {
   return (
-    <Link
-      to={to}
-      className={`group p-6 bg-white rounded-2xl shadow hover:shadow-lg border-l-4 border-${color}-500 transition-all`}
-    >
-      <div className="flex items-center gap-4">
-        {icon}
-        <div>
-          <p className="text-sm font-medium text-gray-500 uppercase">{title}</p>
-          <p className="text-2xl font-bold text-gray-800">{value}</p>
-        </div>
+    <div className={`bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex items-center gap-4 h-24 hover:shadow-md transition-all duration-300`}>
+      <div className={`w-14 h-12 flex items-center justify-center rounded-full  ${bgColor}`}>{icon}</div>
+      <div>
+        <p className="text-sm text-gray-500 font-medium uppercase tracking-wide">{title}</p>
+        <p className="text-xl font-bold text-gray-800">{value}</p>
       </div>
-    </Link>
+    </div>
   );
 }
+//   return (
+//     <div className={`flex items-center p-5 rounded-xl shadow-md bg-white border border-gray-200 hover:shadow-xl transition-all duration-300 gap-4`}>
+//       <div className={`flex items-center justify-center w-12 h-12 rounded-full ${color}`}>{icon}</div>
+//       <div>
+//         <p className="text-2xl font-semibold text-gray-900">{count}</p>
+//         <p className="text-gray-600 text-xs font-medium uppercase tracking-wide">{label}</p>
+//       </div>
+//     </div>
+//   );
+// }
